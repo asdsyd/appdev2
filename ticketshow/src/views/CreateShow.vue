@@ -24,7 +24,7 @@
   </div>
   <div>
     <!--    creating create-show form-->
-    <form class="m-3">
+    <form class="m-3" @click.prevent>
       <div class="row mb-4">
         <div class="col-4">
           <div class="form-outline">
@@ -32,6 +32,7 @@
             <label class="form-label" for="form6Example1">Show name</label>
           </div>
         </div>
+
         <div class="col-2 form-outline mb-4">
           <select class="form-select" v-model="rating">
             <option disabled value="">Please select one</option>
@@ -46,16 +47,11 @@
 
         <div class="container">
           <label>Start time</label>
-          <input type="time" class="align-self-auto" value="10:00 AM" />
-
+          <input type="time" class="align-self-auto" v-model="startTime" />
           <label>End time</label>
-          <input type="time" class="align-self-auto" value="11:00 AM">
+          <input type="time" class="align-self-auto" v-model="endTime">
         </div>
       </div>
-
-      <!-- Text input -->
-
-      <!-- Text input -->
 
       <div class="checkboxes form-check-inline">
         <h4>Select Tags:</h4>
@@ -75,14 +71,12 @@
         <input type="checkbox" value="animation" v-model="tags" />
       </div>
 
-
-
-      <!-- Email input -->
       <div class="col-6 form-outline mb-4">
-        <input type="number" class="col-4 form-control">
+        <input type="number" class="col-4 form-control" v-model="ticketPrice">
         <label class="form-label" for="form6Example5">Ticket Price</label>
       </div>
-      <button type="submit" class="left col-2 btn btn-primary ">Save</button>
+
+      <button type="submit" class="left col-2 btn btn-primary " >Save</button>
 
 
       <!-- Submit button -->
@@ -96,7 +90,11 @@ import { ref } from 'vue'
 const header = ref('Create a Show')
 const showName = ref("")
 const rating = ref([])
+const startTime = ref("")
+const endTime = ref("")
 const tags = ref([])
+const ticketPrice = ref(0)
+const handleSubmit
 </script>
 
 <style>

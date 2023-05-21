@@ -12,7 +12,6 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" v-bind="User" href="/UserBookings.vue">Home</a>
-            <router-link to="ldaldladj"
           </li>
         </ul>
         <button class="btn btn-outline-success" type="submit">Logout</button>
