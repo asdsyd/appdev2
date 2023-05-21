@@ -2,6 +2,8 @@
 import { reactive } from "vue";
 // import {flushPromises} from "@vue/test-utils";
 import axios from "axios";
+import {useStore} from "vuex";
+import {useRouter} from "vue-router";
 // import * as url from "url";
 
 const details = reactive({
@@ -17,8 +19,15 @@ const details = reactive({
 //     refreshToken:"",
 //     username:"",
 // })
+const store = useStore()
+const router = useRouter()
 const HandleSubmit = () => {
-  axios.post("http://127.0.0.1:8000/admin/login", details).then(res => console.log(res.data)).catch(error => console.log(error))
+  axios.post("http://127.0.0.1:8000/admin/login", details).then(res => {
+    const {message,...payload}=  res.data
+    store.commit("adduser",payload)
+    router.push(`/admin/${payload.username}`)
+  }).catch(error => console.log(error))
+
 };
 </script>
 <template>

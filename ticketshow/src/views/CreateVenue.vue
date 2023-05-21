@@ -21,7 +21,7 @@
     </div>
   </nav>
   <div>
-    <form class="m-3">
+    <form class="m-3" @submit.prevent="handleclick">
       <!-- 2 column grid layout with text inputs for the first and last names -->
       <div class="row mb-4">
         <div class="col-4">

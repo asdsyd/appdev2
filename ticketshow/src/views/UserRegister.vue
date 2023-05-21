@@ -1,10 +1,15 @@
 <script setup>
 import { reactive } from "vue";
-// import {flushPromises} from "@vue/test-utils";
+import {useStore} from "vuex";
+
 import axios from "axios";
 import {computed} from "vue";
+import {useRouter} from "vue-router";
 // import * as url from "url";
 
+
+const store = useStore()
+const router = useRouter()
 const details = reactive({
   username: "",
   password: "",
@@ -23,7 +28,10 @@ const passwordMatch = computed(()=> details.password===details.retypepassword)
 // })
 const HandleSubmit = () => {
   const actualDetails = {username:details.username, password:details.password, email:details.email}
-  axios.post("http://127.0.0.1:8000/user/register", actualDetails).then(res => console.log(res.data)).catch(error => console.log(error))
+  axios.post("http://127.0.0.1:8000/user/register", actualDetails).then(res => {
+    const {message,...payload}=  res.data
+    store.commit("adduser",payload)
+  }).catch(error => console.log(error))
 };
 </script>
 <template>

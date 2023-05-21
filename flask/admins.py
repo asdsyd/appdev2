@@ -1,8 +1,8 @@
-from flask_restful import Resource, abort
+from flask_restful import Resource, abort, reqparse
 from flask import request, jsonify, json
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
-from models import Admin, db
-from werkzeug.security import check_password_hash,generate_password_hash
+from models import Admin, db, Theatre, Movie
+from werkzeug.security import check_password_hash, generate_password_hash
 
 
 class AdminLogin(Resource):

@@ -5,9 +5,9 @@ from flask_migrate import Migrate
 from users import UserLogin, UserRegister
 # from mail import mail
 from models import db
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager,jwt_required,create_access_token
 from flask_cors import CORS
-from admins import AdminLogin
+from admins import AdminLogin, CreateVenue
 # from workers import celery_app
 # from cache import cache
 
@@ -49,17 +49,23 @@ def create_app():
 
 app, api = create_app()
 
+# class Refresh(Resource):
+#     @jwt_required(refresh=True)
+#     def post(self):
+
+
+
 # api.add_resource(Register, '/register')
 api.add_resource(AdminLogin, '/admin/login')
 api.add_resource(UserLogin, '/user/login')
 api.add_resource(UserRegister, '/user/register')
+api.add_resource(CreateVenue,'/admin/createVenue')
+# api.add_resource(CreateVenue,'/admin/createVenue')
 # api.add_resource(Refresh, '/refresh')
 
 # api.add_resource(ProfileInfo, '/<username>/info')
 # api.add_resource(SearchTheatre, '/search/<query>')
 
-# api.add_resource(PostOps, '/post')
-# api.add_resource(Feed, '/feed')
 
 # api.add_resource(UserExport, '/user/export')
 

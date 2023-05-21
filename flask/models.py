@@ -23,8 +23,9 @@ class Theatre(db.Model):
     __tablename__ = 'theatres'
 
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(), nullable=False)
+    name = db.Column(db.String(), nullable=False, unique=True)
     place = db.Column(db.String(), nullable=False)
+    locaton = db.Column(db.String(), nullable=False)
     capacity = db.Column(db.Integer(), nullable=False)
     movies = db.relationship('Movie', backref='theatre', lazy=True)
 
@@ -32,7 +33,7 @@ class Movie(db.Model):
     __tablename__ = 'movies'
 
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(), nullable=False)
+    name = db.Column(db.String(), nullable=False, unique=True)
     rating = db.Column(db.Float(), nullable=False)
     tags = db.Column(db.String(), nullable=False)
     ticketPrice = db.Column(db.Float(), nullable=False)
