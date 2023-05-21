@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-
+from datetime import date,datetime,timedelta
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -7,7 +7,7 @@ class User(db.Model):
 
     username = db.Column(db.String(), primary_key=True)
     password = db.Column(db.String(), nullable=False)
-    email = db.Column(db.String())
+    email = db.Column(db.String(), nullable=False)
     # How many movies user has booked -> table has to be made
     # userinfo = db.relationship('UserInfo', back_populates='user', lazy=True, uselist=False)
 
@@ -26,7 +26,7 @@ class Theatre(db.Model):
     name = db.Column(db.String(), nullable=False)
     place = db.Column(db.String(), nullable=False)
     capacity = db.Column(db.Integer(), nullable=False)
-    movies = db.relationship('Movie', backref='theatres')
+    movies = db.relationship('Movie', backref='theatre', lazy=True)
 
 class Movie(db.Model):
     __tablename__ = 'movies'
@@ -36,9 +36,11 @@ class Movie(db.Model):
     rating = db.Column(db.Float(), nullable=False)
     tags = db.Column(db.String(), nullable=False)
     ticketPrice = db.Column(db.Float(), nullable=False)
+    startTime = db.Column(db.DateTime(), nullable=False)
+    endTime = db.Column(db.DateTime(), nullable=False)
     seatsSold = db.Column(db.Integer(), nullable=False)
     totalSeats = db.Column(db.Integer(), nullable=False)
-    theatrePlace = db.Column(db.String(), db.ForeignKey('theatres.id'))
+    theatreId = db.Column(db.Integer(), db.ForeignKey('theatres.id'))
     image = db.Column(db.String(), nullable=False)
 
 

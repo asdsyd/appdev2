@@ -1,5 +1,6 @@
 from flask import Flask
-from flask_restful import Api
+from flask_restful import Api,Resource
+from flask_migrate import Migrate
 
 from users import UserLogin, UserRegister
 # from mail import mail
@@ -31,7 +32,9 @@ def create_app():
     CORS(app, resources={r'/*': {'origins': '*'}})
     # cache.init_app(app)
     db.init_app(app)
-    db.create_all()
+    with app.app_context():
+        db.create_all()
+    migrate = Migrate(app, db)
     app.app_context().push()
 
     # celery_app.conf.update(

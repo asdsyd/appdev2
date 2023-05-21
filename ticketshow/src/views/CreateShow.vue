@@ -24,7 +24,7 @@
   </div>
   <div>
     <!--    creating create-show form-->
-    <form class="m-3" @click.prevent>
+    <form class="m-3" @submit.prevent="handleSubmit">
       <div class="row mb-4">
         <div class="col-4">
           <div class="form-outline">
@@ -86,6 +86,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import axios from "axios";
 
 const header = ref('Create a Show')
 const showName = ref("")
@@ -94,8 +95,19 @@ const startTime = ref("")
 const endTime = ref("")
 const tags = ref([])
 const ticketPrice = ref(0)
-const handleSubmit
+const handleSubmit=()=>{
+  const show = {
+    showName,
+    rating,
+    startTime,
+    endTime,
+    tags,
+    ticketPrice
+  }
+  axios.post('http://localhost:8000/admin/Venue/CreateShow', show).then(res=>console.log(res.data)).catch(error=>console.log(error))
+}
 </script>
+
 
 <style>
 .left {
