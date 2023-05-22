@@ -11,8 +11,7 @@ SECRET_KEY = 'secretkey'
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
-JWT_SECRET_KEY ='TICKETSHOWUSER'
-JWT_SECRET_KEY_ADMIN ="Ticketshowadmin"
+JWT_SECRET_KEY ='TICKETSHOW12345trhr'
 
 UPLOAD_FOLDER = basedir + r'\posters'
 MAX_CONTENT_PATH = 5000000

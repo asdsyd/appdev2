@@ -40,5 +40,7 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
+import { useStore } from 'vuex';
+import axios from '../axios';
 </script>

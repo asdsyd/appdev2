@@ -24,7 +24,7 @@ class UserRegister(Resource):
 
         user = db.session.query(User).get(username)
 
-        if user:
+        if  user:
             return abort(401, message='Username already exists.')
 
         hashed_pw = generate_password_hash(password)
@@ -39,8 +39,8 @@ class UserRegister(Resource):
 
         db.session.commit()
 
-        access_token = create_access_token(identity=username)
-        refresh_token = create_refresh_token(identity=username)
+        access_token = create_access_token(identity=username,additional_claims={'role':"user"})
+        refresh_token = create_refresh_token(identity=username,additional_claims={"role":"user"})
 
         response = jsonify({'message' : 'You have successfully registered.',
                             'access_token' : access_token,
@@ -72,7 +72,7 @@ class UserLogin(Resource):
         if password is None:
             return abort(400, message='Password not provided.')
 
-        user = db.session.query(User).get(username)
+        user = User.query.filter_by(username=username).first()
 
         if not user:
             return abort(401, message='Username provided does not exist.')
@@ -80,10 +80,9 @@ class UserLogin(Resource):
         if not check_password_hash(user.password, password):
             return abort(401, message='Wrong Password')
 
-        db.session.commit()
 
-        access_token = create_access_token(identity=username)
-        refresh_token = create_refresh_token(identity=username)
+        access_token = create_access_token(identity=username,additional_claims={"role":"user"})
+        refresh_token = create_refresh_token(identity=username,additional_claims={"role":"user"})
 
 
         response = jsonify({'message' : 'You have been logged in successfully!',

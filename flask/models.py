@@ -4,8 +4,8 @@ db = SQLAlchemy()
 
 class User(db.Model):
     __tablename__ = 'users'
-    user_id = db.Column(db.String(),primary_key=True)
-    username = db.Column(db.String(), primary_key=True,unique=True)
+    user_id = db.Column(db.Integer(),primary_key=True,autoincrement=True)
+    username = db.Column(db.String(),unique=True)
     password = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False)
     # How many movies user has booked -> table has to be made
@@ -13,7 +13,7 @@ class User(db.Model):
 
 class Admin(db.Model):
     __tablename__ = 'admins'
-
+    
     username = db.Column(db.String(), primary_key=True)
     password = db.Column(db.String(), nullable=False)
     # email = db.Column(db.String())
@@ -22,7 +22,7 @@ class Admin(db.Model):
 class Theatre(db.Model):
     __tablename__ = 'theatres'
 
-    id = db.Column(db.Integer(), primary_key=True)
+    id = db.Column(db.Integer(), primary_key=True,autoincrement=True)
     name = db.Column(db.String(), nullable=False, unique=True)
     place = db.Column(db.String(), nullable=False)
     locaton = db.Column(db.String(), nullable=False)
@@ -32,7 +32,7 @@ class Theatre(db.Model):
 class Movie(db.Model):
     __tablename__ = 'movies'
 
-    id = db.Column(db.Integer(), primary_key=True)
+    id = db.Column(db.Integer(), primary_key=True,autoincrement=True)
     name = db.Column(db.String(), nullable=False, unique=True)
     rating = db.Column(db.Float(), nullable=False)
     tags = db.Column(db.String(), nullable=False)

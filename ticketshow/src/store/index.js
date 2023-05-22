@@ -5,6 +5,7 @@ export default createStore({
     user:localStorage.getItem("user")||{},
   },
   getters: {
+
   },
   mutations: {
     adduser:(state,payload)=>{
@@ -15,7 +16,9 @@ export default createStore({
     removeuser:(state)=>{
       state.user={}
       localStorage.removeItem("user")
-    }
+    },
+    
+
   },
   actions: {
   },

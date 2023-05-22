@@ -1,13 +1,16 @@
 <script setup>
+import { useStore } from "vuex";
 import { reactive } from "vue";
-// import {flushPromises} from "@vue/test-utils";
-import axios from "axios";
-// import * as url from "url";
+import axios from "../axios";
+import { useRouter } from "vue-router";
+
 
 const details = reactive({
   username: "",
   password: "",
 });
+const store = useStore()
+const router = useRouter()
 // const handleClick = (e) => {
 //     const [name,value] = e.target
 //     details[name] = value
@@ -18,7 +21,11 @@ const details = reactive({
 //     username:"",
 // })
 const HandleSubmit = () => {
-  axios.post("http://127.0.0.1:8000/user/login", details).then(res => console.log(res.data)).catch(error => console.log(error))
+  axios.post("/user/login", details).then(res => {
+    const {message,...rest} = res.data
+    store.commit('adduser',rest)
+    router.push('/user/dashboard')
+  }).catch(error => console.log(error))
 };
 </script>
 <template>

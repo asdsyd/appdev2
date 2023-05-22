@@ -100,30 +100,30 @@ async function isAdminAuth(){
   }
 }
 
-router.beforeEach(async (to,from,next)=>{
+// router.beforeEach(async (to,from,next)=>{
 
-  const auth = to.matched.some(r=>r.meta.requiresAuth===true)
-  const isadmin_route = to.matched.some(r=>r.meta.AdminRoute)
-  let isAuthorized;
-  if(auth&&isadmin_route){
-    isAuthorized=await isAdminAuth()
-  }
-  else if(auth && isadmin_route === false){
-    isAuthorized=await isAuth()
-  }
-  else{
-    isAuthorized=true
-  }
+//   const auth = to.matched.some(r=>r.meta.requiresAuth===true)
+//   const isadmin_route = to.matched.some(r=>r.meta.AdminRoute)
+//   let isAuthorized;
+//   if(auth&&isadmin_route){
+//     isAuthorized=await isAdminAuth()
+//   }
+//   else if(auth && isadmin_route === false){
+//     isAuthorized=await isAuth()
+//   }
+//   else{
+//     isAuthorized=true
+//   }
 
-  if(isAuthorized===true){
-    next()
-  }else if(isAuthorized===false && isadmin_route===true){
+//   if(isAuthorized===true){
+//     next()
+//   }else if(isAuthorized===false && isadmin_route===true){
   
-    next('/admin/login')
-  }
-  else{
+//     next('/admin/login')
+//   }
+//   else{
 
-    next('/user/login')
-  }
-})
+//     next('/user/login')
+//   }
+// })
 export default router;
