@@ -50,9 +50,12 @@
 <script setup>
 
 import {reactive} from "vue";
-import axios from "axios";
+import axios from "../axios";
 import NavBar from "@/views/NavBar.vue";
+import router from "@/router";
+import {useStore} from "vuex";
 
+const store = useStore()
 const venue = reactive({
   name:'',
   capacity:0,
@@ -61,7 +64,7 @@ const venue = reactive({
 })
 const handleclick = ()=>{
 console.log(venue)
-  axios.post('http://localhost:8000/admin/createVenue',venue).then(res=>console.log(res.data)).catch(err=>console.log(err.response.data))
+  axios.post('/admin/createVenue',venue).then(res=>router.push('/admin/'+store.state.user.username)).catch(err=>console.log(err.response.data))
 }
 
 </script>

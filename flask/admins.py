@@ -92,7 +92,7 @@ class GetVenues(Resource):
                         d.id,
                         d.name
                     })
-            c["movies"] = f
+                c["movies"] = f
             serialized_venues.append(c)
         response = jsonify({
             "venues":serialized_venues

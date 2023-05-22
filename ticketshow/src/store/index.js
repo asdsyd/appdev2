@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     user:JSON.parse(localStorage.getItem("user"))||{},
-    venues:{}
+    venues:[]
   },
   getters: {
 

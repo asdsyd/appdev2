@@ -1,9 +1,9 @@
 <template>
   <NavBar></NavBar>
 
-  <div v-if="venues"  v-for="v in venues" class="m-lg-3 card mb-3 border-primary" style="width: 18rem;">
+  <div v-show="venue_checker.value"  v-for="v in all_venues" class="m-lg-3 card mb-3 border-primary" style="width: 18rem;">
     <div class="card-body">
-      <h5 class="card-title">Venue_01</h5>
+      <h5 class="card-title">{{v.name}}</h5>
       <p class="card-text">No shows created</p>
       <div>
         <button class=" m-3 rounded-circle btn btn-primary">+</button>
@@ -18,7 +18,7 @@
       <h5 class="card-title text-bg-light">New Venue</h5>
       <p class="card-text">Click on the buttion below to add Venue</p>
       <div>
-        <button class=" m-3 rounded-circle btn btn-success">r+</button>
+        <button  class=" m-3 rounded-circle btn btn-success"><router-link to="/admin/CreateVenue">+</router-link></button>
       </div>
     </div>
   </div>
@@ -45,7 +45,7 @@
 
 </template>
 <script setup>
-import {ref} from "vue";
+import {computed, reactive, ref, watch} from "vue";
 import NavBar from "@/views/NavBar.vue";
 import { useStore } from 'vuex';
 import axios from '../axios';
@@ -54,10 +54,17 @@ import router from "@/router";
 
 const expire = ref(false)
 const store = useStore()
-const venues = store.state.venues
+let all_venues= reactive([]);
+
+const venue_checker = computed(()=>all_venues.length>0)
+console.log(venue_checker)
+
 axios.get('/admin/getVenues').then(res=>{
   const venues = res.data.venues
+
   store.commit("addvenues",venues)
+  all_venues= store.state.venues
+  console.log(all_venues)
 }).catch(e=>{
   console.log(e.response.data)
   if(e.response.data.msg==="Token has Expired"){
