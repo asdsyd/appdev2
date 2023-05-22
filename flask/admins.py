@@ -69,6 +69,10 @@ class AdminLogin(Resource):
 #                 "error":"ERROR COULDN'T PROCESS REQUEST"
 #             })
 
+class GetVenues(Resource):
+    @jwt_required()
+    def get(self):
+        all_venues=Theatre.
 class CreateVenue(Resource):
     @jwt_required()
     def post(self):
