@@ -1,6 +1,6 @@
 from flask_restful import Resource, abort, reqparse
 from flask import request, jsonify, json
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required,get_jwt
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
 from models import Admin, db, Theatre, Movie
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -8,11 +8,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 class AdminCheck(Resource):
     @jwt_required()
     def get(self):
-
-        obj = get_jwt()
-        role = obj.get('role')
-        if  role != "admin":
-            return abort(401,message="not an admin")
         reponse = jsonify({
             "message":"success"
         })
@@ -31,8 +26,8 @@ class AdminLogin(Resource):
         if not pass_match:
             return abort(401, message="Password incorrect")
         else:
-            accessToken = create_access_token(identity=username,additional_claims={"role":"admin"})
-            refresh_token = create_refresh_token(identity=username,additional_claims={'role':'admin'})
+            accessToken = create_access_token(identity=username,key='JWT_SECRET_KEY_ADMIN')
+            refresh_token = create_refresh_token(identity=username,key='JWT_SECRET_KEY_ADMIN')
 
             response = jsonify({
                 'message': 'Admin logged in successfully!',
@@ -77,29 +72,7 @@ class AdminLogin(Resource):
 class GetVenues(Resource):
     @jwt_required()
     def get(self):
-        all_venues=Theatre.query.all()
-        serialized_venues = []
-        for v in all_venues:
-            c = {
-                "id":v.id,
-                "name":v.name,
-            }
-            if v.movies:
-                f =[]
-                for d in v.movies:
-                    f.append({
-                        d.id,
-                        d.name
-                    })
-            c["movies"] = f
-            serialized_venues.append(c)
-        response = jsonify({
-            "venues":serialized_venues
-        })
-        response.status_code=200
-        return response
-
-
+        all_venues=Theatre.
 class CreateVenue(Resource):
     @jwt_required()
     def post(self):
