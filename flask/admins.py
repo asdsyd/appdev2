@@ -73,7 +73,29 @@ class AdminLogin(Resource):
 class GetVenues(Resource):
     @jwt_required()
     def get(self):
-        all_venues=Theatre.
+
+        all_venues=Theatre.query.all()
+        serialized_venues = []
+        for v in all_venues:
+            c = {
+                "id":v.id,
+                "name":v.name,
+            }
+            if v.movies:
+                f =[]
+                for d in v.movies:
+                    f.append({
+                        d.id,
+                        d.name
+                    })
+                c["movies"] = f
+            serialized_venues.append(c)
+        response = jsonify({
+            "venues":serialized_venues
+        })
+        response.status_code=200
+        return response
+
 class CreateVenue(Resource):
     @jwt_required()
     def post(self):
