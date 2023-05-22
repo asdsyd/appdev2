@@ -1,17 +1,17 @@
 <template>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
 <div class="container-fluid">
-  <h1 class="display-1" >{{$store.state.user.username}} Dashboard</h1>
+  <h1 class="display-5 text-light bg-black" >{{$store.state.user.username}} Dashboard</h1>
   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
       <li class="nav-item">
-        <router-link :to="'/admin/' + $store.state.user.username">Home</router-link>
+        <router-link class="lead text-light bg-primary text-decoration-none" :to="'/admin/' + $store.state.user.username">Home</router-link>
       </li>
       <li :hidden="isSummary" class="nav-item">
-        <router-link :to="'/admin/' + $store.state.user.username +'/AdminSummary'">Summary</router-link>
+        <router-link class="lead text-light bg-primary text-decoration-none" :to="'/admin/' + $store.state.user.username +'/AdminSummary'">Summary</router-link>
       </li>
     </ul>
     <button class="btn btn-outline-success" type="submit">Logout</button>
