@@ -43,7 +43,7 @@ class UserRegister(Resource):
         refresh_token = create_refresh_token(identity=username,additional_claims={"role":"user"})
 
         response = jsonify({'message' : 'You have successfully registered.',
-                            'access_token' : access_token,
+                            'accessToken' : access_token,
                             'refresh_token' : refresh_token,
                             'username' : username,
                             })
@@ -86,7 +86,7 @@ class UserLogin(Resource):
 
 
         response = jsonify({'message' : 'You have been logged in successfully!',
-                            'access_token' : access_token,
+                            'accessToken' : access_token,
                             'refresh_token' : refresh_token,
                             'username': username,
                             })

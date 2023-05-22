@@ -31,7 +31,7 @@ const HandleSubmit = () => {
   axios.post("/user/register", actualDetails).then(res => {
     const {message,...payload}=  res.data
     store.commit("adduser",payload)
-
+router.push('/user/dashboard')
   }).catch(error => console.log(error))
 };
 </script>
