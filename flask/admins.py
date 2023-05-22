@@ -5,6 +5,14 @@ from models import Admin, db, Theatre, Movie
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
+class AdminCheck(Resource):
+    @jwt_required()
+    def get(self):
+        reponse = jsonify({
+            "message":"success"
+        })
+        reponse.status_code=200
+        return reponse
 class AdminLogin(Resource):
     def post(self):
         username = request.json['username']
@@ -18,8 +26,8 @@ class AdminLogin(Resource):
         if not pass_match:
             return abort(401, message="Password incorrect")
         else:
-            accessToken = create_access_token(identity=username)
-            refresh_token = create_refresh_token(identity=username)
+            accessToken = create_access_token(identity=username,key='JWT_SECRET_KEY_ADMIN')
+            refresh_token = create_refresh_token(identity=username,key='JWT_SECRET_KEY_ADMIN')
 
             response = jsonify({
                 'message': 'Admin logged in successfully!',
@@ -76,6 +84,9 @@ class CreateVenue(Resource):
             return abort(422,message="location is empty")
         if (not capacity):
             return abort(422, message="capacity is empty")
+        check_venue = Theatre.query.filter_by(name=name).first()
+        if check_venue:
+            return abort(400,message="Venue is already present")
         venue = Theatre(name=name, place=place, locaton=location, capacity=capacity)
 
         db.session.add(venue)

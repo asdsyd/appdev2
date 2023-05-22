@@ -2,12 +2,12 @@ from flask import Flask
 from flask_restful import Api,Resource
 from flask_migrate import Migrate
 
-from users import UserLogin, UserRegister
+from users import UserLogin, UserRegister,UserCheck
 # from mail import mail
 from models import db
 from flask_jwt_extended import JWTManager,jwt_required,create_access_token
 from flask_cors import CORS
-from admins import AdminLogin, CreateVenue
+from admins import AdminLogin, CreateVenue,AdminCheck
 # from workers import celery_app
 # from cache import cache
 
@@ -58,6 +58,8 @@ app, api = create_app()
 # api.add_resource(Register, '/register')
 api.add_resource(AdminLogin, '/admin/login')
 api.add_resource(UserLogin, '/user/login')
+api.add_resource(UserCheck,'/check')
+api.add_resource(AdminCheck,'/admin/check')
 api.add_resource(UserRegister, '/user/register')
 api.add_resource(CreateVenue,'/admin/createVenue')
 # api.add_resource(CreateVenue,'/admin/createVenue')

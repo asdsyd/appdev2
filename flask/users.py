@@ -1,7 +1,7 @@
 from datetime import time
 
 from flask import request, jsonify
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required
 from flask_restful import Resource, abort
 
 from models import db, User
@@ -51,6 +51,14 @@ class UserRegister(Resource):
 
         return response
 
+class UserCheck(Resource):
+    @jwt_required()
+    def get(self):
+        reponse = jsonify({
+            "message":"success"
+        })
+        reponse.status_code=200
+        return reponse
 class UserLogin(Resource):
 
     def post(self):

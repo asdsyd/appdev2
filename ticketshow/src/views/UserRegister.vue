@@ -2,7 +2,7 @@
 import { reactive } from "vue";
 import {useStore} from "vuex";
 
-import axios from "axios";
+import axios from "../axios";
 import {computed} from "vue";
 import {useRouter} from "vue-router";
 // import * as url from "url";
@@ -28,9 +28,10 @@ const passwordMatch = computed(()=> details.password===details.retypepassword)
 // })
 const HandleSubmit = () => {
   const actualDetails = {username:details.username, password:details.password, email:details.email}
-  axios.post("http://127.0.0.1:8000/user/register", actualDetails).then(res => {
+  axios.post("/user/register", actualDetails).then(res => {
     const {message,...payload}=  res.data
     store.commit("adduser",payload)
+
   }).catch(error => console.log(error))
 };
 </script>
@@ -41,5 +42,6 @@ const HandleSubmit = () => {
     <input type="password" v-model="details.retypepassword" placeholder="Re-type password" />
     <input type="email" v-model="details.email" placeholder="Email" />
     <input type="submit" value="Submit" placeholder="Submit" :disabled='!passwordMatch'/>
+    <p>already have an account?  </p> <router-link :to="'/user/login'">login </router-link>
   </form>
 </template>

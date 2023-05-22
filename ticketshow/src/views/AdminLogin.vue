@@ -1,7 +1,7 @@
 <script setup>
 import { reactive } from "vue";
 // import {flushPromises} from "@vue/test-utils";
-import axios from "axios";
+import axios from "../axios";
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 // import * as url from "url";
@@ -22,7 +22,7 @@ const details = reactive({
 const store = useStore()
 const router = useRouter()
 const HandleSubmit = () => {
-  axios.post("http://127.0.0.1:8000/admin/login", details).then(res => {
+  axios.post("/admin/login", details).then(res => {
     const {message,...payload}=  res.data
     store.commit("adduser",payload)
     router.push(`/admin/${payload.username}`)

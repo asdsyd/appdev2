@@ -9,10 +9,10 @@ DEBUG = True
 SECRET_KEY = 'secretkey'
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
-print(basedir)
 SQLALCHEMY_TRACK_MODIFICATIONS = True
-print(SQLALCHEMY_DATABASE_URI)
-JWT_SECRET_KEY = 'secretkey2'
+
+JWT_SECRET_KEY ='TICKETSHOWUSER'
+JWT_SECRET_KEY_ADMIN ="Ticketshowadmin"
 
 UPLOAD_FOLDER = basedir + r'\posters'
 MAX_CONTENT_PATH = 5000000

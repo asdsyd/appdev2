@@ -4,8 +4,8 @@ db = SQLAlchemy()
 
 class User(db.Model):
     __tablename__ = 'users'
-
-    username = db.Column(db.String(), primary_key=True)
+    user_id = db.Column(db.String(),primary_key=True)
+    username = db.Column(db.String(), primary_key=True,unique=True)
     password = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False)
     # How many movies user has booked -> table has to be made
