@@ -13,6 +13,7 @@ class AdminCheck(Resource):
         })
         reponse.status_code=200
         return reponse
+
 class AdminLogin(Resource):
     def post(self):
         username = request.json['username']

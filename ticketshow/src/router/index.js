@@ -58,16 +58,22 @@ const routes = [
     component: () => import("../views/UserRegister.vue"),
   },
   {
-    path: "/user/dashboard",
+    path: "/:username/dashboard",
     name: "UserDashboard",
     component: () => import("../views/UserDashboard.vue"),
     meta:{requiresAuth:true}
   },
   {
-    path: "/user/bookings",
+    path: "/:username/bookings",
     name: "UserBookings",
     component: () => import("../views/UserBookings.vue"),
     meta:{requiresAuth:true}
+  },
+  {
+    path: "/:username/profile",
+    name: "UserProfile",
+    component: () => import("../views/UserProfile.vue"),
+    meta: {requiresAuth: true}
   }
 ];
 

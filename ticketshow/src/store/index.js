@@ -2,7 +2,8 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    user:localStorage.getItem("user")||{},
+    user:JSON.parse(localStorage.getItem("user"))||{},
+    venues:{}
   },
   getters: {
 
@@ -17,6 +18,9 @@ export default createStore({
       state.user={}
       localStorage.removeItem("user")
     },
+    addvenues:(state,payload)=>{
+      state.venues=payload
+    }
     
 
   },

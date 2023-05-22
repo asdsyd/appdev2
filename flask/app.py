@@ -1,11 +1,11 @@
-from flask import Flask
-from flask_restful import Api,Resource
+from flask import Flask,jsonify
+from flask_restful import Api,Resource,abort
 from flask_migrate import Migrate
 
 from users import UserLogin, UserRegister,UserCheck
 # from mail import mail
 from models import db
-from flask_jwt_extended import JWTManager,jwt_required,create_access_token
+from flask_jwt_extended import JWTManager,jwt_required,create_access_token,get_jwt_identity,get_jwt
 from flask_cors import CORS
 from admins import AdminLogin, CreateVenue,AdminCheck,GetVenues
 # from workers import celery_app
@@ -49,11 +49,35 @@ def create_app():
 
 app, api = create_app()
 
-# class Refresh(Resource):
-#     @jwt_required(refresh=True)
-#     def post(self):
+class AdminRefresh(Resource):
+    @jwt_required(refresh=True)
+    def post(self):
+        identity =get_jwt_identity()
+        role = get_jwt().get("role")
+        if role !="admin":
+            return abort(401,message="Unauthorized")
+        acess = create_access_token(identity,additional_claims={"role":"admin"})
+        resp = jsonify({
+            "access_token":acess,
+            "username":identity
+        })
+        resp.status_code=200
+        return resp
 
-
+class UserRefresh(Resource):
+    @jwt_required(refresh=True)
+    def post(self):
+        identity =get_jwt_identity()
+        role = get_jwt().get("role")
+        if role !="user":
+            return abort(401,message="Unauthorized")
+        access = create_access_token(identity,additional_claims={"role":"user"})
+        resp = jsonify({
+            "access_token":access,
+            "username":identity
+        })
+        resp.status_code=200
+        return resp
 
 # api.add_resource(Register, '/register')
 api.add_resource(AdminLogin, '/admin/login')
@@ -63,6 +87,9 @@ api.add_resource(AdminCheck,'/admin/check')
 api.add_resource(UserRegister, '/user/register')
 api.add_resource(CreateVenue,'/admin/createVenue')
 api.add_resource(GetVenues,'/admin/getVenues')
+api.add_resource(AdminRefresh,'/admin/refresh')
+api.add_resource(UserRefresh,'/user/refresh')
+
 # api.add_resource(CreateVenue,'/admin/createVenue')
 # api.add_resource(Refresh, '/refresh')
 
