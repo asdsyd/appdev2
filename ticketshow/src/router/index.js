@@ -4,6 +4,11 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
+    path: '/:catchAll(.*)',
+    name: "Error404",
+    component: () => import("../views/Error404.vue")
+  },
+  {
     path:'/',
     name:'Homeview',
     component:HomeViewVue
@@ -17,6 +22,11 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
         import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+  },
+  {
+    path: "/superAdmin/register",
+    name: "AdminRegister",
+    component: () => import("../views/AdminRegister.vue"),
   },
   {
     path: "/admin/login",
@@ -40,6 +50,12 @@ const routes = [
     name: "CreateShow",
     component: () => import("../views/CreateShow.vue"),
     meta:{requiresAuth:true,AdminRoute:true}
+  },
+  {
+    path: "/admin/:Venue/EditVenue",
+    name: "EditVenue",
+    component: () => import("../views/EditVenue.vue"),
+    meta: {requiresAuth: true, AdminRoute: true}
   },
   {
     path: "/admin/:username/AdminSummary",

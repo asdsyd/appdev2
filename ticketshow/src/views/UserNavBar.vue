@@ -8,10 +8,10 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <router-link class="lead text-light bg-primary text-decoration-none" :to="'/' + $store.state.user.username + '/profile'">Profile</router-link>
+            <router-link class="btn btn-outline-primary text-decoration-none" :to="'/' + $store.state.user.username + '/profile'">Profile</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="lead text-light bg-primary text-decoration-none" :to="'/' + $store.state.user.username + '/bookings'" >Bookings</router-link>
+            <router-link class="btn btn-outline-primary text-decoration-none" :to="'/' + $store.state.user.username + '/bookings'" >Bookings</router-link>
           </li>
         </ul>
         <button class="btn btn-outline-success" type="submit">Logout</button>

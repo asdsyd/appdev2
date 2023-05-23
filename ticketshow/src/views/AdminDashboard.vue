@@ -18,7 +18,7 @@
       <h5 class="card-title text-bg-light">New Venue</h5>
       <p class="card-text">Click on the buttion below to add Venue</p>
       <div>
-        <button  class=" m-3 rounded-circle btn btn-success"><router-link to="/admin/CreateVenue">+</router-link></button>
+        <router-link class="m-2 btn btn-success rounded-5" to="/admin/CreateVenue">+</router-link>
       </div>
     </div>
   </div>
