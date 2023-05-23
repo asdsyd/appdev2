@@ -1,7 +1,7 @@
 <template>
   <NavBar></NavBar>
 
-  <div v-show="venue_checker.value"  v-for="v in all_venues" class="m-lg-3 card mb-3 border-primary" style="width: 18rem;">
+  <div v-if="venue_checker"  v-for="v in all_venues.venues" class="m-lg-3 card mb-3 border-primary" style="width: 18rem;">
     <div class="card-body">
       <h5 class="card-title">{{v.name}}</h5>
       <p class="card-text">No shows created</p>
@@ -54,17 +54,19 @@ import router from "@/router";
 
 const expire = ref(false)
 const store = useStore()
-let all_venues= reactive([]);
+let all_venues= reactive({
+  venues:[]
+})
 
-const venue_checker = computed(()=>all_venues.length>0)
+
+const venue_checker = computed(()=>all_venues.venues.length>0)
 console.log(venue_checker)
 
 axios.get('/admin/getVenues').then(res=>{
   const venues = res.data.venues
 
   store.commit("addvenues",venues)
-  all_venues= store.state.venues
-  console.log(all_venues)
+  all_venues.venues= store.state.venues
 }).catch(e=>{
   console.log(e.response.data)
   if(e.response.data.msg==="Token has Expired"){
