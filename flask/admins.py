@@ -1,6 +1,6 @@
 from flask_restful import Resource, abort, reqparse
 from flask import request, jsonify, json
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required,get_jwt
 from models import Admin, db, Theatre, Movie
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -8,6 +8,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 class AdminCheck(Resource):
     @jwt_required()
     def get(self):
+        role = get_jwt().get("role")
+        if role!="admin":
+            return abort(401,message="unauthorized for this route")
+
+
         reponse = jsonify({
             "message":"success"
         })
@@ -27,8 +32,8 @@ class AdminLogin(Resource):
         if not pass_match:
             return abort(401, message="Password incorrect")
         else:
-            accessToken = create_access_token(identity=username,key='JWT_SECRET_KEY_ADMIN')
-            refresh_token = create_refresh_token(identity=username,key='JWT_SECRET_KEY_ADMIN')
+            accessToken = create_access_token(identity=username,additional_claims={"role":"admin"})
+            refresh_token = create_refresh_token(identity=username,additional_claims={"role":"admin"})
 
             response = jsonify({
                 'message': 'Admin logged in successfully!',
