@@ -1,5 +1,5 @@
 import os
-
+from datetime import timedelta
 MAIL_USERNAME = "ENTER YOUR EMAIL HERE"
 MAIL_PASSWORD = "ENTER PW HERE"
 
@@ -11,6 +11,8 @@ SECRET_KEY = 'secretkey'
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
+JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+JWT_ACCESS_TOKEN_EXPIRES=timedelta(days=30)
 JWT_SECRET_KEY ='TICKETSHOW12345trhr'
 
 UPLOAD_FOLDER = basedir + r'\posters'

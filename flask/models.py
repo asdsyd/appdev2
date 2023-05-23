@@ -8,6 +8,8 @@ class User(db.Model):
     username = db.Column(db.String(),unique=True)
     password = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False)
+    ratings = db.relationship('UserRating',backref="user",lazy='dynamic')
+
     # How many movies user has booked -> table has to be made
     # userinfo = db.relationship('UserInfo', back_populates='user', lazy=True, uselist=False)
 
@@ -27,7 +29,7 @@ class Theatre(db.Model):
     place = db.Column(db.String(), nullable=False)
     locaton = db.Column(db.String(), nullable=False)
     capacity = db.Column(db.Integer(), nullable=False)
-    movies = db.relationship('Movie', backref='theatre', lazy=True)
+    movies = db.relationship('Movie', backref='theatre', lazy="dynamic")
 
 class Movie(db.Model):
     __tablename__ = 'movies'
@@ -42,8 +44,19 @@ class Movie(db.Model):
     seatsSold = db.Column(db.Integer(), nullable=False)
     totalSeats = db.Column(db.Integer(), nullable=False)
     theatreId = db.Column(db.Integer(), db.ForeignKey('theatres.id'))
+    ratings=db.relationship('UserRating',backref="movie",lazy="dynamic")
     image = db.Column(db.String(), nullable=False)
 
+
+class UserRating(db.Model):
+    __tablename__ = 'userRating'
+    id = db.Column(db.Integer(),primary_key=True,autoincrement=True)
+    userid = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
+    movie_id = db.Column(db.Integer(),db.ForeignKey("movies.id"))
+    rating = db.Column(db.Integer(), nullable=False)
+    __table_args__ = (
+        db.CheckConstraint('rating <= 5', name='rating shoudl be less than 5'),
+    )
 
 # class UserInfo(db.Model):
 #     __tablename__ = 'userinfo'

@@ -1,7 +1,7 @@
 from datetime import time
 
 from flask import request, jsonify
-from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required,get_jwt
+from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required,get_jwt,get_jwt_identity
 from flask_restful import Resource, abort
 
 from models import db, User
@@ -57,6 +57,10 @@ class UserCheck(Resource):
         role= get_jwt().get("role")
         if role != "user":
             return abort(401,message="unauthorized access")
+        identity = get_jwt_identity()
+        admin = User.query.filter_by(username=identity)
+        if not admin:
+            return abort(401,message="admin name not found in the database")
         reponse = jsonify({
             "message":"success"
         })

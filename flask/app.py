@@ -7,7 +7,7 @@ from users import UserLogin, UserRegister,UserCheck
 from models import db
 from flask_jwt_extended import JWTManager,jwt_required,create_access_token,get_jwt_identity,get_jwt
 from flask_cors import CORS
-from admins import AdminLogin, CreateVenue,AdminCheck,GetVenues
+from admins import AdminLogin, CreateVenue,AdminCheck,GetVenues,GetVenueData,EditVenue
 # from workers import celery_app
 # from cache import cache
 
@@ -54,10 +54,12 @@ class AdminRefresh(Resource):
     def post(self):
         identity =get_jwt_identity()
         role = get_jwt().get("role")
-        if role !="admin":
-            return abort(401,message="Unauthorized")
+        print(role)
+        if role != "admin":
+            return jsonify({"msg":"Unauthorzied"}),401
         acess = create_access_token(identity,additional_claims={"role":"admin"})
         resp = jsonify({
+            "message":"success",
             "access_token":acess,
             "username":identity
         })
@@ -70,7 +72,7 @@ class UserRefresh(Resource):
         identity =get_jwt_identity()
         role = get_jwt().get("role")
         if role !="user":
-            return abort(401,message="Unauthorized")
+            return jsonify({"msg":"Unauthorzied"}),401
         access = create_access_token(identity,additional_claims={"role":"user"})
         resp = jsonify({
             "access_token":access,
@@ -87,8 +89,10 @@ api.add_resource(AdminCheck,'/admin/check')
 api.add_resource(UserRegister, '/user/register')
 api.add_resource(CreateVenue,'/admin/createVenue')
 api.add_resource(GetVenues,'/admin/getVenues')
+api.add_resource(GetVenueData,'/admin/<int:id>/getVenuedata')
 api.add_resource(AdminRefresh,'/admin/refresh')
 api.add_resource(UserRefresh,'/user/refresh')
+api.add_resource(EditVenue,'/admin/<int:id>/editVenue')
 
 # api.add_resource(CreateVenue,'/admin/createVenue')
 # api.add_resource(Refresh, '/refresh')

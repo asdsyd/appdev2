@@ -1,5 +1,5 @@
 <template>
-  <router-view/>
+  <router-view  />
 </template>
 
 <style>
@@ -9,6 +9,10 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+.blur {
+  filter: blur(4px); /* Apply the desired blur effect */
+  pointer-events: none; /* Disable interaction with the blurred content */
 }
 
 nav {

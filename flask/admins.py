@@ -1,6 +1,6 @@
 from flask_restful import Resource, abort, reqparse
 from flask import request, jsonify, json
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required,get_jwt
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required,get_jwt,get_jwt_identity
 from models import Admin, db, Theatre, Movie
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -9,8 +9,14 @@ class AdminCheck(Resource):
     @jwt_required()
     def get(self):
         role = get_jwt().get("role")
+
         if role!="admin":
             return abort(401,message="unauthorized for this route")
+
+        identity = get_jwt_identity()
+        admin = Admin.query.filter_by(username=identity)
+        if not admin:
+            return abort(401,message="admin name not found in the database")
 
 
         reponse = jsonify({
@@ -18,6 +24,67 @@ class AdminCheck(Resource):
         })
         reponse.status_code=200
         return reponse
+
+class EditVenue(Resource):
+    @jwt_required()
+    def post(self,id):
+        role = get_jwt().get("role")
+        if role != "admin":
+            return abort(401,message="Unauthorized")
+        venue = Theatre.query.filter_by(id=int(id)).first()
+        if not venue:
+            return abort(404,message="the Venue doesnt exist")
+        name = request.json["name"]
+        capacity = request.json["capacity"]
+        place = request.json["place"]
+        location = request.json["location"]
+        if (not name):
+            return abort(422, message="name is empty")
+        if (not place):
+            return abort(422, message="place is empty")
+        if (not location):
+            return abort(422,message="location is empty")
+        if (not capacity):
+            return abort(422, message="capacity is empty")
+        venue.name=name
+        venue.place=place
+        venue.capacity=capacity
+        venue.locaton=location
+
+        db.session.commit()
+        resp = jsonify({
+            "message":"sucess"
+        })
+        resp.status_code=200
+        return resp
+
+
+class GetVenueData(Resource):
+    @jwt_required()
+    def get(self,id):
+        role = get_jwt().get("role")
+        if role != "admin":
+            return abort(401,message="Unauthorized")
+        venue = Theatre.query.filter_by(id=int(id)).first()
+        if not venue:
+            return abort(404,message="venue doesnt exist")
+        name = venue.name
+        place = venue.place
+        location = venue.locaton
+        capacity= venue.capacity
+        resp = jsonify({
+            "name":name,
+            "place":place,
+            "location":location,
+            "capacity":capacity
+        })
+        resp.status_code=200
+        return resp
+
+
+
+
+
 
 class AdminLogin(Resource):
     def post(self):

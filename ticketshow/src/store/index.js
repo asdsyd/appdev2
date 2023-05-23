@@ -1,11 +1,11 @@
 import { createStore } from 'vuex'
-
 export default createStore({
   state: {
     user:JSON.parse(localStorage.getItem("user"))||{},
-    venues:[]
+    venues:[],
   },
   getters: {
+
 
   },
   mutations: {
@@ -13,6 +13,9 @@ export default createStore({
       localStorage.setItem("user",JSON.stringify(payload))
       state.user=payload
     },
+deleteVenue:(state,id)=>{
+state.venues=state.venues.filter((e,i)=>i!==id)
+},
 
     removeuser:(state)=>{
       state.user={}
@@ -20,12 +23,19 @@ export default createStore({
     },
     addvenues:(state,payload)=>{
       state.venues=payload
-    }
-    
+    },
+    refresher:(state,payload)=>{
+      const {accessToken,...rest} = state.user
+      state.user = {accessToken,payload}
+    },
 
   },
   actions: {
-  },
+    getvenues:({commit})=>{
+
+    }
+
+    },
   modules: {
   }
 })
