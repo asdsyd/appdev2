@@ -1,21 +1,21 @@
 
 <template>
   <NavBar></NavBar>
-  <div>
-    <h1>{{ header }}</h1>
+  <div class=" container show-pill" >
+    <h1 class="px-5 text-light display-4 rounded-pill show-pill-inside">{{ header }}</h1>
   </div>
   <div class="outer">
     <!--    creating create-show form-->
     <form class="m-3 custom" @submit.prevent="handleSubmit">
         <div class="col-4 c1">
           <div class="form-outline">
-            <input type="text" id="form6Example1" class="form-control" v-model="showName" />
+            <input type="text" id="form6Example1" class="form-control rounded-pill" v-model="showName" />
             <label class="form-label" for="form6Example1">Show name</label>
           </div>
         </div>
 
         <div class="col-2 form-outline mb-4 c1">
-          <select class="form-select" v-model="rating">
+          <select class="form-select rounded-pill" v-model="rating">
             <option disabled value="">Please select one</option>
             <option>1</option>
             <option>2</option>
@@ -53,7 +53,7 @@
 
 
       <div class="checkboxes form-check-inline c1">
-        <h4>Select Tags:</h4>
+        <h4 class="border rounded-pill bg-success text-light">Add Tags</h4>
         <label>Thriller</label>
         <input class="" type="checkbox" value="thriller" v-model="tags" />
 
@@ -71,14 +71,14 @@
       </div>
 
       <div class="col-6 form-outline mb-4 c1">
-        <input type="number" class="col-4 form-control" v-model="ticketPrice">
+        <input type="number" class="col-4 form-control rounded-pill bg-gradient" v-model="ticketPrice">
         <label>Ticket price</label>
         </div>
 
 
       <div class="mb-3">
         <label for="formFile" class="form-label">Default file input example</label>
-        <input class="form-control" type="file"  ref="fileInput" accept="image/*" @change="handleFileChange" >
+        <input class="form-control rounded-pill" type="file"  ref="fileInput" accept="image/*" @change="handleFileChange" >
       </div>
       <button type="submit" class="col-2 btn btn-primary c2" >Save</button>
 
@@ -216,5 +216,15 @@ const handleSubmit=()=>{
   display: block;
 }
 
+.show-pill{
+  display: flex;
+  justify-content: center;
 
+}
+.show-pill-inside{
+  background: rgb(2,0,36);
+
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+
+}
 </style>
