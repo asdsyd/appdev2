@@ -4,18 +4,17 @@
   <div>
     <h1>{{ header }}</h1>
   </div>
-  <div>
+  <div class="outer">
     <!--    creating create-show form-->
-    <form class="m-3" @submit.prevent="handleSubmit">
-      <div class="row mb-4">
-        <div class="col-4">
+    <form class="m-3 custom" @submit.prevent="handleSubmit">
+        <div class="col-4 c1">
           <div class="form-outline">
             <input type="text" id="form6Example1" class="form-control" v-model="showName" />
             <label class="form-label" for="form6Example1">Show name</label>
           </div>
         </div>
 
-        <div class="col-2 form-outline mb-4">
+        <div class="col-2 form-outline mb-4 c1">
           <select class="form-select" v-model="rating">
             <option disabled value="">Please select one</option>
             <option>1</option>
@@ -27,15 +26,33 @@
           <label>Rating</label>
         </div>
 
-        <div class="container">
-          <label>Start time</label>
+        <div class="c1">
+          <label>Start time:&nbsp;&nbsp;</label>
           <input type="time" class="align-self-auto" v-model="startTime" />
-          <label>End time</label>
-          <input type="time" class="align-self-auto" v-model="endTime">
         </div>
-      </div>
 
-      <div class="checkboxes form-check-inline">
+      <div class="c1">
+      <label>End time:&nbsp;&nbsp;</label>
+      <input type="time" class="align-self-auto" v-model="endTime">
+  </div>
+
+<!--      <div class="custom-select">-->
+<!--        <div class="select-trigger" @click="toggleDropdown">-->
+<!--          <span style="font-size:20px;padding-left: 5px">{{ "fds" }}</span>-->
+<!--          <i class="arrow-down"></i>-->
+<!--        </div>-->
+<!--        <div class="select-options" v-show="isDropdownOpen">-->
+<!--          <label v-for="option in options" :key="option.value">-->
+<!--            <input type="checkbox" :value="option.value" v-model="selectedValues">-->
+<!--            {{ option.label }}-->
+<!--          </label>-->
+<!--        </div>-->
+<!--      </div>-->
+
+
+
+
+      <div class="checkboxes form-check-inline c1">
         <h4>Select Tags:</h4>
         <label>Thriller</label>
         <input class="" type="checkbox" value="thriller" v-model="tags" />
@@ -53,12 +70,17 @@
         <input type="checkbox" value="animation" v-model="tags" />
       </div>
 
-      <div class="col-6 form-outline mb-4">
+      <div class="col-6 form-outline mb-4 c1">
         <input type="number" class="col-4 form-control" v-model="ticketPrice">
-        <label class="form-label" for="form6Example5">Ticket Price</label>
-      </div>
+        <label>Ticket price</label>
+        </div>
 
-      <button type="submit" class="left col-2 btn btn-primary " >Save</button>
+
+      <div class="mb-3">
+        <label for="formFile" class="form-label">Default file input example</label>
+        <input class="form-control" type="file"  ref="fileInput" accept="image/*" @change="handleFileChange" >
+      </div>
+      <button type="submit" class="col-2 btn btn-primary c2" >Save</button>
 
 
       <!-- Submit button -->
@@ -70,7 +92,10 @@
 import { ref } from 'vue'
 import axios from "axios";
 import NavBar from "@/views/NavBar.vue";
+import {useRouter} from "vue-router";
 
+const router = useRouter()
+const fileInput = ref(null)
 const header = ref('Create a Show')
 const showName = ref("")
 const rating = ref([])
@@ -78,6 +103,15 @@ const startTime = ref("")
 const endTime = ref("")
 const tags = ref([])
 const ticketPrice = ref(0)
+const id = ref(router.currentRoute.)
+
+
+//handle image upload
+const handleFileChange=(event)=>{
+  fileInput.value = event.target.files[0]
+}
+
+//handle submit
 const handleSubmit=()=>{
   const show = {
     showName,
@@ -87,18 +121,48 @@ const handleSubmit=()=>{
     tags,
     ticketPrice
   }
-  axios.post('http://localhost:8000/admin/Venue/CreateShow', show).then(res=>console.log(res.data)).catch(error=>console.log(error))
+  const form = new FormData()
+  form.append("showName",showName)
+  form.append("rating",rating)
+  form.append("starTime",startTime)
+  form.append("endTime",endTime)
+  form.append("tags",tags)
+  form.append("ticketPrice",ticketPrice)
+  form.append("image",fileInput)
+  axios.post('http://localhost:8000/admin/'+id.value+'/CreateShow', form,{
+    headers:{"Content-Type":"multipart/form-data",
+    }
+  }).then(res=>console.log(res.data)).catch(error=>console.log(error))
 }
 </script>
 
 
-<style>
+<style scoped>
+
+.outer{
+  display: flex;
+  justify-content: space-around;
+}
 .left {
   translate: -250px 0px;
 }
 .checkboxes {
   text-align:center;
 }
+.custom{
+  display: grid;
+  place-items: center;
+  gap: 20px;
+  width: 500px;
+}
+.c1{
+  width: 70%;
+}
+.c2{
+  width: 20%;
+  align-self: center;
+}
+
 
 .checkboxes input{
   margin: 0px 20px 0px 0px;
@@ -107,5 +171,50 @@ const handleSubmit=()=>{
 .checkboxes label{
   margin: 0px 20px 0px 3px;
 }
+.custom-select {
+  position: relative;
+  display: inline-block;
+  min-width: 60%;
+}
+
+.select-trigger {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 3px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+
+}
+
+.select-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: none;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+.select-options label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.arrow-down {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-top: 10px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #333;
+}
+
+.custom-select.open .select-options {
+  display: block;
+}
+
 
 </style>

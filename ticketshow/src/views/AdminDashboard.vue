@@ -48,10 +48,10 @@ import NavBar from "@/views/NavBar.vue";
 import { useStore } from 'vuex';
 import axios from '../axios';
 import NewAxios from 'axios';
-import router from "@/router";
+import {useRouter} from "vue-router";
 
 
-
+const router  = useRouter()
 const expire = ref(false)
 const store = useStore()
 let all_venues= reactive({
