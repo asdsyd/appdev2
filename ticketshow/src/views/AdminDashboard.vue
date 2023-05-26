@@ -90,9 +90,8 @@ const {message,...rest} = res.data
    expire.value=false
 
  }).catch(e=>{
-
    store.commit("removeuser")
-   router.push('/admin/login')
+   router.push({path:'/admin/login'})
  })
 }
 const handledelete=(id)=>{
