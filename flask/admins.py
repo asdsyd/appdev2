@@ -112,35 +112,45 @@ class AdminLogin(Resource):
             return response
 
 
-# class CreateShow(Resource):
-    # @jwt_required()
-#     def post(self, venue):
-#         req = reqparse.RequestParser()
-#         req.add_argument("showName", type=str, required=True, help="Show Name is required")
-#         req.add_argument("rating", type=int, required=True, help="Rating is required")
-#         req.add_argument("startTime", type=str, required=True, help="Start time is required")
-#         req.add_argument("endTime", type=str, required=True, help="End time is required")
-#         req.add_argument("tags", type=str, required=True, help="Tag(s) is/are required")
-#         req.add_argument("ticketPrice", type=str, required=True, help="Ticket Price is required")
-#         args = req.parse_args()
-#
-#         showName = args["showName"]
-#         rating = args["rating"]
-#         startTime = args["startTime"]
-#         endTime = args["endTime"]
-#         tags = args["tags"]
-#         ticketPrice = args["ticketPrice"]
-#         show =  Movie(showshowName,rating,tags,ticketPrice,startTime,endTime)
-#         try:
-#             db.session.add(show)
-#             db.session.commit()
-#             return jsonify({
-#                 "message":"show added sucess"
-#             }), 201
-#         except:
-#             return jsonify({
-#                 "error":"ERROR COULDN'T PROCESS REQUEST"
-#             })
+class CreateShow(Resource):
+    @jwt_required()
+    def post(self, id):
+        args = request.form
+        showName = args["showName"]
+        rating = args["rating"]
+        startTime = args["startTime"]
+        endTime = args["endTime"]
+        tags = args["tags"]
+        ticketPrice = args["ticketPrice"]
+        image = request.files["image"]
+        if showName is None or showName == '':
+            return abort(401,message="showname is empty")
+        if rating is None or rating == '':
+            return abort(401,message="rating is empty")
+        if ticketPrice is None or ticketPrice == '':
+            return abort(401,message="ticketprice is empty")
+        if tags is None or tags == '':
+            return abort(401,message="tags is empty")
+        if startTime is None or startTime == '':
+            return abort(401,message="startime is empty")
+        if endTime is None or endTime == '':
+            return abort(401,message="endtime is empty")
+        return jsonify({
+            "s":startTime,
+            "e":endTime
+        })
+
+        # show =  Movie(showName=showName,rating=rating,tags=tags.join(","),ticketPrice=ticketPrice)
+        # try:
+        #     db.session.add(show)
+        #     db.session.commit()
+        #     return jsonify({
+        #         "message":"show added sucess"
+        #     }), 201
+        # except:
+        #     return jsonify({
+        #         "error":"ERROR COULDN'T PROCESS REQUEST"
+        #     })
 
 class GetVenues(Resource):
     @jwt_required()

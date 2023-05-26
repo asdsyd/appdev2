@@ -26,14 +26,14 @@
           <label>Rating</label>
         </div>
 
-        <div class="c1">
-          <label>Start time:&nbsp;&nbsp;</label>
-          <input type="time" class="align-self-auto" v-model="startTime" />
+        <div class="c2">
+          <label>Start show on:&nbsp;&nbsp;</label>
+          <input type="datetime-local" class="align-self-auto rounded-pill" v-model="startTime" />
         </div>
 
-      <div class="c1">
-      <label>End time:&nbsp;&nbsp;</label>
-      <input type="time" class="align-self-auto" v-model="endTime">
+      <div class="c2">
+      <label>End show on:&nbsp;&nbsp;</label>
+      <input type="datetime-local" class="align-self-auto rounded-pill" v-model="endTime">
   </div>
 
 <!--      <div class="custom-select">-->
@@ -93,7 +93,9 @@ import { ref } from 'vue'
 import axios from "axios";
 import NavBar from "@/views/NavBar.vue";
 import {useRouter} from "vue-router";
+import {useStore} from "vuex";
 
+const state = useStore()
 const router = useRouter()
 const fileInput = ref(null)
 const header = ref('Create a Show')
@@ -103,7 +105,7 @@ const startTime = ref("")
 const endTime = ref("")
 const tags = ref([])
 const ticketPrice = ref(0)
-const id = ref(router.currentRoute.)
+const id = ref(router.currentRoute.value.params.Venue)
 
 
 //handle image upload
@@ -129,8 +131,11 @@ const handleSubmit=()=>{
   form.append("tags",tags)
   form.append("ticketPrice",ticketPrice)
   form.append("image",fileInput)
-  axios.post('http://localhost:8000/admin/'+id.value+'/CreateShow', form,{
-    headers:{"Content-Type":"multipart/form-data",
+  axios.post('http:localhost:8000/admin/'+id.value+'/CreateShow', form,{
+
+    headers:{
+      Authorization:`Bearer ${state.state.user.accessToken}`,
+      "Content-Type":"multipart/form-data",
     }
   }).then(res=>console.log(res.data)).catch(error=>console.log(error))
 }
@@ -153,13 +158,13 @@ const handleSubmit=()=>{
   display: grid;
   place-items: center;
   gap: 20px;
-  width: 500px;
+  width: 700px;
 }
 .c1{
   width: 70%;
 }
 .c2{
-  width: 20%;
+  width: 40%;
   align-self: center;
 }
 
