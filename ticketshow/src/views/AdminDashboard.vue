@@ -10,13 +10,13 @@
           <div class="card-body">
             <h5 class="card-title">{{c.movie_name}}</h5>
             <router-link class="m-2 btn btn-outline-primary rounded-5 text-decoration-none" :to="'/admin/' + c.movie_id + '/EditShow'">Edit</router-link>
-            <button  class="m-2 btn btn-outline-danger rounded-5 text-decoration-none" @click="handledelete(c.id)">Delete</button>
+            <button  class="m-2 btn btn-outline-danger rounded-5 text-decoration-none" @click="handleShowdelete(c.id)">Delete</button>
           </div>
         </div>
         <router-link class=" m-3 rounded-circle btn btn-primary" :to="'/admin/' + v.id +'/CreateShow'">+</router-link>
       </div>
       <router-link class="m-2 btn btn-outline-primary rounded-5 text-decoration-none" :to="'/admin/' + v.id + '/EditVenue'">Edit</router-link>
-      <button  class="m-2 btn btn-outline-danger rounded-5 text-decoration-none" @click="handledelete(v.id)">Delete</button>
+      <button  class="m-2 btn btn-outline-danger rounded-5 text-decoration-none" @click="DeleteModal(v.id)">Delete</button>
     </div>
   </div>
 <!--    nested cards have to be fixed heres the help link https://stackoverflow.com/questions/67667887/nested-cards-fitting-cards-within-a-card-bootstrap-cards-->
@@ -50,6 +50,23 @@
     </div>
   </div>
 
+  <div v-show="deleter"  style="display:block;" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Confirmation</h5>
+        </div>
+        <div class="modal-body">
+          <p>Do you want to delete this Venue</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" @click="handledelete(venue_to_delete_id)">yes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="cancelDelete">no</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 <script setup>
 import {computed, reactive, ref, watch} from "vue";
@@ -59,7 +76,8 @@ import axios from '../axios';
 import NewAxios from 'axios';
 import {useRouter} from "vue-router";
 
-
+const deleter = ref(false)
+const venue_to_delete_id = ref(null)
 const router  = useRouter()
 const expire = ref(false)
 const store = useStore()
@@ -67,7 +85,14 @@ let all_venues= reactive({
   venues:store.state.venues
 })
 
-
+const cancelDelete = ()=>{
+  deleter.value = false
+  venue_to_delete_id.value=null
+}
+const DeleteModal = (id)=>{
+  deleter.value = true
+  venue_to_delete_id.value=id
+}
 const venue_checker = computed(()=>{
   return all_venues.venues.length>0})
 
@@ -106,7 +131,7 @@ const {message,...rest} = res.data
 }
 const handledelete=(id)=>{
   store.commit("deleteVenue",id)
-  axios.post()
+  axios.delete("/admin/"+id+"/deleteVenue").then(res=>{deleter.value=false}).catch(er=>console.log(er))
 }
 
 const logout = ()=>{

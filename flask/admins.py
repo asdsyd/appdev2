@@ -53,7 +53,9 @@ class EditVenue(Resource):
         venue.place=place
         venue.capacity=capacity
         venue.locaton=location
-
+        if venue.movies:
+            for v in venue.movies:
+                v.totalSeats= capacity
         db.session.commit()
         resp = jsonify({
             "message":"sucess"
@@ -62,6 +64,33 @@ class EditVenue(Resource):
         return resp
 
 
+class DeleteVenue(Resource):
+    @jwt_required()
+    def delete(self,id):
+        role = get_jwt().get("role")
+        if role != "admin":
+            return abort(401,message="Unauthorized")
+        venue = Theatre.query.filter_by(id=int(id)).first()
+        if not venue:
+            return abort(404,message="the Venue doesnt exist")
+        try:
+            for v in venue.movies:
+                db.session.delete(v)
+            db.session.delete(venue)
+            db.session.commit()
+            resp = jsonify({
+                "message":"sucess"
+            })
+            resp.status_code=200
+            return resp
+        except Exception as e:
+             
+            resp = jsonify({
+                "message":"some server error"
+            })
+            resp.status_code=501
+            return resp
+    
 class GetVenueData(Resource):
     @jwt_required()
     def get(self,id):
@@ -118,6 +147,9 @@ class AdminLogin(Resource):
 class CreateShow(Resource):
     @jwt_required()
     def post(self, id):
+        role = get_jwt().get("role")
+        if role != "admin":
+            return abort(401,message="Unauthorized")
         theatre_exists = Theatre.query.filter_by(id=id).first()
         if not theatre_exists:
             return abort(404,message="theatre doesnt exists")
@@ -190,6 +222,9 @@ class CreateShow(Resource):
             return abort(401,message="startime is empty")
         if endTime is None or endTime == '':
             return abort(401,message="endtime is empty")
+        is_movie = Movie.query.filter_by(name=showName).first()
+        if is_movie:
+                abort(401,message = "movie already exists")
         start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
         end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
         image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
@@ -214,6 +249,111 @@ class CreateShow(Resource):
                 "error":"e"
             })
             resp.status_code=500
+
+
+class EditShow(Resource):
+    @jwt_required()
+    def post(self, id,movie_id):
+        role = get_jwt().get("role")
+        if role != "admin":
+            return abort(401,message="Unauthorized")
+        theatre_exists = Theatre.query.filter_by(id=id).first()
+        if not theatre_exists:
+            return abort(404,message="theatre doesnt exists")
+        movie = Movie.query.filter_by(id=movie_id).first()
+        if not movie:
+            return abort(404,message="movie doesnt exists")
+        if request.content_type == 'application/json':
+            args = request.json
+            showName = args["showName"]
+            rating = args["rating"]
+            startTime = args["startTime"]
+            endTime = args["endTime"]
+            tags = args["tags"]
+            ticketPrice = args["ticketPrice"]
+
+            if showName is None or showName == '':
+                return abort(401,message="showname is empty")
+            if rating is None or rating == '':
+                return abort(401,message="rating is empty")
+            if ticketPrice is None or ticketPrice == '':
+                return abort(401,message="ticketprice is empty")
+            if tags is None or tags == '':
+                return abort(401,message="tags is empty")
+            if startTime is None or startTime == '':
+                return abort(401,message="startime is empty")
+            if endTime is None or endTime == '':
+                return abort(401,message="endtime is empty")
+            start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
+            end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
+
+            
+            movie.tags = tags
+            movie.endTime = end
+            movie.startTime = start
+            movie.rating = rating
+            movie.name = showName
+            try:
+                db.session.commit()
+                resp= jsonify({
+                    "message":"show update sucess"
+                })
+                resp.status_code=201
+                return resp
+            except Exception as e:
+                resp= jsonify({
+                    "error":e.name
+                })
+                resp.status_code=500
+                return resp
+
+
+
+        args = request.form
+        showName = args["showName"]
+        rating = args["rating"]
+        startTime = args["startTime"]
+        endTime = args["endTime"]
+        tags = args["tags"]
+        ticketPrice = args["ticketPrice"]
+        image = request.files["image"]
+        if showName is None or showName == '':
+            return abort(401,message="showname is empty")
+        if rating is None or rating == '':
+            return abort(401,message="rating is empty")
+        if ticketPrice is None or ticketPrice == '':
+            return abort(401,message="ticketprice is empty")
+        if tags is None or tags == '':
+            return abort(401,message="tags is empty")
+        if startTime is None or startTime == '':
+            return abort(401,message="startime is empty")
+        if endTime is None or endTime == '':
+            return abort(401,message="endtime is empty")
+        start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
+        end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
+        image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
+
+
+        show = Movie(name=showName,rating=rating,tags=tags.join(","),ticketPrice=ticketPrice,startTime=start,endTime=end,image=f"{UPLOAD_FOLDER+'/'+image.filename}")
+        show.theatreId=int(id)
+        capacity = Theatre.query.filter_by(id=id).first().capacity
+        show.totalSeats =capacity
+        show.seatsSold =0
+        image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
+        try:
+            db.session.add(show)
+            db.session.commit()
+            resp= jsonify({
+                "message":"show added sucess"
+            })
+            resp.status_code=201
+            return resp
+        except Exception as e:
+            resp= jsonify({
+                "error":e.name
+            })
+            resp.status_code=500
+
 
 class GetVenues(Resource):
     @jwt_required()
