@@ -1,11 +1,18 @@
 <template>
   <NavBar></NavBar>
-
+  <div class="d-flex flex-wrap flex-row">
   <div v-if="venue_checker"  v-for="v in all_venues.venues" class="m-lg-3 card mb-3 border-primary" style="width: 18rem;">
     <div class="card-body">
       <h5 class="card-title">{{v.name}}</h5>
       <p v-if="!v.movies?.length>0" class="card-text">No shows created</p>
       <div>
+        <div v-for="c in v.movies" class="m-lg-3 card mb-3 border-primary" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">{{c.movie_name}}</h5>
+            <router-link class="m-2 btn btn-outline-primary rounded-5 text-decoration-none" :to="'/admin/' + c.movie_id + '/EditShow'">Edit</router-link>
+            <button  class="m-2 btn btn-outline-danger rounded-5 text-decoration-none" @click="handledelete(c.id)">Delete</button>
+          </div>
+        </div>
         <router-link class=" m-3 rounded-circle btn btn-primary" :to="'/admin/' + v.id +'/CreateShow'">+</router-link>
       </div>
       <router-link class="m-2 btn btn-outline-primary rounded-5 text-decoration-none" :to="'/admin/' + v.id + '/EditVenue'">Edit</router-link>
@@ -23,6 +30,7 @@
         <router-link class="m-2 btn btn-success rounded-5" to="/admin/CreateVenue">+</router-link>
       </div>
     </div>
+  </div>
   </div>
 
   <div v-show="expire"  style="display:block;" class="modal" tabindex="-1" role="dialog">
@@ -66,6 +74,7 @@ const venue_checker = computed(()=>{
 
 axios.get('/admin/getVenues').then(res=>{
   const venues = res.data.venues
+
 
   store.commit("addvenues",venues)
   all_venues.venues= store.state.venues

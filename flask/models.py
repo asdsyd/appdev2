@@ -45,7 +45,7 @@ class Movie(db.Model):
     totalSeats = db.Column(db.Integer(), nullable=False)
     theatreId = db.Column(db.Integer(), db.ForeignKey('theatres.id'))
     ratings=db.relationship('UserRating',backref="movie",lazy="dynamic")
-    image = db.Column(db.String(), nullable=False)
+    image = db.Column(db.String())
 
 
 class UserRating(db.Model):

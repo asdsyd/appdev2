@@ -3,7 +3,10 @@ from flask import request, jsonify, json
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required,get_jwt,get_jwt_identity
 from models import Admin, db, Theatre, Movie
 from werkzeug.security import check_password_hash, generate_password_hash
+import datetime
+from config import UPLOAD_FOLDER
 
+datetime = datetime.datetime
 
 class AdminCheck(Resource):
     @jwt_required()
@@ -115,6 +118,58 @@ class AdminLogin(Resource):
 class CreateShow(Resource):
     @jwt_required()
     def post(self, id):
+        theatre_exists = Theatre.query.filter_by(id=id).first()
+        if not theatre_exists:
+            return abort(404,message="theatre doesnt exists")
+        if request.content_type == 'application/json':
+            args = request.json
+            showName = args["showName"]
+            rating = args["rating"]
+            startTime = args["startTime"]
+            endTime = args["endTime"]
+            tags = args["tags"]
+            ticketPrice = args["ticketPrice"]
+
+            if showName is None or showName == '':
+                return abort(401,message="showname is empty")
+            if rating is None or rating == '':
+                return abort(401,message="rating is empty")
+            if ticketPrice is None or ticketPrice == '':
+                return abort(401,message="ticketprice is empty")
+            if tags is None or tags == '':
+                return abort(401,message="tags is empty")
+            if startTime is None or startTime == '':
+                return abort(401,message="startime is empty")
+            if endTime is None or endTime == '':
+                return abort(401,message="endtime is empty")
+            is_movie = Movie.query.filter_by(name=showName).first()
+            if is_movie:
+                abort(401,message = "movie already exists")
+
+            start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
+            end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
+            show = Movie(name=showName,rating=rating,tags=tags.join(","),ticketPrice=ticketPrice,startTime=start,endTime=end)
+            show.theatreId=int(id)
+            capacity = Theatre.query.filter_by(id=id).first().capacity
+            show.totalSeats =capacity
+            show.seatsSold =0
+            try:
+                db.session.add(show)
+                db.session.commit()
+                resp= jsonify({
+                    "message":"show added sucess"
+                })
+                resp.status_code=201
+                return resp
+            except Exception as e:
+                resp= jsonify({
+                    "error":e.name
+                })
+                resp.status_code=500
+                return resp
+
+
+
         args = request.form
         showName = args["showName"]
         rating = args["rating"]
@@ -135,22 +190,30 @@ class CreateShow(Resource):
             return abort(401,message="startime is empty")
         if endTime is None or endTime == '':
             return abort(401,message="endtime is empty")
-        return jsonify({
-            "s":startTime,
-            "e":endTime
-        })
+        start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
+        end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
+        image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
 
-        # show =  Movie(showName=showName,rating=rating,tags=tags.join(","),ticketPrice=ticketPrice)
-        # try:
-        #     db.session.add(show)
-        #     db.session.commit()
-        #     return jsonify({
-        #         "message":"show added sucess"
-        #     }), 201
-        # except:
-        #     return jsonify({
-        #         "error":"ERROR COULDN'T PROCESS REQUEST"
-        #     })
+
+        show = Movie(name=showName,rating=rating,tags=tags.join(","),ticketPrice=ticketPrice,startTime=start,endTime=end,image=f"{UPLOAD_FOLDER+'/'+image.filename}")
+        show.theatreId=int(id)
+        capacity = Theatre.query.filter_by(id=id).first().capacity
+        show.totalSeats =capacity
+        show.seatsSold =0
+        image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
+        try:
+            db.session.add(show)
+            db.session.commit()
+            resp= jsonify({
+                "message":"show added sucess"
+            })
+            resp.status_code=201
+            return resp
+        except Exception as e:
+            resp= jsonify({
+                "error":"e"
+            })
+            resp.status_code=500
 
 class GetVenues(Resource):
     @jwt_required()
@@ -167,8 +230,8 @@ class GetVenues(Resource):
                 f =[]
                 for d in v.movies:
                     f.append({
-                        d.id,
-                        d.name
+                        "movie_id":d.id,
+                        "movie_name":d.name
                     })
                 c["movies"] = f
             serialized_venues.append(c)

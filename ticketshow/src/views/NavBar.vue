@@ -1,7 +1,7 @@
 <template>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
 <div class="container-fluid">
-  <h1 class="display-6 text-black-1000 text-uppercase" >{{$store.state.user.username}}'s Dashboard</h1>
+  <h1 class="display-6 text-black-1000 cust" >{{$store.state.user.username}}'s Dashboard</h1>
   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -24,3 +24,8 @@ defineProps({
   isSummary:Boolean
 })
 </script>
+<style scoped>
+.cust{
+  translate: 0px 5%;
+}
+</style>

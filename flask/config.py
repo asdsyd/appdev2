@@ -15,7 +15,7 @@ JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 JWT_ACCESS_TOKEN_EXPIRES=timedelta(days=30)
 JWT_SECRET_KEY ='TICKETSHOW12345trhr'
 
-UPLOAD_FOLDER = basedir + r'\posters'
+UPLOAD_FOLDER = basedir + r'/movieposters'
 MAX_CONTENT_PATH = 5000000
 
 CELERY_BROKER_URL = "redis://localhost:6379/1"

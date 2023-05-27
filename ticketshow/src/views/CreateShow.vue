@@ -2,11 +2,11 @@
 <template>
   <NavBar></NavBar>
   <div class=" container show-pill" >
-    <h1 class="px-5 text-light display-4 rounded-pill show-pill-inside">{{ header }}</h1>
+    <h1 class="px-5 text-light display-4 rounded-pill show-pill-inside cust">{{ header }}</h1>
   </div>
   <div class="outer">
     <!--    creating create-show form-->
-    <form class="m-3 custom" @submit.prevent="handleSubmit">
+    <form class="m-3 custom" @submit.prevent="handleSubmit" >
         <div class="col-4 c1">
           <div class="form-outline">
             <input type="text" id="form6Example1" class="form-control rounded-pill" v-model="showName" />
@@ -14,7 +14,7 @@
           </div>
         </div>
 
-        <div class="col-2 form-outline mb-4 c1">
+        <div class="col-2 form-outline mb-4 c2">
           <select class="form-select rounded-pill" v-model="rating">
             <option disabled value="">Please select one</option>
             <option>1</option>
@@ -28,13 +28,14 @@
 
         <div class=" c2 mx-5">
           <label>Start show on:&nbsp;&nbsp;</label>
-          <input type="datetime-local" class="align-self-auto rounded-pill" v-model="startTime" />
+          <input type="datetime-local" class="align-self-auto rounded-pill" v-model="startTime" @change="checkTime" />
         </div>
 
       <div class="c2">
       <label>End show on:&nbsp;&nbsp;</label>
-      <input type="datetime-local" class="align-self-auto rounded-pill" v-model="endTime">
-  </div>
+      <input type="datetime-local" class="align-self-auto rounded-pill" v-model="endTime" @change="checkTime">
+
+      </div>
 
 <!--      <div class="custom-select">-->
 <!--        <div class="select-trigger" @click="toggleDropdown">-->
@@ -51,7 +52,7 @@
 
 
 
-
+      <h3 v-if="!IstimeCorrect" class="text-danger">{{"Start time cannot be greater than endtime"}}</h3>
       <div class="checkboxes form-check-inline c1">
         <h4 class="border rounded-pill bg-success text-light">Add Tags</h4>
         <label>Thriller</label>
@@ -70,17 +71,20 @@
         <input type="checkbox" value="animation" v-model="tags" />
       </div>
 
-      <div class="col-6 form-outline mb-4 c1">
-        <input type="number" class="col-4 form-control rounded-pill bg-gradient" v-model="ticketPrice">
+      <div class="col-6 form-outline mb-4 c2">
+        <input type="number" class="col-4 form-control rounded-pill bg-gradient" v-model="ticketPrice" >
         <label>Ticket price</label>
         </div>
 
 
-      <div class="mb-3">
-        <label for="formFile" class="form-label">Default file input example</label>
-        <input class="form-control rounded-pill" type="file"  ref="fileInput" accept="image/*" @change="handleFileChange" >
+      <div class="mb-3 c3">
+        <label for="formFile" class="form-label ">Choose the Show's Image</label>
+        <input class="form-control rounded-pill" type="file"  accept="image/*" @change="handleFileChange" >
+        <button type="submit" class="col-2 btn btn-primary c2 c4" >Save</button>
+        <h1 v-if="err" class="text-danger-emphasis">{{err}}</h1>
       </div>
-      <button type="submit" class="col-2 btn btn-primary c2" >Save</button>
+
+
 
 
       <!-- Submit button -->
@@ -89,8 +93,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import axios from "axios";
+import {computed, ref} from 'vue'
+import Newinstance from "axios";
 import NavBar from "@/views/NavBar.vue";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
@@ -104,49 +108,72 @@ const rating = ref([])
 const startTime = ref("")
 const endTime = ref("")
 const tags = ref([])
-const ticketPrice = ref(0)
+const ticketPrice = ref()
 const id = ref(router.currentRoute.value.params.Venue)
-
+const err = ref(null)
+const IstimeCorrect= ref(true)
 
 //handle image upload
 const handleFileChange=(event)=>{
   fileInput.value = event.target.files[0]
+
+}
+const checkTime = ()=>{
+  IstimeCorrect.value= startTime.value<endTime.value
 }
 
 //handle submit
 const handleSubmit=()=>{
-  const show = {
-    showName,
-    rating,
-    startTime,
-    endTime,
-    tags,
-    ticketPrice
-  }
   const form = new FormData()
-  form.append("showName",showName)
-  form.append("rating",rating)
-  form.append("starTime",startTime)
-  form.append("endTime",endTime)
-  form.append("tags",tags)
-  form.append("ticketPrice",ticketPrice)
-  form.append("image",fileInput)
-  axios.post('http:localhost:8000/admin/'+id.value+'/CreateShow', form,{
+console.log(fileInput.value)
+  form.append("showName",showName.value)
+  form.append("rating",rating.value)
+  form.append("startTime",startTime.value)
+  form.append("endTime",endTime.value)
+  form.append("tags",tags.value)
+  form.append("ticketPrice",ticketPrice.value)
+  if(fileInput.value){
+    form.append("image",fileInput.value,fileInput.value.name)
+  }
 
-    headers:{
-      Authorization:`Bearer ${state.state.user.accessToken}`,
-      "Content-Type":"multipart/form-data",
+  const contype = fileInput.value?'multipart/form-data':"application/json"
+ const headers = {
+
+
+// Set the desired headers
+  'Authorization': `Bearer ${state.state.user.accessToken}`,
+  'Content-Type': contype
+ }
+
+
+  Newinstance.post('http://localhost:8000/admin/'+ id.value+ '/CreateShow',form,{
+
+    headers:headers
+
+
+  }).then(res=>console.log(res)).catch(error=>{
+    if(error.response){
+      if(error.response.status=401){
+        err.value = error.response.data.message
+      }
     }
-  }).then(res=>console.log(res.data)).catch(error=>console.log(error))
+
+    console.log(error)
+  })
 }
 </script>
 
-
 <style scoped>
 
+.cust{
+  margin-top:3%;
+}
+label{
+  font-weight: bolder;
+}
 .outer{
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
 }
 .left {
   translate: -250px 0px;
@@ -154,18 +181,43 @@ const handleSubmit=()=>{
 .checkboxes {
   text-align:center;
 }
+
 .custom{
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 20px;
-  width: 700px;
+  min-height: fit-content;
+  width: 900px;
 }
 .c1{
-  width: 70%;
+  width: 50%;
 }
 .c2{
-  width: 40%;
-  align-self: center;
+  width: 25%;
+}
+.c3{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.c4{
+  margin-top:20px;
+}
+@media screen and (max-width:722px) {
+  .custom{
+    display: flex;
+    flex-flow:column nowrap;
+    align-items: center;
+    gap: 20px;
+    min-height: fit-content;
+  }
+  .c1{
+    width:50%
+  }
+  .c2{
+  width:30%
+      }
 }
 
 
