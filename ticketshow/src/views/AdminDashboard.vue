@@ -12,6 +12,7 @@
       <button  class="m-2 btn btn-outline-danger rounded-5 text-decoration-none" @click="handledelete(v.id)">Delete</button>
     </div>
   </div>
+<!--    nested cards have to be fixed heres the help link https://stackoverflow.com/questions/67667887/nested-cards-fitting-cards-within-a-card-bootstrap-cards-->
 
 
   <div class="m-lg-3 card mb-3 border-dotted " style="width: 18rem;">

@@ -26,7 +26,7 @@
           <label>Rating</label>
         </div>
 
-        <div class="c2">
+        <div class=" c2 mx-5">
           <label>Start show on:&nbsp;&nbsp;</label>
           <input type="datetime-local" class="align-self-auto rounded-pill" v-model="startTime" />
         </div>
