@@ -5,6 +5,7 @@ import {useStore} from "vuex";
 import axios from "../axios";
 import {computed} from "vue";
 import {useRouter} from "vue-router";
+import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 // import * as url from "url";
 
 
@@ -37,11 +38,25 @@ router.push('/user/dashboard')
 </script>
 <template>
   <form @submit.prevent="HandleSubmit()">
-    <input type="text" v-model="details.username" placeholder="Username" />
-    <input type="password" v-model="details.password" placeholder="Password" />
-    <input type="password" v-model="details.retypepassword" placeholder="Re-type password" />
-    <input type="email" v-model="details.email" placeholder="Email" />
-    <input type="submit" value="Submit" placeholder="Submit" :disabled='!passwordMatch'/>
-    <p>already have an account?  </p> <router-link :to="'/user/login'">login </router-link>
+    <div>
+      <h1 class="form-label container mt-4">Welcome to TicketShow! Please register to book tickets.</h1>
+    </div>
+    <div class="mt-4 mb-3 col-3 container">
+      <input class="container col-3 form-control rounded-pill " type="text" v-model="details.username" placeholder="Username" />
+    </div>
+    <div class="mt-4 mb-3 col-3 container">
+      <input class="container col-3 form-control rounded-pill " type="password" v-model="details.password" placeholder="Password" />
+    </div>
+    <div class="mt-4 mb-3 col-3 container">
+    <input class="container col-3 form-control rounded-pill " type="password" v-model="details.retypepassword" placeholder="Re-type password" />
+    </div>
+    <div class="mt-4 mb-3 col-3 container">
+    <input class="container col-3 form-control rounded-pill " type="email" v-model="details.email" placeholder="Email" />
+    </div>
+    <div class="mt-4 mb-3 col-3 container">
+    <input class="container mb-3 px-4 btn btn-outline-primary rounded-pill" type="submit" value="Register" placeholder="Register" :disabled='!passwordMatch'/>
+    </div>
+    <h6 class="text-success-emphasis">Already have an account?  </h6> <router-link class="text-decoration-none" :to="'/user/login'">login </router-link>
   </form>
+  <UserBottomNavBar/>
 </template>

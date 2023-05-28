@@ -22,6 +22,8 @@
   </div>
   </body>
 
+  <UserBottomNavBar/>
+
 
 
 <!--  <div>-->
@@ -31,8 +33,11 @@
 </template>
 
 <script >
+import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
+
 export default {
   name: 'ErrorComponent',
+  components: {UserBottomNavBar},
   methods: {
     getHomeLink() {
       const userRole = 'user';
