@@ -14,12 +14,18 @@
         <router-link class=" lead text-black-1000 text-decoration-none" :to="'/admin/' + $store.state.user.username +'/AdminSummary'">Summary</router-link>
       </li>
     </ul>
-    <button class="btn btn-outline-success" type="submit">Logout</button>
+    <button class="btn btn-outline-success" type="submit" @click="Adminlogout">Logout</button>
   </div>
 </div>
 </nav>
 </template>
 <script setup>
+import store from '@/store';
+import router from '@/router';
+const Adminlogout = () => {
+  store.commit("removeuser");
+  router.push("/admin/login");
+};
 defineProps({
   isSummary:Boolean
 })

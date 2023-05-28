@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from "vuex";
-import { reactive } from "vue";
+import { reactive,ref } from "vue";
 import axios from "../axios";
 import { useRouter } from "vue-router";
 
@@ -10,6 +10,7 @@ const details = reactive({
   password: "",
 });
 const store = useStore()
+const err = ref(null)
 const router = useRouter()
 // const handleClick = (e) => {
 //     const [name,value] = e.target
@@ -25,7 +26,13 @@ const HandleSubmit = () => {
     const {message,...rest} = res.data
     store.commit('adduser',rest)
     router.push('/user/dashboard')
-  }).catch(error => console.log(error))
+  }).catch(error =>{
+    if(error.response){
+      if(error.response.data){
+        err.value = error.response.data.message
+      }
+    } 
+  })
 };
 </script>
 <template>
@@ -34,5 +41,6 @@ const HandleSubmit = () => {
     <input type="password" v-model="details.password" placeholder="Password" />
     <input type="submit" value="Submit" placeholder="Submit" />
    <p>new to ticketshow? </p> <router-link :to="'/user/register'">register </router-link>
+    <h3 v-if="err">{{ err }}</h3>
   </form>
 </template>

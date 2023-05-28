@@ -4,6 +4,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 from models import Admin, db, Theatre, Movie
 from werkzeug.security import check_password_hash, generate_password_hash
 import datetime
+import os
 from config import UPLOAD_FOLDER
 
 datetime = datetime.datetime
@@ -331,17 +332,19 @@ class EditShow(Resource):
             return abort(401,message="endtime is empty")
         start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
         end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
+    
+        image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
+        if(os.path.exists(movie.image)):
+            os.remove(movie.image)
+        movie.tags = tags
+        movie.endTime = end
+        movie.startTime = start
+        movie.rating = rating
+        movie.name = showName
+        movie.image=f"{UPLOAD_FOLDER+'/'+image.filename}"
         image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
 
-
-        show = Movie(name=showName,rating=rating,tags=tags.join(","),ticketPrice=ticketPrice,startTime=start,endTime=end,image=f"{UPLOAD_FOLDER+'/'+image.filename}")
-        show.theatreId=int(id)
-        capacity = Theatre.query.filter_by(id=id).first().capacity
-        show.totalSeats =capacity
-        show.seatsSold =0
-        image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
         try:
-            db.session.add(show)
             db.session.commit()
             resp= jsonify({
                 "message":"show added sucess"
