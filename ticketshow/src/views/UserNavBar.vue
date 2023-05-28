@@ -14,10 +14,16 @@
             <router-link class="btn btn-outline-primary text-decoration-none" :to="'/' + $store.state.user.username + '/bookings'" >Bookings</router-link>
           </li>
         </ul>
-        <button class="btn btn-outline-success" type="submit">Logout</button>
+        <button class="btn btn-outline-success" type="submit" @click="logout">Logout</button>
       </div>
     </div>
   </nav>
 </template>
 <script setup>
+import store from '@/store';
+import router from '@/router';
+const logout = () => {
+  store.commit("removeuser");
+  router.push("/user/login");
+};
 </script>

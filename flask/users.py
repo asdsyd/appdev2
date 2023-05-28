@@ -4,7 +4,7 @@ from flask import request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required,get_jwt,get_jwt_identity
 from flask_restful import Resource, abort
 
-from models import db, User
+from models import db, User,Theatre
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -49,6 +49,31 @@ class UserRegister(Resource):
                             })
         response.status_code=201
 
+        return response
+    
+class GetUserVenues(Resource):
+    @jwt_required()
+    def get(self):
+        all_venues=Theatre.query.all()
+        serialized_venues = []
+        for v in all_venues:
+            c = {
+                "id":v.id,
+                "name":v.name,
+            }
+            if v.movies:
+                f =[]
+                for d in v.movies:
+                    f.append({
+                        "movie_id":d.id,
+                        "movie_name":d.name
+                    })
+                c["movies"] = f
+            serialized_venues.append(c)
+        response = jsonify({
+            "venues":serialized_venues
+        })
+        response.status_code=200
         return response
 
 class UserCheck(Resource):

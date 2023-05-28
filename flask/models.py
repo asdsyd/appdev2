@@ -58,6 +58,17 @@ class UserRating(db.Model):
         db.CheckConstraint('rating <= 5', name='rating shoudl be less than 5'),
     )
 
+class Booking(db.Model):
+    __tablename__ = "userBooking"
+    id =db.Column(db.Integer(),primary_key=True,autoincrement=True)
+    userid = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
+    movie_id = db.Column(db.Integer(),db.ForeignKey("movies.id"))
+
+
+
+
+
+
 # class UserInfo(db.Model):
 #     __tablename__ = 'userinfo'
 #     username = db.Column(db.String(), db.ForeignKey('users.username'))
