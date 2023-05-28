@@ -41,6 +41,9 @@ const HandleSubmit = () => {
     <div>
       <h1 class="form-label container mt-4">Welcome back! Please login to continue...</h1>
     </div>
+    <div v-if="err" class="alert alert-danger " role="alert">
+      {{ err }}
+    </div>
     <div class="mt-4 mb-3 col-3 container ">
     <input class="container col-3 form-control rounded-pill " type="text" v-model="details.username" placeholder="Username" />
     </div>
@@ -51,7 +54,7 @@ const HandleSubmit = () => {
     <input class="container mb-3 px-4 btn btn-outline-primary rounded-pill" type="submit" value="Login" placeholder="Login" />
     </div>
    <h6 class="text">New to ticketshow? </h6> <router-link :to="'/user/register'" class="link-offset-1-hover text-decoration-none">register </router-link>
-    <h3 v-if="err">{{ err }}</h3>
+
   </form>
 
   <UserBottomNavBar/>

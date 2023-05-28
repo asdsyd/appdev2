@@ -34,7 +34,7 @@ def create_app():
     db.init_app(app)
     with app.app_context():
         db.create_all()
-    migrate = Migrate(app, db)
+    migrate = Migrate(app,db,render_as_batch=True)
     app.app_context().push()
 
     # celery_app.conf.update(
