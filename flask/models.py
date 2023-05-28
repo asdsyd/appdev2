@@ -1,7 +1,16 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date,datetime,timedelta
-db = SQLAlchemy()
+import uuid
+convention = {
+    "ix": 'ix_%(column_0_label)s',
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s"
+}
 
+metadata = MetaData(naming_convention=convention)
+db = SQLAlchemy(metadata=metadata)
 class User(db.Model):
     __tablename__ = 'users'
     user_id = db.Column(db.Integer(),primary_key=True,autoincrement=True)
@@ -9,9 +18,9 @@ class User(db.Model):
     password = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False)
     ratings = db.relationship('UserRating',backref="user",lazy='dynamic')
+    bookings = db.relationship("Booking",backref="user",lazy="dynamic")
 
-    # How many movies user has booked -> table has to be made
-    # userinfo = db.relationship('UserInfo', back_populates='user', lazy=True, uselist=False)
+
 
 class Admin(db.Model):
     __tablename__ = 'admins'
@@ -24,7 +33,7 @@ class Admin(db.Model):
 class Theatre(db.Model):
     __tablename__ = 'theatres'
 
-    id = db.Column(db.Integer(), primary_key=True,autoincrement=True)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(), nullable=False, unique=True)
     place = db.Column(db.String(), nullable=False)
     locaton = db.Column(db.String(), nullable=False)
@@ -34,9 +43,8 @@ class Theatre(db.Model):
 class Movie(db.Model):
     __tablename__ = 'movies'
 
-    id = db.Column(db.Integer(), primary_key=True,autoincrement=True)
-    name = db.Column(db.String(), nullable=False, unique=True)
-    rating = db.Column(db.Float(), nullable=False)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    name = db.Column(db.String(), nullable=False)
     tags = db.Column(db.String(), nullable=False)
     ticketPrice = db.Column(db.Float(), nullable=False)
     startTime = db.Column(db.DateTime(), nullable=False)
@@ -44,23 +52,29 @@ class Movie(db.Model):
     seatsSold = db.Column(db.Integer(), nullable=False)
     totalSeats = db.Column(db.Integer(), nullable=False)
     theatreId = db.Column(db.Integer(), db.ForeignKey('theatres.id'))
-    ratings=db.relationship('UserRating',backref="movie",lazy="dynamic")
+    theatre_name = db.Column(db.String(),nullable=False)
+    bookings = db.relationship("Booking",backref="movie",lazy="dynamic")
     image = db.Column(db.String())
 
 
 class UserRating(db.Model):
     __tablename__ = 'userRating'
-    id = db.Column(db.Integer(),primary_key=True,autoincrement=True)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     userid = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
-    movie_id = db.Column(db.Integer(),db.ForeignKey("movies.id"))
+    movie = db.Column(db.Integer(),db.ForeignKey("movieratings.movie_name"))
     rating = db.Column(db.Integer(), nullable=False)
     __table_args__ = (
-        db.CheckConstraint('rating <= 5', name='rating shoudl be less than 5'),
+        db.CheckConstraint('rating <= 5', name='rating_should_be_less_than_5'),
     )
+
+class MovieRatings(db.Model):
+    __tablename__ = 'movieratings'
+    movie_name = db.Column(db.String(),primary_key=True)
+    rating = db.Column(db.Float())
 
 class Booking(db.Model):
     __tablename__ = "userBooking"
-    id =db.Column(db.Integer(),primary_key=True,autoincrement=True)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     userid = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
     movie_id = db.Column(db.Integer(),db.ForeignKey("movies.id"))
 

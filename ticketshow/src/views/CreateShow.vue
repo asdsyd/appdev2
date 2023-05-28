@@ -14,17 +14,6 @@
           </div>
         </div>
 
-        <div class="col-2 form-outline mb-4 c2">
-          <select class="form-select rounded-pill" v-model="rating">
-            <option disabled value="">Please select one</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-          </select>
-          <label>Rating</label>
-        </div>
 
         <div class=" c2 mx-5">
           <label>Start show on:&nbsp;&nbsp;</label>
@@ -104,7 +93,6 @@ const router = useRouter()
 const fileInput = ref(null)
 const header = ref('Create a Show')
 const showName = ref("")
-const rating = ref([])
 const startTime = ref("")
 const endTime = ref("")
 const tags = ref([])
@@ -127,7 +115,6 @@ const handleSubmit=()=>{
   const form = new FormData()
 console.log(fileInput.value)
   form.append("showName",showName.value)
-  form.append("rating",rating.value)
   form.append("startTime",startTime.value)
   form.append("endTime",endTime.value)
   form.append("tags",tags.value)

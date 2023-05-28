@@ -75,8 +75,6 @@ class DeleteVenue(Resource):
         if not venue:
             return abort(404,message="the Venue doesnt exist")
         try:
-            for v in venue.movies:
-                db.session.delete(v)
             db.session.delete(venue)
             db.session.commit()
             resp = jsonify({
@@ -157,7 +155,6 @@ class CreateShow(Resource):
         if request.content_type == 'application/json':
             args = request.json
             showName = args["showName"]
-            rating = args["rating"]
             startTime = args["startTime"]
             endTime = args["endTime"]
             tags = args["tags"]
@@ -165,8 +162,7 @@ class CreateShow(Resource):
 
             if showName is None or showName == '':
                 return abort(401,message="showname is empty")
-            if rating is None or rating == '':
-                return abort(401,message="rating is empty")
+
             if ticketPrice is None or ticketPrice == '':
                 return abort(401,message="ticketprice is empty")
             if tags is None or tags == '':
@@ -181,7 +177,7 @@ class CreateShow(Resource):
 
             start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
             end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
-            show = Movie(name=showName,rating=rating,tags=tags.join(","),ticketPrice=ticketPrice,startTime=start,endTime=end)
+            show = Movie(name=showName,tags=tags.join(","),ticketPrice=ticketPrice,startTime=start,endTime=end)
             show.theatreId=int(id)
             capacity = Theatre.query.filter_by(id=id).first().capacity
             show.totalSeats =capacity
@@ -205,7 +201,6 @@ class CreateShow(Resource):
 
         args = request.form
         showName = args["showName"]
-        rating = args["rating"]
         startTime = args["startTime"]
         endTime = args["endTime"]
         tags = args["tags"]
@@ -213,8 +208,6 @@ class CreateShow(Resource):
         image = request.files["image"]
         if showName is None or showName == '':
             return abort(401,message="showname is empty")
-        if rating is None or rating == '':
-            return abort(401,message="rating is empty")
         if ticketPrice is None or ticketPrice == '':
             return abort(401,message="ticketprice is empty")
         if tags is None or tags == '':
@@ -231,7 +224,7 @@ class CreateShow(Resource):
         image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
 
 
-        show = Movie(name=showName,rating=rating,tags=tags.join(","),ticketPrice=ticketPrice,startTime=start,endTime=end,image=f"{UPLOAD_FOLDER+'/'+image.filename}")
+        show = Movie(name=showName,tags=tags.join(","),ticketPrice=ticketPrice,startTime=start,endTime=end,image=f"{UPLOAD_FOLDER+'/'+image.filename}")
         show.theatreId=int(id)
         capacity = Theatre.query.filter_by(id=id).first().capacity
         show.totalSeats =capacity
@@ -267,7 +260,7 @@ class EditShow(Resource):
         if request.content_type == 'application/json':
             args = request.json
             showName = args["showName"]
-            rating = args["rating"]
+
             startTime = args["startTime"]
             endTime = args["endTime"]
             tags = args["tags"]
@@ -275,8 +268,6 @@ class EditShow(Resource):
 
             if showName is None or showName == '':
                 return abort(401,message="showname is empty")
-            if rating is None or rating == '':
-                return abort(401,message="rating is empty")
             if ticketPrice is None or ticketPrice == '':
                 return abort(401,message="ticketprice is empty")
             if tags is None or tags == '':
@@ -287,17 +278,15 @@ class EditShow(Resource):
                 return abort(401,message="endtime is empty")
             start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
             end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
-
-            
             movie.tags = tags
             movie.endTime = end
             movie.startTime = start
-            movie.rating = rating
+
             movie.name = showName
             try:
                 db.session.commit()
                 resp= jsonify({
-                    "message":"show update sucess"
+                    "message":"show update success"
                 })
                 resp.status_code=201
                 return resp
@@ -312,7 +301,7 @@ class EditShow(Resource):
 
         args = request.form
         showName = args["showName"]
-        rating = args["rating"]
+
         startTime = args["startTime"]
         endTime = args["endTime"]
         tags = args["tags"]
@@ -320,8 +309,7 @@ class EditShow(Resource):
         image = request.files["image"]
         if showName is None or showName == '':
             return abort(401,message="showname is empty")
-        if rating is None or rating == '':
-            return abort(401,message="rating is empty")
+
         if ticketPrice is None or ticketPrice == '':
             return abort(401,message="ticketprice is empty")
         if tags is None or tags == '':
@@ -339,7 +327,7 @@ class EditShow(Resource):
         movie.tags = tags
         movie.endTime = end
         movie.startTime = start
-        movie.rating = rating
+
         movie.name = showName
         movie.image=f"{UPLOAD_FOLDER+'/'+image.filename}"
         image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
@@ -361,7 +349,6 @@ class EditShow(Resource):
 class GetVenues(Resource):
     @jwt_required()
     def get(self):
-
         all_venues=Theatre.query.all()
         serialized_venues = []
         for v in all_venues:

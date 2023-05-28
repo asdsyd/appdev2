@@ -58,7 +58,7 @@ import {useStore} from "vuex";
 const store = useStore()
 const venue = reactive({
   name:'',
-  capacity:0,
+  capacity:null,
   place:'',
   location:''
 })
