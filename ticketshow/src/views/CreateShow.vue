@@ -14,17 +14,17 @@
           </div>
         </div>
 
-
-        <div class=" c2 mx-5">
+<div>
+        <div class="">
           <label>Start show on:&nbsp;&nbsp;</label>
           <input type="datetime-local" class="align-self-auto rounded-pill" v-model="startTime" @change="checkTime" />
         </div>
 
-      <div class="c2">
+      <div class="">
       <label>End show on:&nbsp;&nbsp;</label>
       <input type="datetime-local" class="align-self-auto rounded-pill" v-model="endTime" @change="checkTime">
-
       </div>
+    </div>
 
 <!--      <div class="custom-select">-->
 <!--        <div class="select-trigger" @click="toggleDropdown">-->
@@ -60,13 +60,13 @@
         <input type="checkbox" value="animation" v-model="tags" />
       </div>
 
-      <div class="col-6 form-outline mb-4 c2">
+      <div class="col-6 form-outline mb-4 ">
         <input type="number" class="col-4 form-control rounded-pill bg-gradient" v-model="ticketPrice" >
         <label>Ticket price</label>
         </div>
 
 
-      <div class="mb-3 c3">
+      <div class="mb-3 c1">
         <label for="formFile" class="form-label ">Choose the Show's Image</label>
         <input class="form-control rounded-pill" type="file"  accept="image/*" @change="handleFileChange" >
         <button type="submit" class="col-2 btn btn-primary c2 c4" >Save</button>
@@ -87,6 +87,7 @@ import Newinstance from "axios";
 import NavBar from "@/views/NavBar.vue";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
+import store from '@/store';
 
 const state = useStore()
 const router = useRouter()
@@ -113,7 +114,7 @@ const checkTime = ()=>{
 //handle submit
 const handleSubmit=()=>{
   const form = new FormData()
-console.log(fileInput.value)
+console.log(tags.value)
   form.append("showName",showName.value)
   form.append("startTime",startTime.value)
   form.append("endTime",endTime.value)
@@ -138,7 +139,7 @@ console.log(fileInput.value)
     headers:headers
 
 
-  }).then(res=>console.log(res)).catch(error=>{
+  }).then(res=>router.push('/admin/'+store.state.user.username)).catch(error=>{
     if(error.response){
       if(error.response.status=401){
         err.value = error.response.data.message
@@ -172,7 +173,8 @@ label{
 .custom{
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   gap: 20px;
   min-height: fit-content;
   width: 900px;

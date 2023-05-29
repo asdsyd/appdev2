@@ -1,7 +1,7 @@
 from flask_restful import Resource, abort, reqparse
 from flask import request, jsonify, json
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required,get_jwt,get_jwt_identity
-from models import Admin, db, Theatre, Movie
+from models import Admin, db, Theatre, Movie,MovieRatings
 from werkzeug.security import check_password_hash, generate_password_hash
 import datetime
 import os
@@ -35,7 +35,7 @@ class EditVenue(Resource):
         role = get_jwt().get("role")
         if role != "admin":
             return abort(401,message="Unauthorized")
-        venue = Theatre.query.filter_by(id=int(id)).first()
+        venue = Theatre.query.filter_by(id=id).first()
         if not venue:
             return abort(404,message="the Venue doesnt exist")
         name = request.json["name"]
@@ -71,7 +71,7 @@ class DeleteVenue(Resource):
         role = get_jwt().get("role")
         if role != "admin":
             return abort(401,message="Unauthorized")
-        venue = Theatre.query.filter_by(id=int(id)).first()
+        venue = Theatre.query.filter_by(id=id).first()
         if not venue:
             return abort(404,message="the Venue doesnt exist")
         try:
@@ -96,7 +96,7 @@ class GetVenueData(Resource):
         role = get_jwt().get("role")
         if role != "admin":
             return abort(401,message="Unauthorized")
-        venue = Theatre.query.filter_by(id=int(id)).first()
+        venue = Theatre.query.filter_by(id=id).first()
         if not venue:
             return abort(404,message="venue doesnt exist")
         name = venue.name
@@ -165,23 +165,29 @@ class CreateShow(Resource):
 
             if ticketPrice is None or ticketPrice == '':
                 return abort(401,message="ticketprice is empty")
-            if tags is None or tags == '':
+            if tags is None or tags ==[]:
                 return abort(401,message="tags is empty")
             if startTime is None or startTime == '':
                 return abort(401,message="startime is empty")
             if endTime is None or endTime == '':
                 return abort(401,message="endtime is empty")
-            is_movie = Movie.query.filter_by(name=showName).first()
-            if is_movie:
-                abort(401,message = "movie already exists")
+            
 
             start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
             end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
-            show = Movie(name=showName,tags=tags.join(","),ticketPrice=ticketPrice,startTime=start,endTime=end)
-            show.theatreId=int(id)
-            capacity = Theatre.query.filter_by(id=id).first().capacity
-            show.totalSeats =capacity
+            for v in theatre_exists.movies:
+                if v.startTime == start:
+                    abort(409,message="movies cannot be at the same time")
+            show = Movie(name=showName,tags=tags,ticketPrice=ticketPrice,startTime=start,endTime=end)
+            show.theatreId=id
+            show.theatre_name=theatre_exists.name
+            show.totalSeats =theatre_exists.capacity
             show.seatsSold =0
+            movie_in_ratings = MovieRatings.query.filter_by(movie_name=showName).first()
+
+            if not movie_in_ratings:
+                movie_in_ratings= MovieRatings(movie_name= show.name)
+                db.session.add(movie_in_ratings)
             try:
                 db.session.add(show)
                 db.session.commit()
@@ -210,28 +216,39 @@ class CreateShow(Resource):
             return abort(401,message="showname is empty")
         if ticketPrice is None or ticketPrice == '':
             return abort(401,message="ticketprice is empty")
-        if tags is None or tags == '':
+        if tags is None or tags ==[]:
             return abort(401,message="tags is empty")
+     
         if startTime is None or startTime == '':
             return abort(401,message="startime is empty")
         if endTime is None or endTime == '':
             return abort(401,message="endtime is empty")
-        is_movie = Movie.query.filter_by(name=showName).first()
-        if is_movie:
-                abort(401,message = "movie already exists")
+        
         start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
         end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
+        for v in theatre_exists.movies:
+                if v.startTime == start:
+                    abort(409,message="two movies cannot be at the same time")
         image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
 
 
-        show = Movie(name=showName,tags=tags.join(","),ticketPrice=ticketPrice,startTime=start,endTime=end,image=f"{UPLOAD_FOLDER+'/'+image.filename}")
-        show.theatreId=int(id)
-        capacity = Theatre.query.filter_by(id=id).first().capacity
-        show.totalSeats =capacity
+        show = Movie(name=showName,tags=tags,ticketPrice=ticketPrice,startTime=start,endTime=end,image=f"{UPLOAD_FOLDER+'/'+image.filename}")
+        show.theatreId=id
+        show.theatre_name=theatre_exists.name
+        show.totalSeats =theatre_exists.capacity
         show.seatsSold =0
         image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
+        movie_in_ratings = MovieRatings.query.filter_by(movie_name=showName).first()
+
+        if not movie_in_ratings:
+            movie_in_ratings= MovieRatings(movie_name= show.name)
+            db.session.add(movie_in_ratings)
+
+
         try:
+
             db.session.add(show)
+            
             db.session.commit()
             resp= jsonify({
                 "message":"show added sucess"
@@ -270,19 +287,29 @@ class EditShow(Resource):
                 return abort(401,message="showname is empty")
             if ticketPrice is None or ticketPrice == '':
                 return abort(401,message="ticketprice is empty")
-            if tags is None or tags == '':
+            if tags is None or tags == []:
                 return abort(401,message="tags is empty")
+            
             if startTime is None or startTime == '':
                 return abort(401,message="startime is empty")
             if endTime is None or endTime == '':
                 return abort(401,message="endtime is empty")
             start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
             end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
+            for v in theatre_exists.movies:
+                if v.startTime == start:
+                    abort(409,message="movie cannot be at the same time")
             movie.tags = tags
             movie.endTime = end
             movie.startTime = start
 
+            
+            movie_in_ratings = MovieRatings.query.filter_by(movie_name=movie.name).first()
             movie.name = showName
+            movie_in_ratings.name = showName
+            if not movie_in_ratings:
+                movie_in_ratings= MovieRatings(movie_name= movie.name)
+                db.session.add(movie_in_ratings)
             try:
                 db.session.commit()
                 resp= jsonify({
@@ -312,7 +339,7 @@ class EditShow(Resource):
 
         if ticketPrice is None or ticketPrice == '':
             return abort(401,message="ticketprice is empty")
-        if tags is None or tags == '':
+        if tags is None or tags == []:
             return abort(401,message="tags is empty")
         if startTime is None or startTime == '':
             return abort(401,message="startime is empty")
@@ -320,6 +347,9 @@ class EditShow(Resource):
             return abort(401,message="endtime is empty")
         start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
         end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
+        for v in theatre_exists.movies:
+                if v.startTime == start:
+                    abort(409,message="movie cannot be at the same time")
     
         image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
         if(os.path.exists(movie.image)):
@@ -327,10 +357,14 @@ class EditShow(Resource):
         movie.tags = tags
         movie.endTime = end
         movie.startTime = start
-
-        movie.name = showName
         movie.image=f"{UPLOAD_FOLDER+'/'+image.filename}"
         image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
+        movie_in_ratings = MovieRatings.query.filter_by(movie_name=movie.name).first()
+        movie.name = showName
+        movie_in_ratings.name = showName
+        if not movie_in_ratings:
+            movie_in_ratings= MovieRatings(movie_name= movie.name)
+            db.session.add(movie_in_ratings)
 
         try:
             db.session.commit()

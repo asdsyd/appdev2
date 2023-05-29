@@ -18,6 +18,7 @@ class User(db.Model):
     username = db.Column(db.String(),unique=True)
     password = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False)
+    profile_image = db.Column(db.String())
     ratings = db.relationship('UserRating',backref="user",lazy='dynamic')
     bookings = db.relationship("Booking",backref="user",lazy="dynamic")
 
@@ -34,7 +35,7 @@ class Admin(db.Model):
 class Theatre(db.Model):
     __tablename__ = 'theatres'
 
-    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = db.Column(db.String(36), primary_key=True, default= str(uuid.uuid4()))
     name = db.Column(db.String(), nullable=False, unique=True)
     place = db.Column(db.String(), nullable=False)
     locaton = db.Column(db.String(), nullable=False)
@@ -44,7 +45,7 @@ class Theatre(db.Model):
 class Movie(db.Model):
     __tablename__ = 'movies'
 
-    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = db.Column(db.String(36), primary_key=True, default= str(uuid.uuid4()))
     name = db.Column(db.String(), nullable=False)
     tags = db.Column(db.String(), nullable=False)
     ticketPrice = db.Column(db.Float(), nullable=False)
@@ -60,7 +61,7 @@ class Movie(db.Model):
 
 class UserRating(db.Model):
     __tablename__ = 'userRating'
-    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = db.Column(db.String(36), primary_key=True, default= str(uuid.uuid4()))
     userid = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
     movie = db.Column(db.Integer(),db.ForeignKey("movieratings.movie_name"))
     rating = db.Column(db.Integer(), nullable=False)
@@ -75,7 +76,7 @@ class MovieRatings(db.Model):
 
 class Booking(db.Model):
     __tablename__ = "userBooking"
-    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = db.Column(db.String(36), primary_key=True, default= str(uuid.uuid4()))
     userid = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
     movie_id = db.Column(db.Integer(),db.ForeignKey("movies.id"))
 

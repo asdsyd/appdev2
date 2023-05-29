@@ -15,7 +15,8 @@ JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 JWT_ACCESS_TOKEN_EXPIRES=timedelta(days=30)
 JWT_SECRET_KEY ='TICKETSHOW12345trhr'
 
-UPLOAD_FOLDER = basedir + r'/movieposters'
+UPLOAD_FOLDER = basedir + r'/pictures/posters'
+USER_UPLOAD_FOLDER = basedir + r'/pictures/propics'
 MAX_CONTENT_PATH = 5000000
 
 CELERY_BROKER_URL = "redis://localhost:6379/1"
@@ -26,7 +27,7 @@ CELERY_TIMEZONE = "Asia/Kolkata"
 
 MAIL_SERVER ='smtp.gmail.com'
 MAIL_PORT = 465
-MAIL_DEFAULT_SENDER = ('SandiBot', MAIL_USERNAME)
+MAIL_DEFAULT_SENDER = ('Ticketer', MAIL_USERNAME)
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
 

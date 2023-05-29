@@ -39,3 +39,4 @@ state.venues=state.venues.filter((e,i)=>i!==id)
   modules: {
   }
 })
+

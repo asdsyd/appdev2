@@ -58,5 +58,6 @@ router.push('/user/dashboard')
     </div>
     <h6 class="text-success-emphasis">Already have an account?  </h6> <router-link class="text-decoration-none" :to="'/user/login'">login </router-link>
   </form>
+  <h3 v-if="err">{{ err }}</h3>
   <UserBottomNavBar/>
 </template>

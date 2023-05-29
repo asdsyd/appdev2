@@ -56,7 +56,7 @@ const routes = [
     path: "/admin/:Venue/EditVenue",
     name: "EditVenue",
     component: () => import("../views/EditVenue.vue"),
-    meta: {requiresAuth: true, AdminRoute: true}
+    meta: {requiresAuth: true, AdminRoute: true},
   },
   {
     path: "/admin/:username/AdminSummary",
