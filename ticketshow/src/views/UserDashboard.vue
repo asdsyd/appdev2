@@ -1,5 +1,5 @@
 <template>
-  <UserNavBar/>
+  <user-logged-nav-bar/>
   <div class="accordion" id="accordionExample">
     <div class="accordion-item">
       <h2 class="accordion-header">
@@ -121,9 +121,34 @@ import {defineComponent} from "vue";
 import UserNavBar from "@/views/UserNavBar.vue";
 import router from "@/router";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
+import UserLoggedNavBar from "@/views/UserLoggedNavBar.vue";
+import store from "@/store";
 
-export default defineComponent({
-  components: {UserBottomNavBar, UserNavBar}
+
+const all_Venues = ref(store.state.venues||null)
+const is_loading = ref(false)
+onBeforeMount(()=>{
+  if(store.state.venues){
+    all_Venues.value = store.state.venues
+  }else{
+    axios.get('/user/getVenues').then(res=>{
+      const {venues} = res.data
+      venues.forEach(e=>{
+        e.movies.forEach(l=>{
+          const c = new Date(l.end)
+          c.setHours(c.getHours()-5)
+          c.setMinutes(c.getMinutes()-30)
+          const f = new Date(l.start)
+          f.setHours(f.getHours()-5)
+          f.setMinutes(f.getMinutes()-30)
+          l.start=f
+          l.end=c
+        })
+      })
+      store.commit("addvenues",venues)
+    })
+  }
+
 })
 const logout = ()=>{
   store.commit('removeuser')
