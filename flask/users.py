@@ -3,7 +3,7 @@ from datetime import time
 from flask import request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required,get_jwt,get_jwt_identity
 from flask_restful import Resource, abort
-
+from config import USER_UPLOAD_FOLDER
 from models import db, User,Theatre
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -12,9 +12,10 @@ class UserRegister(Resource):
 
     def post(self):
 
-        username = request.json['username']
-        password = request.json['password']
-        email = request.json['email']
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        image = request.files["image"]
 
         if username is None:
             return abort(400, message='Username not provided.')
@@ -28,12 +29,22 @@ class UserRegister(Resource):
             return abort(401, message='Username already exists.')
 
         hashed_pw = generate_password_hash(password)
+        if image:
+            user = User(
+                username=username,
+                password=hashed_pw,
+                email=email,
+            )
+        else:
+            image_path = f"{USER_UPLOAD_FOLDER}+/{image.filename}"
+            user = User(username=username,
+                        password=hashed_pw,
+                        email=email,
+            profile_image=image_path
+                        )
+            image.save(image_path)
 
-        user = User(
-            username=username,
-            password=hashed_pw,
-            email=email,
-        )
+
         db.session.add(user)
 
 
@@ -66,7 +77,10 @@ class GetUserVenues(Resource):
                 for d in v.movies:
                     f.append({
                         "movie_id":d.id,
-                        "movie_name":d.name
+                        "movie_name":d.name,
+                        "image":d.image,
+                        "start":d.startTime,
+                        "end":d.endTime
                     })
                 c["movies"] = f
             serialized_venues.append(c)

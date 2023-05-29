@@ -10,6 +10,9 @@ export default createStore({
   },
   mutations: {
     adduser:(state,payload)=>{
+        if(localStorage.getItem("user")){
+            localStorage.removeItem("user")
+        }
       localStorage.setItem("user",JSON.stringify(payload))
       state.user=payload
     },

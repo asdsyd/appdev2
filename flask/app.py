@@ -2,7 +2,7 @@ from flask import Flask,jsonify
 from flask_restful import Api,Resource,abort
 from flask_migrate import Migrate
 
-from users import UserLogin, UserRegister,UserCheck
+from users import UserLogin, UserRegister,UserCheck,GetUserVenues
 # from mail import mail
 from models import db
 from flask_jwt_extended import JWTManager,jwt_required,create_access_token,get_jwt_identity,get_jwt
@@ -95,6 +95,7 @@ api.add_resource(UserRefresh,'/user/refresh')
 api.add_resource(EditVenue,'/admin/<string:id>/editVenue')
 api.add_resource(CreateShow,'/admin/<string:id>/CreateShow')
 api.add_resource(DeleteVenue,'/admin/<string:id>/deleteVenue')
+api.add_resource(GetUserVenues,'/user/getVenues')
 
 # api.add_resource(CreateVenue,'/admin/createVenue')
 # api.add_resource(Refresh, '/refresh')

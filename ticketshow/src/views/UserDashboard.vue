@@ -116,10 +116,11 @@
 
   <UserBottomNavBar/>
 </template>
-<script>
-import {defineComponent} from "vue";
+<script setup>
+import {defineComponent, onBeforeMount, ref} from "vue";
 import UserNavBar from "@/views/UserNavBar.vue";
 import router from "@/router";
+import axios from '@/axios'
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 import UserLoggedNavBar from "@/views/UserLoggedNavBar.vue";
 import store from "@/store";

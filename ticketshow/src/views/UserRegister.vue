@@ -1,14 +1,13 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive,ref } from "vue";
 import {useStore} from "vuex";
-
 import axios from "../axios";
 import {computed} from "vue";
 import {useRouter} from "vue-router";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 // import * as url from "url";
-
-
+const image = ref(null)
+const err = ref(null)
 const store = useStore()
 const router = useRouter()
 const details = reactive({
@@ -18,6 +17,34 @@ const details = reactive({
   email: "",
 });
 const passwordMatch = computed(()=> details.password===details.retypepassword)
+
+const handleFileChange=(event)=>{
+  image.value = event.target.files[0]
+
+}
+const HandleSubmit = () => {
+  const form = new FormData()
+  form.append("username",details.username)
+  form.append("password",details.password)
+  form.append("email",details.email)
+  if(image.value){
+    console.log(image.value)
+    form.append("image",image.value,image.value.filename)
+  }
+
+  const headers = {
+    'Content-Type': 'multipart/form-data',
+  }
+
+  axios.post("/user/register", form,{
+    headers:headers
+  }).then(res => {
+    const {message,...payload}=  res.data
+    store.commit("adduser",payload)
+router.push('/user/dashboard')
+  }).catch(error => console.log(error))
+};
+
 // const handleClick = (e) => {
 //     const [name,value] = e.target
 //     details[name] = value
@@ -27,14 +54,6 @@ const passwordMatch = computed(()=> details.password===details.retypepassword)
 //     refreshToken:"",
 //     username:"",
 // })
-const HandleSubmit = () => {
-  const actualDetails = {username:details.username, password:details.password, email:details.email}
-  axios.post("/user/register", actualDetails).then(res => {
-    const {message,...payload}=  res.data
-    store.commit("adduser",payload)
-router.push('/user/dashboard')
-  }).catch(error => console.log(error))
-};
 </script>
 <template>
   <form @submit.prevent="HandleSubmit()">
@@ -54,8 +73,14 @@ router.push('/user/dashboard')
     <input class="container col-3 form-control rounded-pill " type="email" v-model="details.email" placeholder="Email" />
     </div>
     <div class="mt-4 mb-3 col-3 container">
+
+    <input class="form-control rounded-pill" type="file"  accept="image/*" @change="handleFileChange" >
+      <label for="formFile" class="form-label ">Choose a profile image</label>
+    </div>
+      <div class="mt-4 mb-3 col-3 container">
     <input class="container mb-3 px-4 btn btn-outline-primary rounded-pill" type="submit" value="Register" placeholder="Register" :disabled='!passwordMatch'/>
     </div>
+
     <h6 class="text-success-emphasis">Already have an account?  </h6> <router-link class="text-decoration-none" :to="'/user/login'">login </router-link>
   </form>
   <h3 v-if="err">{{ err }}</h3>
