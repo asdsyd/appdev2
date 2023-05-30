@@ -38,6 +38,7 @@ const HandleSubmit = () => {
 </script>
 <template>
   <form @submit.prevent="HandleSubmit()">
+
     <div>
       <h1 class="form-label container mt-4">Admin Register</h1>
     </div>
