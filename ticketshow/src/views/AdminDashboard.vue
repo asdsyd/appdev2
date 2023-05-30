@@ -30,7 +30,7 @@
               >
               <button
                 class="m-2 btn btn-outline-danger rounded-5 text-decoration-none"
-                @click="handleShowdelete(c.id)"
+                @click="handleShowdelete({venue:v.id,show:c.movie_id})"
               >
                 Delete
               </button>
@@ -165,7 +165,7 @@
           <button
             type="button"
             class="btn btn-primary"
-            @click="handledelete(Show_to_delete_id)"
+            @click="deleteShow(Show_to_delete)"
           >
             yes
           </button>
@@ -193,7 +193,10 @@ import { useRouter } from "vue-router";
 const isloading = ref(true)
 const deleter = ref(false);
 const Showdeleter= ref(false)
-const Show_to_delete_id=ref(null)
+const Show_to_delete=reactive({
+  venue:null,
+  show:null
+})
 const venue_to_delete_id = ref(null);
 const router = useRouter();
 const expire = ref(false);
@@ -204,17 +207,28 @@ let all_venues = reactive({
 
 
 const handleShowdelete=(id)=>{
+  console.log(id)
   Showdeleter.value=true
-  Show_to_delete_id.value = id
+  Show_to_delete.venue = id.venue
+  Show_to_delete.show= id.show
 }
 
-const deleteShow = (id)=>{
-  axios.delete('/admin/'+ve)
+const deleteShow = (obj)=>{
+  console.log(obj)
+  axios.delete('/admin/'+ obj.venue + '/' + obj.show +'/deleteShow' ).then(res=>{
+    window.location.reload()
+  }).catch(e=>{
+    console.log(e)
+  })
 }
+
 const cancelDelete = (which) => {
   if(which==="show"){
    Showdeleter.value=false
-   Show_to_delete_id.value=null
+   Show_to_delete={
+    venue:null,
+    show:null
+   }
 }else{
   deleter.value = false;
   venue_to_delete_id.value = null;

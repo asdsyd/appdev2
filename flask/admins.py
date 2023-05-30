@@ -1,3 +1,4 @@
+from typing import Any
 from flask_restful import Resource, abort, reqparse
 from flask import request, jsonify, json
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required,get_jwt,get_jwt_identity
@@ -378,6 +379,46 @@ class EditShow(Resource):
                 "error":e.name
             })
             resp.status_code=500
+
+
+class DeleteShow(Resource):
+    @jwt_required()
+    def delete(self, id,movie_id):
+        role = get_jwt().get("role")
+        if role != "admin":
+            return abort(401,message="Unauthorized")
+        theatre_exists = Theatre.query.filter_by(id=id).first()
+        if not theatre_exists:
+            return abort(404,message="theatre doesnt exists")
+        movie = Movie.query.filter_by(id=movie_id).first()
+        if not movie:
+            return abort(404,message="movie doesnt exists")
+        for c in movie.bookings:
+            db.session.delete(c)
+        db.session.delete(movie)
+        db.session.commit()
+        resp = jsonify({
+            "messgae":"succes"
+        })
+        resp.status_code=200
+        return resp
+        
+class GetShow(Resource):
+    def get(self,movie_id):
+        movie = Movie.query.filter_by(id=movie_id).first()
+        if not movie:
+            return abort(404,message="movie not found")
+        serialized_movie =[]
+        serialized_movie.append(movie.name)
+        serialized_movie.append(movie.tags)
+        serialized_movie.append(movie.ticketPrice)
+        serialized_movie.append(movie.startTime)
+        serialized_movie.append(movie.endTime)
+        if movie.image:
+            serialized_movie.append(movie.image)
+        resp = jsonify(serialized_movie)
+        resp.status_code = 200
+        return resp
 
 
 class GetVenues(Resource):
