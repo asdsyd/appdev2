@@ -74,7 +74,7 @@ const routes = [
     name: "UserRegister",
     component: () => import("../views/UserRegister.vue"),
   },
-  {path:'/admin/:Show/EditShow',
+  {path:'/admin/:Venue/:Show/EditShow',
   name:'EditShow',
   component:()=>import('../views/EditShow.vue')
   

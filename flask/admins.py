@@ -199,7 +199,7 @@ class CreateShow(Resource):
                 return resp
             except Exception as e:
                 resp= jsonify({
-                    "error":e.name
+                    "error":e.__class__
                 })
                 resp.status_code=500
                 return resp
@@ -258,14 +258,14 @@ class CreateShow(Resource):
             return resp
         except Exception as e:
             resp= jsonify({
-                "error":"e"
+                "error":"errror in procesiing"
             })
             resp.status_code=500
 
 
 class EditShow(Resource):
     @jwt_required()
-    def post(self, id,movie_id):
+    def put(self, id,movie_id):
         role = get_jwt().get("role")
         if role != "admin":
             return abort(401,message="Unauthorized")
@@ -298,8 +298,9 @@ class EditShow(Resource):
             start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
             end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
             for v in theatre_exists.movies:
-                if v.startTime == start:
-                    abort(409,message="movie cannot be at the same time")
+                if v.startTime == start and v.endTime<=start:
+                    if v.id != str(movie_id):
+                        abort(409,message="movie cannot be at the same time")
             movie.tags = tags
             movie.endTime = end
             movie.startTime = start
@@ -320,7 +321,7 @@ class EditShow(Resource):
                 return resp
             except Exception as e:
                 resp= jsonify({
-                    "error":e.name
+                    "error":"error in updating"
                 })
                 resp.status_code=500
                 return resp
@@ -349,12 +350,16 @@ class EditShow(Resource):
         start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
         end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
         for v in theatre_exists.movies:
-                if v.startTime == start:
-                    abort(409,message="movie cannot be at the same time")
+                if v.startTime == start and v.endTime<=start:
+                    if v.id != str(movie_id):
+                         abort(409,message="movie cannot be at the same time")
+                
+                        
     
         image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
-        if(os.path.exists(movie.image)):
-            os.remove(movie.image)
+        if(movie.image):
+            if(os.path.exists(movie.image)):
+                os.remove(str(movie.image))
         movie.tags = tags
         movie.endTime = end
         movie.startTime = start
@@ -376,7 +381,7 @@ class EditShow(Resource):
             return resp
         except Exception as e:
             resp= jsonify({
-                "error":e.name
+                "error":"error in updating"
             })
             resp.status_code=500
 

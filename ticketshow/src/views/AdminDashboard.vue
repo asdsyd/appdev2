@@ -25,7 +25,7 @@
               <h5 class="card-title">{{ c.movie_name }}</h5>
               <router-link
                 class="m-2 btn btn-outline-primary rounded-5 text-decoration-none"
-                :to="'/admin/' + c.movie_id + '/EditShow'"
+                :to="'/admin/'+ v.id+'/'+ c.movie_id + '/EditShow'"
                 >Edit</router-link
               >
               <button

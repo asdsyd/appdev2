@@ -98,6 +98,7 @@ api.add_resource(DeleteVenue,'/admin/<string:id>/deleteVenue')
 api.add_resource(GetUserVenues,'/user/getVenues')
 api.add_resource(DeleteShow,'/admin/<string:id>/<string:movie_id>/deleteShow')
 api.add_resource(GetShow,'/admin/<string:movie_id>/getShow')
+api.add_resource(EditShow,'/admin/<string:id>/<string:movie_id>/EditShow')
 
 # api.add_resource(CreateVenue,'/admin/createVenue')
 # api.add_resource(Refresh, '/refresh')
