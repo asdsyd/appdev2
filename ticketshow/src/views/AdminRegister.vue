@@ -28,7 +28,7 @@ const passwordMatch = computed(()=> details.password===details.retypepassword)
 //     username:"",
 // })
 const HandleSubmit = () => {
-  const actualDetails = {username:details.username, password:details.password, email:details.email}
+  const actualDetails = {username:details.username, password:details.password, email:details.email, securityPin:details.securityPin}
   axios.post("/user/register", actualDetails).then(res => {
     const {message,...payload}=  res.data
     store.commit("adduser",payload)
@@ -59,6 +59,9 @@ const HandleSubmit = () => {
     </div>
     <div class="mt-3 mb-3 col-3 container">
       <input class="container col-3 form-control rounded-pill" type="email" v-model="details.email" placeholder="Admin Email" />
+    </div>
+    <div class="mt-3 mb-3 col-3 container">
+      <input class="container col-3 form-control rounded-pill" type="number" v-model="details.securityPin" placeholder="Security Pin" />
     </div>
     <div class="mt-3 col-3 container">
       <input class="container mb-3 px-4 btn btn-outline-primary rounded-pill" type="submit" value="Register Admin" :disabled='!passwordMatch' />
