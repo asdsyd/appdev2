@@ -230,10 +230,9 @@ class CreateShow(Resource):
         for v in theatre_exists.movies:
                 if v.startTime == start:
                     abort(409,message="two movies cannot be at the same time")
-        image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
 
 
-        show = Movie(name=showName,tags=tags,ticketPrice=ticketPrice,startTime=start,endTime=end,image=f"{UPLOAD_FOLDER+'/'+image.filename}")
+        show = Movie(name=showName,tags=tags,ticketPrice=ticketPrice,startTime=start,endTime=end,image=f"{image.filename}")
         show.theatreId=id
         show.theatre_name=theatre_exists.name
         show.totalSeats =theatre_exists.capacity
@@ -363,7 +362,7 @@ class EditShow(Resource):
         movie.tags = tags
         movie.endTime = end
         movie.startTime = start
-        movie.image=f"{UPLOAD_FOLDER+'/'+image.filename}"
+        movie.image=f"{image.filename}"
         image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
         movie_in_ratings = MovieRatings.query.filter_by(movie_name=movie.name).first()
         movie.name = showName

@@ -85,9 +85,14 @@
         <label>Ticket price</label>
       </div>
 
+      <div v-if="image_present" class="text-center">
+  <img :src="image_present" class="rounded" alt="...">
+</div>
+
+
 
       <div class="mb-3 c1">
-        <label for="formFile" class="form-label">Choose the Show's Image</label>
+        <label for="formFile" class="form-label">Choose the Show's new Image</label>
         <input
           class="form-control rounded-pill"
           type="file"
@@ -117,6 +122,7 @@ const isloading = ref(true);
 const state = useStore();
 const router = useRouter();
 const fileInput = ref(null);
+const image_present = ref(null)
 const header = ref("Edit a Show");
 const showName = ref("");
 const startTime = ref(null);
@@ -141,15 +147,15 @@ const FormatTime = (time) => {
   // 2023-05-30T22:29
 };
 const Timeformatterformonth = {
-  Jan: 1,
-  Feb: 2,
-  Mar: 3,
-  Apr: 4,
-  May: 5,
-  Jun: 6,
-  Jul: 7,
-  Aug: 8,
-  Sep: 9,
+  Jan: "01",
+  Feb: "02",
+  Mar: "03",
+  Apr: "04",
+  May: "05",
+  Jun: "06",
+  Jul: "07",
+  Aug: "08",
+  Sep: "09",
   Oct: 10,
   Nov: 11,
   Dec: 12,
@@ -159,7 +165,7 @@ const handleFileChange = (event) => {
   fileInput.value = event.target.files[0];
 };
 const checkTime = () => {
-  console.log(startTime.value);
+  
   IstimeCorrect.value = startTime.value < endTime.value;
 };
 
@@ -186,8 +192,10 @@ onBeforeMount(() => {
         showName.value = name;
         tags.value = showtags.split(",");
         ticketPrice.value = showticketPrice;
-        startTime.value = showstarttime;
-        endTime.value = shwoendtime;
+        startTime.value = FormatTime(showstarttime);
+        endTime.value = FormatTime(shwoendtime);
+      console.log(showstarttime)
+        image_present.value = `http://localhost:8000/image/${image}`
         isloading.value = false;
       }
     })
@@ -196,6 +204,7 @@ onBeforeMount(() => {
       console.log("gadbad hai");
       router.push("/admin/" + store.state.user.username);
     });
+    
 });
 
 //handle submit
@@ -270,7 +279,7 @@ label {
   width: 50%;
 }
 .c2 {
-  width: 25%;
+  width: 30%;
 }
 .c3 {
   display: flex;

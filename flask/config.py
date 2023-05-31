@@ -15,10 +15,9 @@ JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 JWT_ACCESS_TOKEN_EXPIRES=timedelta(days=30)
 JWT_SECRET_KEY ='TICKETSHOW12345trhr'
 
-UPLOAD_FOLDER = basedir + r'/pictures/posters'
-USER_UPLOAD_FOLDER = basedir + r'/pictures/propics'
+UPLOAD_FOLDER =   os.path.join('static','posters')
+USER_UPLOAD_FOLDER = os.path.join('static','propics')
 MAX_CONTENT_PATH = 5000000
-
 CELERY_BROKER_URL = "redis://localhost:6379/1"
 CELERY_RESULT_BACKEND = "redis://localhost:6379/2"
 # CELERY_REDIS_USERNAME = 'default'

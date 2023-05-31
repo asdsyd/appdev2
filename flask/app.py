@@ -1,4 +1,4 @@
-from flask import Flask,jsonify
+from flask import Flask,jsonify,send_from_directory
 from flask_restful import Api,Resource,abort
 from flask_migrate import Migrate
 
@@ -66,6 +66,9 @@ class AdminRefresh(Resource):
         resp.status_code=200
         return resp
 
+class GetImage(Resource):
+    def get(self,image):
+        return send_from_directory(app.config["UPLOAD_FOLDER"],image)
 class UserRefresh(Resource):
     @jwt_required(refresh=True)
     def post(self):
@@ -99,6 +102,7 @@ api.add_resource(GetUserVenues,'/user/getVenues')
 api.add_resource(DeleteShow,'/admin/<string:id>/<string:movie_id>/deleteShow')
 api.add_resource(GetShow,'/admin/<string:movie_id>/getShow')
 api.add_resource(EditShow,'/admin/<string:id>/<string:movie_id>/EditShow')
+api.add_resource(GetImage,'/image/<string:image>')
 
 # api.add_resource(CreateVenue,'/admin/createVenue')
 # api.add_resource(Refresh, '/refresh')
