@@ -13,6 +13,9 @@
       <li :hidden="isSummary" class="nav-item">
         <router-link class=" lead text-black-1000 text-decoration-none" :to="'/admin/' + $store.state.user.username +'/AdminSummary'">Summary</router-link>
       </li>
+      <li  class="nav-item">
+        <router-link class=" lead text-black-1000 text-decoration-none" :to="'/'">User Login</router-link>
+      </li>
     </ul>
     <button class="btn btn-outline-success" type="submit" @click="Adminlogout">Logout</button>
   </div>

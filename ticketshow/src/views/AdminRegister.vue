@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive,ref} from "vue";
 import {useStore} from "vuex";
 
 import axios from "../axios";
@@ -8,7 +8,7 @@ import {useRouter} from "vue-router";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 // import * as url from "url";
 
-
+const err = ref(null)
 const store = useStore()
 const router = useRouter()
 const details = reactive({
@@ -16,6 +16,7 @@ const details = reactive({
   password: "",
   retypepassword: "",
   email: "",
+  securityKey:null,
 });
 const passwordMatch = computed(()=> details.password===details.retypepassword)
 // const handleClick = (e) => {
@@ -28,12 +29,16 @@ const passwordMatch = computed(()=> details.password===details.retypepassword)
 //     username:"",
 // })
 const HandleSubmit = () => {
-  const actualDetails = {username:details.username, password:details.password, email:details.email, securityPin:details.securityPin}
-  axios.post("/user/register", actualDetails).then(res => {
-    const {message,...payload}=  res.data
-    store.commit("adduser",payload)
-    router.push('/user/dashboard')
-  }).catch(error => console.log(error))
+  const actualDetails = {username:details.username, password:details.password, email:details.email, securitykey:details.securityKey}
+  console.log(details)
+  axios.post("/admin/register", actualDetails).then(res => {
+    router.push('/admin/'+ store.state.user.username)
+  }).catch(error => {
+    console.log(error)
+    // if (error.response.data) {
+    //   err.value = error.response.data.message
+    // }
+  })
 };
 </script>
 <template>
@@ -43,7 +48,7 @@ const HandleSubmit = () => {
       <h1 class="form-label container mt-4">Admin Register</h1>
     </div>
     <div class="alert alert-warning" role="alert">
-      Only for authorised Super Admin. If you are an admin, <span> <router-link class="link-success" to="'/admin/login'"> click here to login </router-link> </span>
+      Only for authorised Super Admin. If you are an admin, <span> <router-link class="link-success" to="/admin/login"> click here to login </router-link> </span>
     </div>
     <div v-if="err" class="alert alert-danger " role="alert">
       {{ err }}
@@ -61,11 +66,12 @@ const HandleSubmit = () => {
       <input class="container col-3 form-control rounded-pill" type="email" v-model="details.email" placeholder="Admin Email" />
     </div>
     <div class="mt-3 mb-3 col-3 container">
-      <input class="container col-3 form-control rounded-pill" type="number" v-model="details.securityPin" placeholder="Security Pin" />
+      <input class="container col-3 form-control rounded-pill" type="text" v-model="details.securityKey" placeholder="Security Key" />
     </div>
     <div class="mt-3 col-3 container">
       <input class="container mb-3 px-4 btn btn-outline-primary rounded-pill" type="submit" value="Register Admin" :disabled='!passwordMatch' />
     </div>
+
   </form>
 
   <user-bottom-nav-bar/>

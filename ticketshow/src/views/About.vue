@@ -1,6 +1,6 @@
 <template>
 
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <nav v-if="!$store.state.user.accessToken" class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
       <span class="">
         <img src="../assets/ticketshow-logo.png" class="navbar-brand img-fluid img-thumbnail card-img" alt="TicketShow Logo" id="logo"/>
@@ -40,6 +40,7 @@
       </div>
     </div>
   </nav>
+  <user-logged-nav-bar v-else />
 
   <div class="my-3 container">
     <div class=" mb-3  display-3 rounded-pill border border-success ">About Us</div>
@@ -70,4 +71,5 @@
 // @ is an alias to /src
 
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
+import UserLoggedNavBar from "@/views/UserLoggedNavBar.vue";
 </script>

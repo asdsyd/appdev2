@@ -7,7 +7,7 @@ from users import UserLogin, UserRegister,UserCheck,GetUserVenues
 from models import db
 from flask_jwt_extended import JWTManager,jwt_required,create_access_token,get_jwt_identity,get_jwt
 from flask_cors import CORS
-from admins import AdminLogin, CreateVenue,AdminCheck,GetVenues,GetVenueData,EditVenue,CreateShow,DeleteVenue,EditShow,DeleteShow,GetShow
+from admins import AdminLogin, CreateVenue,AdminCheck,GetVenues,GetVenueData,EditVenue,CreateShow,DeleteVenue,EditShow,DeleteShow,GetShow, AdminRegister
 # from workers import celery_app
 # from cache import cache
 
@@ -103,6 +103,7 @@ api.add_resource(DeleteShow,'/admin/<string:id>/<string:movie_id>/deleteShow')
 api.add_resource(GetShow,'/admin/<string:movie_id>/getShow')
 api.add_resource(EditShow,'/admin/<string:id>/<string:movie_id>/EditShow')
 api.add_resource(GetImage,'/image/<string:image>')
+api.add_resource(AdminRegister, '/admin/register')
 
 # api.add_resource(CreateVenue,'/admin/createVenue')
 # api.add_resource(Refresh, '/refresh')

@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <nav v-if="!$store.state.user.accessToken" class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
       <span class="">
         <img src="../assets/ticketshow-logo.png" class="navbar-brand img-fluid img-thumbnail card-img" alt="TicketShow Logo" id="logo"/>
@@ -39,6 +39,7 @@
       </div>
     </div>
   </nav>
+  <user-logged-nav-bar v-else/>
 <!--Page content-->
   <div class="container center mt-4">
     <h1 class="display-1">Welcome to <span class="rounded-pill px-4 custom-border bg-black text-light">TicketShow</span></h1>
@@ -68,4 +69,5 @@
 import NavBar from "@/views/NavBar.vue";
 import UserLogin from "@/views/UserLogin.vue";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
+import UserLoggedNavBar from "@/views/UserLoggedNavBar.vue";
 </script>
