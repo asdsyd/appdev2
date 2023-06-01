@@ -29,8 +29,7 @@ class Admin(db.Model):
     
     username = db.Column(db.String(), primary_key=True)
     password = db.Column(db.String(), nullable=False)
-    # email = db.Column(db.String())
-
+    email = db.Column(db.String(),nullable=False)
 
 class Theatre(db.Model):
     __tablename__ = 'theatres'

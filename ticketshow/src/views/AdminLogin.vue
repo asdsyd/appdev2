@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive ,ref} from "vue";
 
 import axios from "../axios";
 import {useStore} from "vuex";
@@ -21,14 +21,24 @@ const details = reactive({
 //     refreshToken:"",
 //     username:"",
 // })
+const err = ref(null)
 const store = useStore()
 const router = useRouter()
 const HandleSubmit = () => {
   axios.post("/admin/login", details).then(res => {
     const {message,...payload}=  res.data
+    store.commit("removeuser")
     store.commit("adduser",payload)
     router.push(`/admin/${payload.username}`)
-  }).catch(error => console.log(error))
+  }).catch(error =>{
+    console.log(error)
+    // if(error.response){
+    //   if(error.response.data){
+    //     err.value = error.response.data.message
+    //
+    //   }
+    // }
+  })
 
 };
 </script>

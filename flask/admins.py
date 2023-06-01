@@ -6,7 +6,7 @@ from models import Admin, db, Theatre, Movie,MovieRatings
 from werkzeug.security import check_password_hash, generate_password_hash
 import datetime
 import os
-from config import UPLOAD_FOLDER
+from config import UPLOAD_FOLDER,ADMIN_REGISTER_SECURITY_KEY
 
 datetime = datetime.datetime
 
@@ -29,6 +29,40 @@ class AdminCheck(Resource):
         })
         reponse.status_code=200
         return reponse
+
+class AdminRegister(Resource):
+    @jwt_required()
+    def post(self):
+        role = get_jwt().get("role")
+
+        if role!="admin":
+             return abort(401,message="you are not a admin")
+        username = request.json['username']
+        password = request.json['password']
+        email = request.json["email"]
+        security_key = request.json["securitykey"]
+        if security_key!=ADMIN_REGISTER_SECURITY_KEY:
+            return abort(401,message="security key doesn't match")
+
+        admin = Admin.query.filter_by(username=username).first()
+        if  admin:
+            return abort(401, message="admin exists already")
+
+        hash_pw = generate_password_hash(password)
+        admin = Admin(username=username,password=hash_pw,email=email)
+        db.session.add(admin)
+        db.session.commit()
+
+        response = jsonify({
+                'message': 'Admin register in successfully!',
+
+        })
+        response.status_code = 200
+        return response
+
+
+
+
 
 class EditVenue(Resource):
     @jwt_required()
