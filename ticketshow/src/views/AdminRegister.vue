@@ -7,7 +7,7 @@ import {computed} from "vue";
 import {useRouter} from "vue-router";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 // import * as url from "url";
-
+const successmessage = ref(null)
 const err = ref(null)
 const store = useStore()
 const router = useRouter()
@@ -30,14 +30,15 @@ const passwordMatch = computed(()=> details.password===details.retypepassword)
 // })
 const HandleSubmit = () => {
   const actualDetails = {username:details.username, password:details.password, email:details.email, securitykey:details.securityKey}
-  console.log(details)
   axios.post("/admin/register", actualDetails).then(res => {
-    router.push('/admin/'+ store.state.user.username)
+    successmessage.value =res.data.message
+
+    setTimeout(()=>router.push('/admin/'+ store.state.user.username),3000)
   }).catch(error => {
     console.log(error)
-    // if (error.response.data) {
-    //   err.value = error.response.data.message
-    // }
+    if (error.response.data) {
+      err.value = error.response.data.message
+    }
   })
 };
 </script>

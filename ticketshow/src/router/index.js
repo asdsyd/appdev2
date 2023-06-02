@@ -2,6 +2,7 @@ import HomeViewVue from "@/views/About.vue";
 import axios from "../axios";
 import { createRouter, createWebHistory } from "vue-router";
 import LandingPage from "@/views/LandingPage.vue";
+import {useStore} from "vuex";
 
 const routes = [
   {
@@ -33,6 +34,15 @@ const routes = [
     path: "/admin/login",
     name: "AdminLogin",
     component: () => import("../views/AdminLogin.vue"),
+    beforeEnter: (to, from, next) => {
+      const store =useStore()
+      console.log(store)
+   if(store.state.user){
+  next('/admin/'+store.state.user.username)
+}else{
+  next()
+}
+    },
   },
   {
     path:"/admin/:username",

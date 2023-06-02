@@ -225,10 +225,8 @@ const deleteShow = (obj)=>{
 const cancelDelete = (which) => {
   if(which==="show"){
    Showdeleter.value=false
-   Show_to_delete={
-    venue:null,
-    show:null
-   }
+   Show_to_delete.venue=null
+    Show_to_delete.show=null
 }else{
   deleter.value = false;
   venue_to_delete_id.value = null;

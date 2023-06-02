@@ -1,5 +1,5 @@
 <script setup>
-import { reactive ,ref} from "vue";
+import {onBeforeMount, reactive, ref} from "vue";
 
 import axios from "../axios";
 import {useStore} from "vuex";
@@ -21,6 +21,7 @@ const details = reactive({
 //     refreshToken:"",
 //     username:"",
 // })
+
 const err = ref(null)
 const store = useStore()
 const router = useRouter()

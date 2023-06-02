@@ -54,7 +54,7 @@ class AdminRegister(Resource):
         db.session.commit()
 
         response = jsonify({
-                'message': 'Admin register in successfully!',
+                'message': 'Admin registered successfully! He may login to access his account',
 
         })
         response.status_code = 200
@@ -442,7 +442,11 @@ class DeleteShow(Resource):
         return resp
         
 class GetShow(Resource):
+    @jwt_required()
     def get(self,movie_id):
+        role = get_jwt().get("role")
+        if role != "admin":
+            return abort(401,message="Unauthorized")
         movie = Movie.query.filter_by(id=movie_id).first()
         if not movie:
             return abort(404,message="movie not found")
@@ -462,6 +466,9 @@ class GetShow(Resource):
 class GetVenues(Resource):
     @jwt_required()
     def get(self):
+        # role = get_jwt().get("role")
+        # if role != "admin":
+        #     return abort(401,message="Unauthorized")
         all_venues=Theatre.query.all()
         serialized_venues = []
         for v in all_venues:

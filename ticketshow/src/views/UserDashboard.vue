@@ -1,20 +1,21 @@
 <template>
   <user-logged-nav-bar/>
-  <div class="accordion" id="accordionExample">
-    <div class="accordion-item">
+  <div v-if="all_Venues && !is_loading" class="accordion" id="accordionExample">
+    <div v-for="v in all_Venues" class="accordion-item">
       <h2 class="accordion-header">
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-          Venue #1
+          {{v.name}}
         </button>
       </h2>
       <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
         <div class="accordion-body">
           <div class="row row-cols-1 row-cols-md-3 g-4 container">
-            <div class="col">
+            <div v-if="v.movies" v-for="c in v.movies" lass="col">
               <div class="card h-100">
-                <img src="../assets/movie-icon.png" class="card-img-top" alt="...">
+                <img v-if="c.image" :src="'http://localhost:8000/image/'+ c.image" class="card-img-top" alt="movie_image">
+                <img v-else src="../assets/movie-icon.png" class="card-img-top" alt="...">
                 <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
+                  <h5 class="card-title">{{c.movie_name}}</h5>
                   <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
                   <a href="#" class="btn btn-primary">Book</a>
                 </div>
@@ -127,13 +128,15 @@ import store from "@/store";
 
 
 const all_Venues = ref(store.state.venues||null)
-const is_loading = ref(false)
+const is_loading = ref(true)
 onBeforeMount(()=>{
-  if(store.state.venues){
+  if(store.state.venues.length>0){
     all_Venues.value = store.state.venues
+    is_loading.value=false
   }else{
     axios.get('/user/getVenues').then(res=>{
       const {venues} = res.data
+      console.log(venues)
       venues.forEach(e=>{
         e.movies.forEach(l=>{
           const c = new Date(l.end)
@@ -146,10 +149,13 @@ onBeforeMount(()=>{
           l.end=c
         })
       })
-      store.commit("addvenues",venues)
-    })
-  }
 
+      store.commit("addvenues",venues)
+      all_Venues.value = store.state.venues
+      is_loading.value=false
+    }).catch(err=>console.log(err))
+  }
+console.log(all_Venues.value)
 })
 const logout = ()=>{
   store.commit('removeuser')
