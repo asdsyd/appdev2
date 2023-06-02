@@ -41,26 +41,66 @@
   </nav>
   <user-logged-nav-bar v-else/>
 
-  <h1>Some features of Ticketshow</h1>
-  <div>
-    Movie Search: Allow users to search for movies by title, genre, or actors.
-  </div>
-  <div>
-    Movie Details: Provide detailed information about each movie, including synopsis, cast, director, release date, duration, and user ratings.
-  </div>
-  <div>
-    Showtime Selection: Allow users to select the desired showtime for a movie, including date and time.
-  </div>
-  <div>
-    Multiple Theater Support: Extend the app to support multiple theaters or cinema chains, allowing users to choose their preferred location.
-  </div>
-  <div>
-    Booking Confirmation: Provide users with a confirmation screen summarizing their booking details before completing the purchase.
-  </div>
-  <div>
-    Admin Panel: Develop an admin panel to manage movie listings, showtimes, seating arrangements, and user reviews/ratings.
-  </div>
+  <div class=" mb-3 container h1 rounded-pill border border-success ">Some features of Ticketshow</div>
 
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+      <div class="card h-100">
+        <img src="../assets/img.png" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Show Search</h5>
+          <p class="card-text">Allows our users to search for movies by title, tags, or location.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="../assets/img_1.png" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Show Details</h5>
+          <p class="card-text">Provide detailed information about each movie, including synopsis, tags, ticket price, show timings and user ratings.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="../assets/img_2.png" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Show Time Selection</h5>
+          <p class="card-text">Allow users to select the desired showtime for a movie, including date and time.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="../assets/img_3.png" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Multiple Venue Support</h5>
+          <p class="card-text">Extend the app to support multiple theaters or cinema chains, allowing users to choose their preferred location.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="../assets/img_4.png" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Booking Confirmation</h5>
+          <p class="card-text">Provide users with a confirmation screen summarizing their booking details before completing the purchase.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <img src="../assets/img_5.png" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Admin Panel and Tools</h5>
+          <p class="card-text">Develop an admin panel to manage movie listings, showtimes, seating arrangements, and user reviews/ratings.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
 
   <user-bottom-nav-bar/>
 </template>

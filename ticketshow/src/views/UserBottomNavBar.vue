@@ -10,8 +10,8 @@
         <router-link to="'/'">
       <img src="../assets/ticketshow-logo.png" class="navbar-brand img-fluid img-thumbnail logo-bottom" alt="TicketShow Logo"/>
         </router-link>
-      <router-link :to="'/'">
-      <span class="navbar-brand disabled" href="#">TicketShow</span>
+      <router-link to="/">
+      <span class="navbar-brand disabled text-decoration-none" >TicketShow</span>
       </router-link>
       </span>
       <ul class="nav nav-tabs justify-content-center">
@@ -22,7 +22,7 @@
           <router-link :to="'/features'" class="nav-link text-decoration-none" >Features</router-link>
         </li>
         <li class="nav-item nav-tabs">
-          <router-link :to="'/'" class="nav-link text-decoration-none" >Contact Us</router-link>
+          <router-link :to="'/contactUs'" class="nav-link text-decoration-none" >Contact Us</router-link>
         </li>
       </ul>
     </div>

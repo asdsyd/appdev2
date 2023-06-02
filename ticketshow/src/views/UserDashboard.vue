@@ -1,5 +1,5 @@
 <template>
-  <user-logged-nav-bar/>
+  <user-nav-bar />
   <div v-if="all_Venues && !is_loading" class="accordion" id="accordionExample">
     <div v-for="v in all_Venues" class="accordion-item">
       <h2 class="accordion-header">

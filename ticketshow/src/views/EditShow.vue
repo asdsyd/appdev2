@@ -25,14 +25,14 @@
           <label>Start show on:&nbsp;&nbsp;</label>
           <input
             type="datetime-local"
-            class="align-self-auto rounded-pill"
+            class="align-self-auto rounded-pill mb-3"
             v-model="startTime"
             @change="checkTime"
           />
         </div>
 
         <div class="">
-          <label>End show on:&nbsp;&nbsp;</label>
+          <label>End show on: &nbsp;&nbsp;</label>
           <input
             type="datetime-local"
             class="align-self-auto rounded-pill"
