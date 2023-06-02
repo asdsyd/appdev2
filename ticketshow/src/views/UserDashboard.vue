@@ -3,6 +3,7 @@
   <div v-if="all_Venues && !is_loading" class="accordion" id="accordionExample">
     <div v-for="v in all_Venues" class="accordion-item">
       <h2 class="accordion-header">
+        <p> testing</p>
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
           {{v.name}}
         </button>

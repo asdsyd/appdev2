@@ -7,10 +7,31 @@
   <div class="outer">
     <!--    creating create-show form-->
     <form class="m-3 custom" @submit.prevent="handleSubmit" >
+      <div v-if="err" class="alert alert-danger " role="alert">
+        {{ err }}
+      </div>
+      <div v-if="showName" class="alert-success" role="alert">
+        Show created successfully!
+      </div>
+<!--      <div class="mt-4 mb-3 col-3 container ">-->
+<!--        <input class="container col-3 form-control rounded-pill " type="text" v-model="showName" placeholder="Username" />-->
+<!--      </div>-->
+<!--      <div class="mt-3 mb-3 col-3 container">-->
+<!--        <input class="container col-3 form-control rounded-pill" type="password" v-model="details.password" placeholder="Password" />-->
+<!--      </div>-->
+<!--      <div class="mt-3 col-3 container">-->
+<!--        <input class="container mb-3 px-4 btn btn-outline-primary rounded-pill" type="submit" value="Login" placeholder="Login" />-->
+<!--      </div>-->
+
+
         <div class="col-4 c1">
+          <div class="mt-4 mb-3 col-3 container">
+            <input type="text" id="form6Example1" class="container col-3 form-control rounded-pill" v-model="showName" />
+            <label class="form-label container" for="form6Example1">Show name</label>
+          </div>
           <div class="form-outline">
-            <input type="text" id="form6Example1" class="form-control rounded-pill" v-model="showName" />
-            <label class="form-label" for="form6Example1">Show name</label>
+            <textarea type="" id="form6Example1" class="form-control " v-model="showDescription" />
+            <label class="form-label" for="form6Example1">Show description</label>
           </div>
         </div>
 
@@ -94,6 +115,7 @@ const router = useRouter()
 const fileInput = ref(null)
 const header = ref('Create a Show')
 const showName = ref("")
+const showDescription = ref("")
 const startTime = ref("")
 const endTime = ref("")
 const tags = ref([])
@@ -116,6 +138,7 @@ const handleSubmit=()=>{
   const form = new FormData()
 console.log(tags.value)
   form.append("showName",showName.value)
+  form.append("showDescription",showDescription.value)
   form.append("startTime",startTime.value)
   form.append("endTime",endTime.value)
   form.append("tags",tags.value)

@@ -54,6 +54,9 @@ const HandleSubmit = () => {
     <div v-if="err" class="alert alert-danger " role="alert">
       {{ err }}
     </div>
+    <div v-if="successmessage" class="alert alert-success " role="alert">
+      {{ successmessage }}
+    </div>
     <div class="mt-4 mb-3 col-3 container ">
       <input class="container col-3 form-control rounded-pill " type="text" v-model="details.username" placeholder="Admin Username" />
     </div>

@@ -106,7 +106,12 @@ const routes = [
     name: "UserProfile",
     component: () => import("../views/UserProfile.vue"),
     meta: {requiresAuth: true}
-  }
+  },
+  {
+    path: "/features",
+    name: "Features",
+    component: () => import("../views/Features.vue"),
+  },
 ];
 
 const router = createRouter({
