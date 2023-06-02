@@ -4,7 +4,7 @@ from flask import request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required,get_jwt,get_jwt_identity
 from flask_restful import Resource, abort
 from config import USER_UPLOAD_FOLDER
-from models import db, User,Theatre
+from models import db, User,Theatre,Movie,Booking,UserRating,MovieRatings
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -61,7 +61,22 @@ class UserRegister(Resource):
         response.status_code=201
 
         return response
-    
+
+class Booking(Resource):
+    def post(self,th_id,movie_id):
+        role = get_jwt().get("role")
+        if role != "user":
+            return abort(401,message="Unauthorized")
+        theatre_exists = Theatre.query.filter_by(id=th_id).first()
+        if not theatre_exists:
+            return abort(404,message="theatre doesnt exists")
+        movie = Movie.query.filter_by(id=movie_id).first()
+        if not movie:
+            return abort(404,message="movie doesnt exists")
+        number = request.json["number"]
+
+
+
 class GetUserVenues(Resource):
     @jwt_required()
     def get(self):
@@ -79,6 +94,7 @@ class GetUserVenues(Resource):
                         "movie_id":d.id,
                         "movie_name":d.name,
                         "image":d.image,
+                        "description":d.description,
                         "start":d.startTime,
                         "end":d.endTime
                     })

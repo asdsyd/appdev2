@@ -3,7 +3,8 @@ from flask_restful import Api,Resource,abort
 from flask_migrate import Migrate
 
 from users import UserLogin, UserRegister,UserCheck,GetUserVenues
-# from mail import mail
+
+from flask_mail import Mail,Message
 from models import db
 from flask_jwt_extended import JWTManager,jwt_required,create_access_token,get_jwt_identity,get_jwt
 from flask_cors import CORS
@@ -17,6 +18,7 @@ from admins import AdminLogin, CreateVenue,AdminCheck,GetVenues,GetVenueData,Edi
 #         with app.app_context():
 #             return self.run(*args, **kwargs)
 #
+
 app, api,  = None, None
 
 def create_app():
@@ -24,7 +26,8 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object('config')
     api = Api(app)
-    # mail.init_app(app)
+    mail = Mail()
+    mail.init_app(app)
     jwt = JWTManager(app)
     app.app_context().push()
 
@@ -44,9 +47,9 @@ def create_app():
     # celery_app.Task = ContextTask
     app.app_context().push()
 
-    return app, api
+    return app, api,mail
 
-app, api = create_app()
+app, api,mail = create_app()
 
 class AdminRefresh(Resource):
     @jwt_required(refresh=True)
@@ -83,6 +86,24 @@ class UserRefresh(Resource):
         resp.status_code=200
         return resp
 
+class SendEmail(Resource):
+    def get(self):
+
+        message = Message("hi im sending a email",sender="norepaly@gamil.com",recipients=['mda835856@gmail.com'])
+        message.body = "hello this ia a god email"
+        try:
+            mail.send(message)
+            resp = jsonify({
+                "message":"dome"
+            })
+            return resp
+        except:
+            resp = jsonify({
+                "message":"dome"
+            })
+            return resp
+
+
 # api.add_resource(Register, '/register')
 api.add_resource(AdminLogin, '/admin/login')
 api.add_resource(UserLogin, '/user/login')
@@ -103,6 +124,7 @@ api.add_resource(GetShow,'/admin/<string:movie_id>/getShow')
 api.add_resource(EditShow,'/admin/<string:id>/<string:movie_id>/EditShow')
 api.add_resource(GetImage,'/image/<string:image>')
 api.add_resource(AdminRegister, '/admin/register')
+api.add_resource(SendEmail,'/sende')
 
 # api.add_resource(CreateVenue,'/admin/createVenue')
 # api.add_resource(Refresh, '/refresh')

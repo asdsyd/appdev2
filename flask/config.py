@@ -1,7 +1,7 @@
 import os
 from datetime import timedelta
-MAIL_USERNAME = "ENTER YOUR EMAIL HERE"
-MAIL_PASSWORD = "ENTER PW HERE"
+MAIL_USERNAME = ""
+MAIL_PASSWORD = ""
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 DEBUG = True

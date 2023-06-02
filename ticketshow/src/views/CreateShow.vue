@@ -138,7 +138,7 @@ const handleSubmit=()=>{
   const form = new FormData()
 console.log(tags.value)
   form.append("showName",showName.value)
-  form.append("showDescription",showDescription.value)
+  form.append("description",showDescription.value)
   form.append("startTime",startTime.value)
   form.append("endTime",endTime.value)
   form.append("tags",tags.value)

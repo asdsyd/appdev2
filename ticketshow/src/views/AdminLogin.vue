@@ -25,6 +25,16 @@ const details = reactive({
 const err = ref(null)
 const store = useStore()
 const router = useRouter()
+onBeforeMount(()=>{
+
+  const store =useStore()
+
+  if(Object.keys(store.state.user).length>0){
+    router.push('/admin/'+store.state.user.username)
+  }
+
+})
+
 const HandleSubmit = () => {
   axios.post("/admin/login", details).then(res => {
     const {message,...payload}=  res.data

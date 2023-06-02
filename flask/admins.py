@@ -190,6 +190,7 @@ class CreateShow(Resource):
         if request.content_type == 'application/json':
             args = request.json
             showName = args["showName"]
+            description = args["description"]
             startTime = args["startTime"]
             endTime = args["endTime"]
             tags = args["tags"]
@@ -206,6 +207,8 @@ class CreateShow(Resource):
                 return abort(401,message="startime is empty")
             if endTime is None or endTime == '':
                 return abort(401,message="endtime is empty")
+            if description is None or description == '':
+                return abort(401,message="description is empty")
             
 
             start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
@@ -213,7 +216,7 @@ class CreateShow(Resource):
             for v in theatre_exists.movies:
                 if v.startTime == start:
                     abort(409,message="movies cannot be at the same time")
-            show = Movie(name=showName,tags=tags,ticketPrice=ticketPrice,startTime=start,endTime=end)
+            show = Movie(name=showName,tags=tags,ticketPrice=ticketPrice,startTime=start,endTime=end,description=description)
             show.theatreId=id
             show.theatre_name=theatre_exists.name
             show.totalSeats =theatre_exists.capacity
@@ -242,6 +245,7 @@ class CreateShow(Resource):
 
         args = request.form
         showName = args["showName"]
+        description = args["description"]
         startTime = args["startTime"]
         endTime = args["endTime"]
         tags = args["tags"]
@@ -258,6 +262,8 @@ class CreateShow(Resource):
             return abort(401,message="startime is empty")
         if endTime is None or endTime == '':
             return abort(401,message="endtime is empty")
+        if description is None or description == '':
+            return abort(401,message="description is empty")
         
         start =datetime.strptime(startTime, "%Y-%m-%dT%H:%M")
         end = datetime.strptime(endTime,"%Y-%m-%dT%H:%M")
@@ -266,7 +272,7 @@ class CreateShow(Resource):
                     abort(409,message="two movies cannot be at the same time")
 
 
-        show = Movie(name=showName,tags=tags,ticketPrice=ticketPrice,startTime=start,endTime=end,image=f"{image.filename}")
+        show = Movie(name=showName,tags=tags,ticketPrice=ticketPrice,startTime=start,endTime=end,image=f"{image.filename}",description=description)
         show.theatreId=id
         show.theatre_name=theatre_exists.name
         show.totalSeats =theatre_exists.capacity
@@ -311,6 +317,7 @@ class EditShow(Resource):
         if request.content_type == 'application/json':
             args = request.json
             showName = args["showName"]
+            description = args["description"]
 
             startTime = args["startTime"]
             endTime = args["endTime"]
@@ -323,7 +330,8 @@ class EditShow(Resource):
                 return abort(401,message="ticketprice is empty")
             if tags is None or tags == []:
                 return abort(401,message="tags is empty")
-            
+            if description is None or description == '':
+                return abort(401,message="description is empty")
             if startTime is None or startTime == '':
                 return abort(401,message="startime is empty")
             if endTime is None or endTime == '':
@@ -337,6 +345,7 @@ class EditShow(Resource):
             movie.tags = tags
             movie.endTime = end
             movie.startTime = start
+            movie.description= description
 
             
             movie_in_ratings = MovieRatings.query.filter_by(movie_name=movie.name).first()
@@ -363,7 +372,7 @@ class EditShow(Resource):
 
         args = request.form
         showName = args["showName"]
-
+        description = args["description"]
         startTime = args["startTime"]
         endTime = args["endTime"]
         tags = args["tags"]
@@ -371,7 +380,8 @@ class EditShow(Resource):
         image = request.files["image"]
         if showName is None or showName == '':
             return abort(401,message="showname is empty")
-
+        if description is None or description == '':
+              return abort(401,message="description is empty")
         if ticketPrice is None or ticketPrice == '':
             return abort(401,message="ticketprice is empty")
         if tags is None or tags == []:
@@ -395,6 +405,7 @@ class EditShow(Resource):
                 os.remove(str(movie.image))
         movie.tags = tags
         movie.endTime = end
+        movie.description=description
         movie.startTime = start
         movie.image=f"{image.filename}"
         image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
@@ -455,7 +466,9 @@ class GetShow(Resource):
         serialized_movie.append(movie.tags)
         serialized_movie.append(movie.ticketPrice)
         serialized_movie.append(movie.startTime)
+
         serialized_movie.append(movie.endTime)
+        serialized_movie.append(movie.description)
         if movie.image:
             serialized_movie.append(movie.image)
         resp = jsonify(serialized_movie)

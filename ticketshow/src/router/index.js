@@ -15,6 +15,10 @@ const routes = [
     name:'Homeview',
     component:LandingPage
   },
+  {path:"/admin/:Venue/:Show/book",
+  name:"Booking",
+    component:()=> import("../views/Book.vue")
+  },
   {
 
     path: "/about",
@@ -33,16 +37,7 @@ const routes = [
   {
     path: "/admin/login",
     name: "AdminLogin",
-    component: () => import("../views/AdminLogin.vue"),
-    beforeEnter: (to, from, next) => {
-      const store =useStore()
-      console.log(store)
-   if(store.state.user){
-  next('/admin/'+store.state.user.username)
-}else{
-  next()
-}
-    },
+    component: () => import("../views/AdminLogin.vue")
   },
   {
     path:"/admin/:username",

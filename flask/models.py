@@ -50,6 +50,7 @@ class Movie(db.Model):
     ticketPrice = db.Column(db.Float(), nullable=False)
     startTime = db.Column(db.DateTime(), nullable=False)
     endTime = db.Column(db.DateTime(), nullable=False)
+    description = db.Column(db.String(255),nullable=False)
     seatsSold = db.Column(db.Integer(), nullable=False)
     totalSeats = db.Column(db.Integer(), nullable=False)
     theatreId = db.Column(db.Integer(), db.ForeignKey('theatres.id'))

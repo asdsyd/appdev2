@@ -20,6 +20,10 @@
         </div>
       </div>
 
+      <div class="form-outline container col-6 ">
+        <textarea type="" id="form6Example1" class="form-control container " v-model="showDescription" />
+        <label class="form-label" for="form6Example1">Show description</label>
+      </div>
       <div>
         <div class="">
           <label>Start show on:&nbsp;&nbsp;</label>
@@ -85,7 +89,7 @@
         <label>Ticket price</label>
       </div>
 
-      <div v-if="image_present" class="text-center">
+      <div v-show="image_display" class="text-center">
   <img :src="image_present" class="rounded" alt="...">
 </div>
 
@@ -126,6 +130,7 @@ const image_present = ref(null)
 const header = ref("Edit a Show");
 const showName = ref("");
 const startTime = ref(null);
+const showDescription = ref(null)
 const endTime = ref(null);
 const tags = ref([]);
 const ticketPrice = ref();
@@ -134,7 +139,7 @@ const venue_id = ref(router.currentRoute.value.params.Venue);
 
 const err = ref(null);
 const IstimeCorrect = ref(true);
-
+const image_display = computed(()=>image_present.value!==null)
 //format DATES
 const FormatTime = (time) => {
   const timearr = time.split(" ");
@@ -173,13 +178,13 @@ onBeforeMount(() => {
   axios
     .get("/admin/" + movie_id.value + "/getShow")
     .then((res) => {
-      if (res.data.length <= 5) {
-        const [name, showtags, showticketPrice, showstarttime, shwoendtime] =
+      if (res.data.length <= 6) {
+        const [name, showtags, showticketPrice, showstarttime, shwoendtime,showdes] =
           res.data;
         showName.value = name;
         tags.value = showtags.split(",");
         ticketPrice.value = showticketPrice;
-
+        showDescription.value = showdes
         startTime.value = FormatTime(showstarttime);
         endTime.value = FormatTime(shwoendtime);
 
@@ -187,14 +192,14 @@ onBeforeMount(() => {
 
         isloading.value = false;
       } else {
-        const [name, showtags, showticketPrice, showstarttime, shwoendtime,image] =
+        const [name, showtags, showticketPrice, showstarttime, shwoendtime,showdes,image] =
           res.data;
         showName.value = name;
         tags.value = showtags.split(",");
         ticketPrice.value = showticketPrice;
+        showDescription.value = showdes
         startTime.value = FormatTime(showstarttime);
-        endTime.value = FormatTime(shwoendtime);
-      console.log(showstarttime)
+        endTime.value = FormatTime(shwoendtime)
         image_present.value = `http://localhost:8000/image/${image}`
         isloading.value = false;
       }
@@ -213,6 +218,7 @@ const handleSubmit = () => {
   console.log(tags.value);
   form.append("showName", showName.value);
   form.append("startTime", startTime.value);
+  form.append("description",showDescription.value);
   form.append("endTime", endTime.value);
   form.append("tags", tags.value);
   form.append("ticketPrice", ticketPrice.value);

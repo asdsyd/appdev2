@@ -3,7 +3,6 @@
   <div v-if="all_Venues && !is_loading" class="accordion" id="accordionExample">
     <div v-for="v in all_Venues" class="accordion-item">
       <h2 class="accordion-header">
-        <p> testing</p>
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
           {{v.name}}
         </button>
@@ -17,8 +16,8 @@
                 <img v-else src="../assets/movie-icon.png" class="card-img-top" alt="...">
                 <div class="card-body">
                   <h5 class="card-title">{{c.movie_name}}</h5>
-                  <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <a href="#" class="btn btn-primary">Book</a>
+                  <p class="card-text">{{c.description}}</p>
+                  <router-link class="btn btn-primary" :to="">Book</router-link>
                 </div>
               </div>
             </div>
@@ -41,7 +40,7 @@
 
 
 
-          <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+
         </div>
       </div>
     </div>

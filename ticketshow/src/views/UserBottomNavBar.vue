@@ -7,7 +7,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
     <div class="container-fluid">
       <span>
-        <router-link to="'/'">
+        <router-link to="/">
       <img src="../assets/ticketshow-logo.png" class="navbar-brand img-fluid img-thumbnail logo-bottom" alt="TicketShow Logo"/>
         </router-link>
       <router-link to="/">
