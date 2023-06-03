@@ -10,11 +10,16 @@ datetime = datetime.datetime
 class UserRegister(Resource):
 
     def post(self):
-
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']
-        image = request.files["image"]
+        image = None
+        if request.content_type == 'multipart/form-data': 
+            username = request.form['username']
+            password = request.form['password']
+            email = request.form['email']
+            image = request.files["image"]
+        else:
+            username = request.json['username']
+            password = request.json['password']
+            email = request.json['email']
 
         if username is None:
             return abort(400, message='Username not provided.')
@@ -28,7 +33,7 @@ class UserRegister(Resource):
             return abort(401, message='Username already exists.')
 
         hashed_pw = generate_password_hash(password)
-        if image:
+        if not image:
             user = User(
                 username=username,
                 password=hashed_pw,
@@ -83,6 +88,7 @@ class GetUserShow(Resource):
         return resp
 
 class Booking(Resource):
+    @jwt_required()
     def post(self,th_id,movie_id):
         role = get_jwt().get("role")
         if role != "user":
@@ -94,6 +100,28 @@ class Booking(Resource):
         if not movie:
             return abort(404,message="movie doesnt exists")
         number = request.json["number"]
+        if number is None or number <=0 or number == '':
+            return abort(401,message="number of seats is empty or zero")
+        if number>movie.totalSeats:
+            return abort(401,message="number of seats is greater than available seats")
+        identity = get_jwt_identity()
+        id = User.query.filter_by(username=identity).first().user_id
+        booking_instance = Booking()
+        booking_instance.userid = id
+        booking_instance.movie_id = movie_id
+        try:
+            db.session.add(booking_instance)
+            movie.seatsSold += number 
+            db.session.commit()
+            
+            resp= jsonify({
+                "message":"nooking confirmed"
+            })
+            resp.status_code=200
+            return resp
+        except:
+            return abort(500,message="some server error")
+
 
 
 

@@ -14,7 +14,9 @@
     <div v-if="err" class="alert alert-danger " role="alert">
       {{ err }}
     </div>
-
+    <div v-if="success" class="alert alert-success " role="alert">
+      {{ success }}
+    </div>
     <div>
       Available-Seats: {{ available_seats }}
     </div>
@@ -87,7 +89,7 @@ const HourFomatterObj = {
   "22":["10","PM"],
   "23":["11","PM"],
 } 
-
+const success = ref(null)
 const err= ref(null)
 const is_loading = ref(true)
 const number  = ref(1)
@@ -112,6 +114,18 @@ console.log(err)
 })
 })
 
+const HandleSubmit=()=>{
+  axios.post('/admin/' +venue +'/'+ Show+ '/book',{"number":number.value}).then(res=>{
+success.value = res.data.message
+setTimeout(()=>{
+  router.push('user/dashboard')
+},2000)
+  }).catch(error=>{
+    if(error.response.data){
+      err.value=error.response.data.message
+    }
+  })
+}
 </script>
 <style scoped>
 form{
