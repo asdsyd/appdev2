@@ -116,12 +116,14 @@ console.log(err)
 
 const HandleSubmit=()=>{
   axios.post('/admin/' +venue +'/'+ Show+ '/book',{"number":number.value}).then(res=>{
-success.value = res.data.message
+err.value = null
+    success.value = res.data.message
 setTimeout(()=>{
-  router.push('user/dashboard')
+  router.push('/user/dashboard')
 },2000)
   }).catch(error=>{
     if(error.response.data){
+      success.value = null
       err.value=error.response.data.message
     }
   })

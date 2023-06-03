@@ -90,7 +90,7 @@
       </div>
 
       <div v-show="image_display" class="text-center">
-  <img :src="image_present" class="rounded" alt="...">
+  <img :src="image_present" class="rounded img-fluid" alt="...">
 </div>
 
 

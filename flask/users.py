@@ -87,7 +87,7 @@ class GetUserShow(Resource):
         resp.status_code = 200
         return resp
 
-class Booking(Resource):
+class BookingShow(Resource):
     @jwt_required()
     def post(self,th_id,movie_id):
         role = get_jwt().get("role")
@@ -107,7 +107,7 @@ class Booking(Resource):
         identity = get_jwt_identity()
         id = User.query.filter_by(username=identity).first().user_id
         booking_instance = Booking()
-        booking_instance.userid = id
+        booking_instance.userid = int(id)
         booking_instance.movie_id = movie_id
         try:
             db.session.add(booking_instance)
@@ -115,7 +115,7 @@ class Booking(Resource):
             db.session.commit()
             
             resp= jsonify({
-                "message":"nooking confirmed"
+                "message":"Booking confirmed"
             })
             resp.status_code=200
             return resp
@@ -151,7 +151,8 @@ class GetUserVenues(Resource):
                                 "image":d.image,
                                 "description":d.description,
                                 "start":d.startTime,
-                                "end":d.endTime
+                                "end":d.endTime,
+                                "seats":d.totalSeats - d.seatsSold
                             })
                 c["movies"] = f
             serialized_venues.append(c)
@@ -210,3 +211,14 @@ class UserLogin(Resource):
         response.status_code=200
 
         return response
+    
+
+class getBookings(Resource):
+    @jwt_required()
+    def get(self):
+        role= get_jwt().get("role")
+        if role != "user":
+            return abort(401,message="unauthorized access")
+        identity = get_jwt_identity()
+        id = User.query.filter_by(username = identity).first().id
+        bookings = Booking.query.filer_by(userid=id)

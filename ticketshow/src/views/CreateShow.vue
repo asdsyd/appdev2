@@ -1,68 +1,68 @@
 
 <template>
   <NavBar></NavBar>
-  <div class=" container show-pill" >
-    <h1 class="px-5 text-light display-4 rounded-pill show-pill-inside cust">{{ header }}</h1>
+  <div class="container show-pill">
+    <h1 class="px-5 text-light display-4 rounded-pill show-pill-inside cust">
+      {{ header }}
+    </h1>
   </div>
-  <div class="outer">
+  <div  class="outer">
     <!--    creating create-show form-->
-    <form class="m-3 custom" @submit.prevent="handleSubmit" >
-      <div v-if="err" class="alert alert-danger " role="alert">
-        {{ err }}
-      </div>
-      <div v-if="showName" class="alert-success" role="alert">
-        Show created successfully!
-      </div>
-<!--      <div class="mt-4 mb-3 col-3 container ">-->
-<!--        <input class="container col-3 form-control rounded-pill " type="text" v-model="showName" placeholder="Username" />-->
-<!--      </div>-->
-<!--      <div class="mt-3 mb-3 col-3 container">-->
-<!--        <input class="container col-3 form-control rounded-pill" type="password" v-model="details.password" placeholder="Password" />-->
-<!--      </div>-->
-<!--      <div class="mt-3 col-3 container">-->
-<!--        <input class="container mb-3 px-4 btn btn-outline-primary rounded-pill" type="submit" value="Login" placeholder="Login" />-->
-<!--      </div>-->
-
-
-        <div class="col-4 c1">
-          <div class="mt-4 mb-3 col-3 container">
-            <input type="text" id="form6Example1" class="container col-3 form-control rounded-pill" v-model="showName" />
-            <label class="form-label container" for="form6Example1">Show name</label>
-          </div>
-          <div class="form-outline">
-            <textarea type="" id="form6Example1" class="form-control " v-model="showDescription" />
-            <label class="form-label" for="form6Example1">Show description</label>
-          </div>
+    <form class="m-3 custom" @submit.prevent="handleSubmit">
+      <div class="col-4 c1">
+        <div class="form-outline">
+          <input
+            type="text"
+            id="form6Example1"
+            class="form-control rounded-pill"
+            v-model="showName"
+          />
+          <label class="form-label" for="form6Example1">Show name</label>
         </div>
+      </div>
 
-<div>
+      <div class="form-outline container col-6 ">
+        <textarea type="" id="form6Example1" class="form-control container " v-model="showDescription" />
+        <label class="form-label" for="form6Example1">Show description</label>
+      </div>
+      <div>
         <div class="">
           <label>Start show on:&nbsp;&nbsp;</label>
-          <input type="datetime-local" class="align-self-auto rounded-pill" v-model="startTime" @change="checkTime" />
+          <input
+            type="datetime-local"
+            class="align-self-auto rounded-pill mb-3"
+            v-model="startTime"
+            @change="checkTime"
+          />
         </div>
 
-      <div class="">
-      <label>End show on:&nbsp;&nbsp;</label>
-      <input type="datetime-local" class="align-self-auto rounded-pill" v-model="endTime" @change="checkTime">
+        <div class="">
+          <label>End show on: &nbsp;&nbsp;</label>
+          <input
+            type="datetime-local"
+            class="align-self-auto rounded-pill"
+            v-model="endTime"
+            @change="checkTime"
+          />
+        </div>
       </div>
-    </div>
 
-<!--      <div class="custom-select">-->
-<!--        <div class="select-trigger" @click="toggleDropdown">-->
-<!--          <span style="font-size:20px;padding-left: 5px">{{ "fds" }}</span>-->
-<!--          <i class="arrow-down"></i>-->
-<!--        </div>-->
-<!--        <div class="select-options" v-show="isDropdownOpen">-->
-<!--          <label v-for="option in options" :key="option.value">-->
-<!--            <input type="checkbox" :value="option.value" v-model="selectedValues">-->
-<!--            {{ option.label }}-->
-<!--          </label>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--      <div class="custom-select">-->
+      <!--        <div class="select-trigger" @click="toggleDropdown">-->
+      <!--          <span style="font-size:20px;padding-left: 5px">{{ "fds" }}</span>-->
+      <!--          <i class="arrow-down"></i>-->
+      <!--        </div>-->
+      <!--        <div class="select-options" v-show="isDropdownOpen">-->
+      <!--          <label v-for="option in options" :key="option.value">-->
+      <!--            <input type="checkbox" :value="option.value" v-model="selectedValues">-->
+      <!--            {{ option.label }}-->
+      <!--          </label>-->
+      <!--        </div>-->
+      <!--      </div>-->
 
-
-
-      <h3 v-if="!IstimeCorrect" class="text-danger">{{"Start time cannot be greater than endtime"}}</h3>
+      <h3 v-if="!IstimeCorrect" class="text-danger">
+        {{ "Start time cannot be greater than endtime" }}
+      </h3>
       <div class="checkboxes form-check-inline c1">
         <h4 class="border rounded-pill bg-success text-light">Add Tags</h4>
         <label>Thriller</label>
@@ -81,21 +81,30 @@
         <input type="checkbox" value="animation" v-model="tags" />
       </div>
 
-      <div class="col-6 form-outline mb-4 ">
-        <input type="number" class="col-4 form-control rounded-pill bg-gradient" v-model="ticketPrice" >
+      <div class="col-6 form-outline mb-4">
+        <input
+          type="number"
+          class="col-4 form-control rounded-pill bg-gradient"
+          v-model="ticketPrice"
+        />
         <label>Ticket price</label>
-        </div>
+      </div>
+
+  
+
 
 
       <div class="mb-3 c1">
-        <label for="formFile" class="form-label ">Choose the Show's Image</label>
-        <input class="form-control rounded-pill" type="file"  accept="image/*" @change="handleFileChange" >
-        <button type="submit" class="col-2 btn btn-primary c2 c4" >Save</button>
-        <h1 v-if="err" class="text-danger-emphasis">{{err}}</h1>
+        <label for="formFile" class="form-label">Choose the Show's new Image</label>
+        <input
+          class="form-control rounded-pill"
+          type="file"
+          accept="image/*"
+          @change="handleFileChange"
+        />
+        <button type="submit" class="col-2 btn btn-primary c2 c4">Save</button>
+        <h1 v-if="err" class="text-danger-emphasis">{{ err }}</h1>
       </div>
-
-
-
 
       <!-- Submit button -->
     </form>
