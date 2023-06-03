@@ -17,7 +17,7 @@
                 <div class="card-body">
                   <h5 class="card-title">{{c.movie_name}}</h5>
                   <p class="card-text">{{c.description}}</p>
-                  <router-link class="btn btn-primary" :to="">Book</router-link>
+                  <router-link class="btn btn-primary" :to="'/admin/'+ v.id +'/' + c.movie_id + '/' +'book'">Book</router-link>
                 </div>
               </div>
             </div>

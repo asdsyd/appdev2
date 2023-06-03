@@ -1,5 +1,4 @@
-from datetime import time
-
+import datetime
 from flask import request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required,get_jwt,get_jwt_identity
 from flask_restful import Resource, abort
@@ -7,7 +6,7 @@ from config import USER_UPLOAD_FOLDER
 from models import db, User,Theatre,Movie,Booking,UserRating,MovieRatings
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
+datetime = datetime.datetime
 class UserRegister(Resource):
 
     def post(self):
@@ -62,6 +61,27 @@ class UserRegister(Resource):
 
         return response
 
+class GetUserShow(Resource):
+    @jwt_required()
+    def get(self,movie_id):
+        role = get_jwt().get("role")
+        if role != "user":
+            return abort(401,message="Unauthorized")
+        movie = Movie.query.filter_by(id=movie_id).first()
+        if not movie:
+            return abort(404,message="movie not found")
+        serialized_movie =[]
+        serialized_movie.append(movie.name)
+        serialized_movie.append(movie.ticketPrice)
+        serialized_movie.append(movie.startTime)
+        serialized_movie.append(movie.endTime)
+        serialized_movie.append(movie.theatre_name)
+        Avialiable_seats = movie.totalSeats-movie.seatsSold
+        serialized_movie.append(Avialiable_seats)
+        resp = jsonify(serialized_movie)
+        resp.status_code = 200
+        return resp
+
 class Booking(Resource):
     def post(self,th_id,movie_id):
         role = get_jwt().get("role")
@@ -80,6 +100,9 @@ class Booking(Resource):
 class GetUserVenues(Resource):
     @jwt_required()
     def get(self):
+        role= get_jwt().get("role")
+        if role != "user":
+            return abort(401,message="unauthorized access")
         all_venues=Theatre.query.all()
         serialized_venues = []
         for v in all_venues:
@@ -87,17 +110,21 @@ class GetUserVenues(Resource):
                 "id":v.id,
                 "name":v.name,
             }
+
             if v.movies:
+
+
                 f =[]
                 for d in v.movies:
-                    f.append({
-                        "movie_id":d.id,
-                        "movie_name":d.name,
-                        "image":d.image,
-                        "description":d.description,
-                        "start":d.startTime,
-                        "end":d.endTime
-                    })
+                    if datetime.now()>d.startTime:
+                            f.append({
+                                "movie_id":d.id,
+                                "movie_name":d.name,
+                                "image":d.image,
+                                "description":d.description,
+                                "start":d.startTime,
+                                "end":d.endTime
+                            })
                 c["movies"] = f
             serialized_venues.append(c)
         response = jsonify({
