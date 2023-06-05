@@ -11,15 +11,15 @@ class UserRegister(Resource):
 
     def post(self):
         image = None
-        if request.content_type == 'multipart/form-data': 
+        if request.content_type == "application/json":
+            username = request.json['username']
+            password = request.json['password']
+            email = request.json['email']
+        else:
             username = request.form['username']
             password = request.form['password']
             email = request.form['email']
             image = request.files["image"]
-        else:
-            username = request.json['username']
-            password = request.json['password']
-            email = request.json['email']
 
         if username is None:
             return abort(400, message='Username not provided.')
@@ -40,7 +40,7 @@ class UserRegister(Resource):
                 email=email,
             )
         else:
-            image_path = f"{USER_UPLOAD_FOLDER}+/{image.filename}"
+            image_path = f"{USER_UPLOAD_FOLDER}/{image.filename}"
             user = User(username=username,
                         password=hashed_pw,
                         email=email,
@@ -220,5 +220,55 @@ class getBookings(Resource):
         if role != "user":
             return abort(401,message="unauthorized access")
         identity = get_jwt_identity()
-        id = User.query.filter_by(username = identity).first().id
-        bookings = Booking.query.filer_by(userid=id)
+        id = User.query.filter_by(username = identity).first().user_id
+        bookings = Booking.query.filter_by(userid=id)
+        bookings_arr = []
+        for v in bookings:
+            a = v.movie.name
+            b = v.movie.theatre_name
+            c = v.movie.startTime
+            d = v.movie.endTime
+            rating = None
+            can_rate = True
+            for rate in v.user.ratings:
+                if rate.movie == a:
+                    can_rate=False
+                    rating = rate.rating
+            bookings_arr.append({
+                "movie":a,
+                "venue":b,
+                "start":c,
+                "end":d,
+                "can_rate":can_rate,
+                "rating":rating
+            })
+            if len(bookings_arr)<=0:
+                resp = jsonify({
+                    "message":"no bookings"
+                })
+                resp.status_code=200
+                return resp
+            else:
+                resp  = jsonify(bookings_arr)
+                resp.status_code=200
+                return resp
+
+class getUser(Resource):
+    @jwt_required()
+    def get(self):
+        role= get_jwt().get("role")
+        if role != "user":
+            return abort(401,message="unauthorized access")
+        identity = get_jwt_identity()
+        user = User.query.filter_by(username=identity).first()
+        if not user:
+            return abort(401,message="user doesnt exist")
+        serialized_user = []
+        serialized_user.append(user.username)
+        serialized_user.append(user.email)
+        if(user.profile_image):
+            serialized_user.append(user.profile_image)
+        resp = jsonify(serialized_user)
+        resp.status_code=200
+        return resp
+

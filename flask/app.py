@@ -2,7 +2,7 @@ from flask import Flask,jsonify,send_from_directory
 from flask_restful import Api,Resource,abort
 from flask_migrate import Migrate
 
-from users import UserLogin, UserRegister,UserCheck,GetUserVenues,GetUserShow,BookingShow
+from users import UserLogin, UserRegister,UserCheck,GetUserVenues,GetUserShow,BookingShow,getBookings,getUser
 
 from flask_mail import Mail,Message
 from models import db
@@ -127,7 +127,8 @@ api.add_resource(AdminRegister, '/admin/register')
 api.add_resource(SendEmail,'/sende')
 api.add_resource(GetUserShow,'/user/<string:movie_id>/getShow')
 api.add_resource(BookingShow,'/admin/<string:th_id>/<string:movie_id>/book')
-
+api.add_resource(getBookings,'/user/bookings')
+api.add_resource(getUser,'/user/getuser')
 
 # api.add_resource(SearchTheatre, '/search/<query>')
 
