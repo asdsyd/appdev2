@@ -1,59 +1,24 @@
 <template>
   <UserLoggedNavBar/>
 
-
-    <div>
-      <section class="vh-100" style="background-color: #eee;">
-        <div class="container py-5 h-100">
-          <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-md-12 col-xl-4">
-
-              <div class="card" style="border-radius: 15px;">
-                <div class="card-body text-center">
-                  <div class="mt-3 mb-4">
-                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2-bg.webp"
-                         class="rounded-circle img-fluid" style="width: 100px;" />
-                  </div>
-                  <h4 class="mb-2">{{ !store.state.user.username }}</h4>
-                  <p class="text-muted mb-4">Ticketshow Customer <span class="mx-2">|</span> <router-link :to="'/' "
-                      >Home</router-link></p>
-                  <div class="mb-4 pb-2">
-                    <button type="button" class="btn btn-outline-primary btn-floating">
-                      <i class="fab fa-facebook-f fa-lg"></i>
-                    </button>
-                    <button type="button" class="btn btn-outline-primary btn-floating">
-                      <i class="fab fa-twitter fa-lg"></i>
-                    </button>
-                    <button type="button" class="btn btn-outline-primary btn-floating">
-                      <i class="fab fa-skype fa-lg"></i>
-                    </button>
-                  </div>
-                  <button type="button" class="btn btn-primary btn-rounded btn-lg">
-                    Message now
-                  </button>
-                  <div class="d-flex justify-content-between text-center mt-5 mb-2">
-                    <div>
-                      <p class="mb-2 h5">8471</p>
-                      <p class="text-muted mb-0">Wallets Balance</p>
-                    </div>
-                    <div class="px-3">
-                      <p class="mb-2 h5">8512</p>
-                      <p class="text-muted mb-0">Income amounts</p>
-                    </div>
-                    <div>
-                      <p class="mb-2 h5">4751</p>
-                      <p class="text-muted mb-0">Total Transactions</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </section>
-
+  <div class="card" style="width: 18rem;">
+    <img v-if="!image_present" src="../assets/defaultDP.png" class="card-img-top" alt="...">
+    <img v-else :src="image_present" class="text-center card-img-top">
+    <div class="card-body">
+      <h5 class="card-title">Card title</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
     </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">An item</li>
+      <li class="list-group-item">A second item</li>
+      <li class="list-group-item">A third item</li>
+    </ul>
+    <div class="card-body">
+      <a href="#" class="card-link">Card link</a>
+      <a href="#" class="card-link">Another link</a>
+    </div>
+  </div>
+
 
 
   <UserBottomNavBar/>
@@ -62,4 +27,24 @@
 import UserNavBar from "@/views/UserNavBar.vue";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 import UserLoggedNavBar from "@/views/UserLoggedNavBar.vue";
+import {computed, onBeforeMount, ref} from "vue";
+import axios from "@/axios";
+const image_present = ref(null)
+const image_display = computed(()=>image_present.value!==null)
+const username = ref(null)
+const useremail = ref(null)
+onBeforeMount(()=>{
+  axios.get('/user/getuser').then(res=>{
+    if(res.data.length>2){
+      const [name,email,image] = res.data
+username.value = name
+      useremail.value = email
+    } else{
+      const [name.email] = res.data
+    }
+
+  }).catch(err=>console.log(err))
+})
+
+
 </script>

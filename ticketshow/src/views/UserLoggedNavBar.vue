@@ -26,7 +26,7 @@
               <li><router-link :to="'/admin/dashboard'" class="dropdown-item" href="#">Admin tools</router-link></li>
               <li><hr class="dropdown-divider"></li>
               <li><router-link :to="'/user/dashboard'" class="dropdown-item" href="#">Movies</router-link></li>
-              <li><router-link :to="'/user/login'" class="dropdown-item" href="#">Rate movie</router-link></li>
+              <li><router-link :to="'/' + $store.state.user.username + '/bookings'" class="dropdown-item" >Rate movie</router-link></li>
             </ul>
           </li>
           <li class="nav-item mx-2">
