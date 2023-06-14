@@ -31,6 +31,7 @@ state.venues=state.venues.filter((e,i)=>i!==id)
       const {accessToken,...rest} = state.user
       state.user = {accessToken,payload}
     },
+   
 
   },
   actions: {

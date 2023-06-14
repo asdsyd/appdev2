@@ -1,8 +1,14 @@
-<template>
-  <router-view  />
+<template  >
+  <router-view />
 </template>
-
+<script setup>
+</script>
 <style>
+.blurrr{
+  filter: blur(10px);
+  opacity: 0.6;
+  background-color: rgba(0, 0, 0, 0.1);
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

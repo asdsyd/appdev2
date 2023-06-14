@@ -76,7 +76,7 @@ class MovieRatings(db.Model):
 
 class Booking(db.Model):
     __tablename__ = "userBooking"
-    id = db.Column(db.String(36), primary_key=True, default= str(uuid.uuid4()))
+    id = db.Column(db.String(), primary_key=True, default= str(uuid.uuid4()))
     userid = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
     movie_id = db.Column(db.String(),db.ForeignKey("movies.id"))
 

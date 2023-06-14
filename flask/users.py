@@ -2,6 +2,7 @@ import datetime
 from flask import request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required,get_jwt,get_jwt_identity
 from flask_restful import Resource, abort
+from sqlalchemy import func
 from config import USER_UPLOAD_FOLDER
 from models import db, User,Theatre,Movie,Booking,UserRating,MovieRatings
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -221,9 +222,12 @@ class getBookings(Resource):
             return abort(401,message="unauthorized access")
         identity = get_jwt_identity()
         id = User.query.filter_by(username = identity).first().user_id
-        bookings = Booking.query.filter_by(userid=id)
+        bookings = Booking.query.filter_by(userid=int(id))
         bookings_arr = []
+        bookings_map = {}
+        re =0
         for v in bookings:
+            z = v.movie.id
             a = v.movie.name
             b = v.movie.theatre_name
             c = v.movie.startTime
@@ -234,24 +238,73 @@ class getBookings(Resource):
                 if rate.movie == a:
                     can_rate=False
                     rating = rate.rating
-            bookings_arr.append({
-                "movie":a,
-                "venue":b,
-                "start":c,
-                "end":d,
-                "can_rate":can_rate,
-                "rating":rating
-            })
-            if len(bookings_arr)<=0:
+            if not bookings_map.get(f"{v.movie.name}{v.movie.theatre_name}{v.movie.startTime}"):
+                    bookings_arr.append({
+                        "id":z,
+                        "movie":a,
+                        "venue":b,
+                        "start":c,
+                        "end":d,
+                        "can_rate":can_rate,
+                        "rating":rating,
+                    })
+                    bookings_map[f"{v.movie.name}{v.movie.theatre_name}{v.movie.startTime}"]=True
+        if len(bookings_arr)<=0:
                 resp = jsonify({
                     "message":"no bookings"
                 })
                 resp.status_code=200
                 return resp
-            else:
+        else:
                 resp  = jsonify(bookings_arr)
                 resp.status_code=200
                 return resp
+
+class Rate(Resource):
+    @jwt_required()
+    def post(self,movie_id):
+        role= get_jwt().get("role")
+        if role != "user":
+            return abort(401,message="unauthorized access")
+        identity = get_jwt_identity()
+        user_id = User.query.filter_by(username=identity).first().user_id
+        if not user_id:
+            return abort(401,message="user doesnt exist")
+        movie = Movie.query.filter_by(id=movie_id).first()
+        if not movie:
+            return abort(404,message="movie doesnt exists")
+        rating = request.json["rating"]
+        if not rating or rating is None:
+            abort(401,message="rating is empty")
+        prev_rate = UserRating.query.filter_by(userid=user_id,movie=movie.name).first()
+        if prev_rate:
+            return abort(401,message="already rated")
+        user_rating = UserRating(userid=user_id,movie=movie.name,rating=rating)
+        db.session.add(user_rating)
+        db.session.commit()
+        movie_to_rate = MovieRatings.query.filter_by(movie_name=movie.name).first()
+        rating_count = UserRating.query.filter_by(userid = user_id,movie = movie.name).count()
+        sum_rating = db.session.query(func.sum(UserRating.rating)).filter(UserRating.userid==user_id,UserRating.movie==movie.name).scalar()
+        float_rating = float(sum_rating/rating_count)
+        movie_to_rate.rating=float_rating
+        mov = movie_to_rate.movie_name
+        try:
+            db.session.commit()
+            resp = jsonify({
+                "message":"done",
+                "rate":float_rating,
+                "moive":mov
+            })
+            resp.status_code = 200
+            return resp
+        except:
+            resp = jsonify({
+                "err":"e"
+            })
+            resp.status_code=400
+            return resp
+
+        
 
 class getUser(Resource):
     @jwt_required()

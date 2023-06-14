@@ -40,7 +40,7 @@ onBeforeMount(()=>{
 username.value = name
       useremail.value = email
     } else{
-      const [name.email] = res.data
+      const [name,email] = res.data
     }
 
   }).catch(err=>console.log(err))
