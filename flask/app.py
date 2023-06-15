@@ -1,16 +1,16 @@
-from flask import Flask,jsonify,send_from_directory
+from flask import Flask,jsonify,send_from_directory,request
 from flask_restful import Api,Resource,abort
 from flask_migrate import Migrate
 
 from users import UserLogin, UserRegister,UserCheck,GetUserVenues,GetUserShow,BookingShow,getBookings,getUser,Rate
 
 from flask_mail import Mail,Message
-from models import db
+from models import db,User
 from flask_jwt_extended import JWTManager,jwt_required,create_access_token,get_jwt_identity,get_jwt
 from flask_cors import CORS
 from admins import AdminLogin, CreateVenue,AdminCheck,GetVenues,GetVenueData,EditVenue,CreateShow,DeleteVenue,EditShow,DeleteShow,GetShow, AdminRegister
 # from workers import celery_app
-# from cache import cache
+from rediscache import cache
 
 
 # class ContextTask(celery_app.Task):
@@ -32,7 +32,7 @@ def create_app():
     app.app_context().push()
 
     CORS(app, resources={r'/*': {'origins': '*'}})
-    # cache.init_app(app)
+    cache.init_app(app)
     db.init_app(app)
     with app.app_context():
         db.create_all()
@@ -87,10 +87,15 @@ class UserRefresh(Resource):
         return resp
 
 class SendEmail(Resource):
-    def get(self):
+    def post(self):
+        username = request.json["username"]
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            abort(401,message="user doesnt exist")
+        email = user.email
 
-        message = Message("hi im sending a email",sender="norepaly@gamil.com",recipients=['mda835856@gmail.com'])
-        message.body = "hello this ia a god email"
+        message = Message("hi im sending a email",sender="norepaly@gamil.com",recipients=[user.email])
+        message.body = "hello this ia a good pass reset email"
         try:
             mail.send(message)
             resp = jsonify({
