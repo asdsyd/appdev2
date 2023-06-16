@@ -3,6 +3,7 @@ from datetime import timedelta
 MAIL_USERNAME = "wastemenmail@gmail.com"
 MAIL_PASSWORD = "fijcovnxyhdodbbp"
 
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 DEBUG = True
 
@@ -30,9 +31,3 @@ MAIL_DEFAULT_SENDER = ('Ticketer', MAIL_USERNAME)
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
 
-CACHE_TYPE = 'RedisCache'
-CACHE_REDIS_HOST = 'localhost'
-CACHE_REDIS_PORT = 6379
-CACHE_REDIS_DB = 0
-CACHE_REDIS_URL = 'redis://localhost:6379/0'
-CACHE_DEFAULT_TIMEOUT = 500
