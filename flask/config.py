@@ -3,6 +3,7 @@ from datetime import timedelta
 MAIL_USERNAME = "wastemenmail@gmail.com"
 MAIL_PASSWORD = "fijcovnxyhdodbbp"
 
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 DEBUG = True
 
