@@ -397,13 +397,14 @@ class EditShow(Resource):
                 if v.startTime == start and v.endTime<=start:
                     if v.id != str(movie_id):
                          abort(409,message="movie cannot be at the same time")
+        
                 
                         
     
         image.save(f"{UPLOAD_FOLDER+'/'+image.filename}")
         if(movie.image):
-            if(os.path.exists(movie.image)):
-                os.remove(str(movie.image))
+            if(os.path.exists(f"{UPLOAD_FOLDER}/{movie.image}")):
+                os.remove(f"{UPLOAD_FOLDER}/{movie.image}")
         movie.tags = tags
         movie.endTime = end
         movie.description=description

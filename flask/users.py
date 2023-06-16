@@ -1,4 +1,5 @@
 import datetime
+import os
 from flask import request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required,get_jwt,get_jwt_identity
 from flask_restful import Resource, abort
@@ -27,6 +28,8 @@ class UserRegister(Resource):
 
         if password is None:
             return abort(400, message='Password not provided.')
+        if email is None:
+            return abort(400, message='email not provided.')
 
         user = db.session.query(User).get(username)
 
@@ -45,14 +48,12 @@ class UserRegister(Resource):
             user = User(username=username,
                         password=hashed_pw,
                         email=email,
-            profile_image=image_path
+            profile_image=image
                         )
             image.save(image_path)
 
 
         db.session.add(user)
-
-
         db.session.commit()
 
         access_token = create_access_token(identity=username,additional_claims={'role':"user"})
@@ -325,3 +326,100 @@ class getUser(Resource):
         resp.status_code=200
         return resp
 
+class SearchMovie(Resource):
+    def get(self,search):
+        all_venues=Theatre.query.all()
+        serialized_venues = []
+        for v in all_venues:
+            c = {
+                "id":v.id,
+                "name":v.name,
+            }
+
+            if v.movies:
+                f =[]
+                for d in v.movies:
+                    if search in d.name: 
+                        if datetime.now()>d.startTime:
+                                f.append({
+                                    "movie_id":d.id,
+                                    "movie_name":d.name,
+                                    "image":d.image,
+                                    "description":d.description,
+                                    "start":d.startTime,
+                                    "end":d.endTime,
+                                    "seats":d.totalSeats - d.seatsSold
+                                })
+                                
+                c["movies"] =f
+            if len(c["movies"])>0:    
+                serialized_venues.append(c)
+        response = jsonify({
+            "venues":serialized_venues
+        })
+        response.status_code=200
+        return response
+    
+
+class EditUser(Resource):
+    @jwt_required()
+    def get(self):
+        role= get_jwt().get("role")
+        if role != "user":
+            return abort(401,message="unauthorized access")
+        identity = get_jwt_identity()
+        user = User.query.filter_by(username=identity).first()
+        if not user:
+            return abort(401,message="user doesnt exist")
+        image = None
+        if request.content_type == "application/json":
+            username = request.json['username']
+            email = request.json['email']
+        else:
+            username = request.form['username']
+            email = request.form['email']
+            image = request.files["image"]
+        
+        
+        if username is None:
+            return abort(400, message='Username not provided.')
+        if email is None:
+            return abort(400, message='email not provided.')
+        user.username = username
+        user.email = email
+        if image:
+            if os.path.exists(f"{USER_UPLOAD_FOLDER}/{user.profile_image}"):
+                os.remove(f"{USER_UPLOAD_FOLDER}/{user.profile_image}")
+            image.save(f"{USER_UPLOAD_FOLDER}/{image.filename}")
+            user.profile_image = image.filename
+        resp = jsonify({
+            "message":"done"
+        })     
+        resp.status_code=200
+        return resp
+    
+class ChandPass(Resource):
+    @jwt_required()
+    def post(self):
+        role= get_jwt().get("role")
+        if role != "user":
+            return abort(401,message="unauthorized access")
+        identity = get_jwt_identity()
+        user = User.query.filter_by(username=identity).first()
+        if not user:
+            return abort(401,message="user doesnt exist")
+        password = request.json["oldpass"]
+        new_pass = request.json["newpass"]
+        if password is None or new_pass is None:
+            return abort(401,message="please provide all fields")
+        if not check_password_hash(user.password, password):
+            return abort(401, message='Wrong Password')
+        user.password = generate_password_hash(new_pass)
+        resp = jsonify({
+            "message":"success"
+        })
+        resp.status_code=200
+        return resp
+        
+
+        

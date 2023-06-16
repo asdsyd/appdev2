@@ -2,24 +2,23 @@ from flask import Flask,jsonify,send_from_directory,request
 from flask_restful import Api,Resource,abort
 from flask_migrate import Migrate
 
-from users import UserLogin, UserRegister,UserCheck,GetUserVenues,GetUserShow,BookingShow,getBookings,getUser,Rate
+from users import UserLogin, UserRegister,UserCheck,GetUserVenues,GetUserShow,BookingShow,getBookings,getUser,Rate,SearchMovie
+from tasks import add
 
 from flask_mail import Mail,Message
 from models import db,User
 from flask_jwt_extended import JWTManager,jwt_required,create_access_token,get_jwt_identity,get_jwt
 from flask_cors import CORS
 from admins import AdminLogin, CreateVenue,AdminCheck,GetVenues,GetVenueData,EditVenue,CreateShow,DeleteVenue,EditShow,DeleteShow,GetShow, AdminRegister
-# from workers import celery_app
+from celerytasks import celerytask
 from rediscache import cache
 
+class ContextTask(celerytask.Task):
+    def __call__(self, *args, **kwargs):
+        with app.app_context():
+            return self.run(*args, **kwargs)
 
-# class ContextTask(celery_app.Task):
-#     def __call__(self, *args, **kwargs):
-#         with app.app_context():
-#             return self.run(*args, **kwargs)
-#
-
-app, api,  = None, None
+app, api,mail,celery = None, None,None,None
 
 def create_app():
 
@@ -38,18 +37,19 @@ def create_app():
         db.create_all()
     migrate = Migrate(app,db,render_as_batch=True)
     app.app_context().push()
+    celery = celerytask
 
-    # celery_app.conf.update(
-    #     broker_url = app.config['CELERY_BROKER_URL'],
-    #     result_backend = app.config['CELERY_RESULT_BACKEND'],
-    #     timezone = app.config['CELERY_TIMEZONE']
-    # )
-    # celery_app.Task = ContextTask
-    app.app_context().push()
+    celery.conf.update(
+        broker_url = app.config['CELERY_BROKER_URL'],
+        result_backend = app.config['CELERY_RESULT_BACKEND'],
+        timezone = app.config['CELERY_TIMEZONE']
+    )
+    celery.Task = ContextTask
+    
 
-    return app, api,mail
+    return app, api,mail,celery
 
-app, api,mail = create_app()
+app, api,mail,celery = create_app()
 
 class AdminRefresh(Resource):
     @jwt_required(refresh=True)
@@ -68,6 +68,12 @@ class AdminRefresh(Resource):
         resp.status_code=200
         return resp
 
+class puch(Resource):
+    def get(self,a,b):
+        job = add.delay(int(a),int(b))
+        result = job.wait()
+        return str(result),200
+    
 class GetImage(Resource):
     def get(self,image):
         return send_from_directory(app.config["UPLOAD_FOLDER"],image)
@@ -135,7 +141,8 @@ api.add_resource(BookingShow,'/admin/<string:th_id>/<string:movie_id>/book')
 api.add_resource(getBookings,'/user/bookings')
 api.add_resource(getUser,'/user/getuser')
 api.add_resource(Rate,'/user/<string:movie_id>/rating')
-
+api.add_resource(SearchMovie,"/sear/<string:search>")
+api.add_resource(puch,'/aa/<int:a>/<int:b>')
 
 # api.add_resource(SearchTheatre, '/search/<query>')
 
