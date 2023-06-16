@@ -10,7 +10,7 @@
       <li class="nav-item">
         <router-link class="m-2 lead text-black-1000 text-decoration-none" :to="'/admin/' + $store.state.user.username">Home</router-link>
       </li>
-      <li :hidden="isSummary" class="nav-item">
+      <li :hidden="isSummary" class="nav-item me-2">
         <router-link class=" lead text-black-1000 text-decoration-none" :to="'/admin/' + $store.state.user.username +'/AdminSummary'">Summary</router-link>
       </li>
       <li  class="nav-item">
