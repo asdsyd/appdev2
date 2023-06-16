@@ -5,7 +5,7 @@ import axios from "../axios";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
-// import * as url from "url";
+
 const image = ref(null)
 const err = ref(null)
 const store = useStore()

@@ -7,6 +7,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import datetime
 import os
 from config import UPLOAD_FOLDER,ADMIN_REGISTER_SECURITY_KEY
+from rediscache import cache
 
 datetime = datetime.datetime
 
@@ -453,6 +454,7 @@ class DeleteShow(Resource):
         return resp
         
 class GetShow(Resource):
+    
     @jwt_required()
     def get(self,movie_id):
         role = get_jwt().get("role")
@@ -477,11 +479,12 @@ class GetShow(Resource):
 
 
 class GetVenues(Resource):
+    @cache.cached(key_prefix="arbaz")
     @jwt_required()
     def get(self):
-        # role = get_jwt().get("role")
-        # if role != "admin":
-        #     return abort(401,message="Unauthorized")
+        role = get_jwt().get("role")
+        if role != "admin":
+            return abort(401,message="Unauthorized")
         all_venues=Theatre.query.all()
         serialized_venues = []
         for v in all_venues:
