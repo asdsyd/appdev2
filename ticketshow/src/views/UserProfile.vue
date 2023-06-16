@@ -37,7 +37,7 @@ onBeforeMount(()=>{
   axios.get('/user/getuser').then(res=>{
     if(res.data.length>2){
       const [name,email,image] = res.data
-username.value = name
+      username.value = name
       useremail.value = email
     } else{
       const [name,email] = res.data
