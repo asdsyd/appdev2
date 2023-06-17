@@ -1,4 +1,3 @@
-from typing import Any
 from flask_restful import Resource, abort, reqparse
 from flask import request, jsonify, json
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required,get_jwt,get_jwt_identity
@@ -7,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import datetime
 import os
 from config import UPLOAD_FOLDER,ADMIN_REGISTER_SECURITY_KEY
-from rediscache import cache
+from rediscache import cache,deletekey
 
 datetime = datetime.datetime
 
@@ -94,6 +93,7 @@ class EditVenue(Resource):
             for v in venue.movies:
                 v.totalSeats= capacity
         db.session.commit()
+        deletekey("flask_cache_venue")
         resp = jsonify({
             "message":"sucess"
         })
@@ -113,6 +113,7 @@ class DeleteVenue(Resource):
         try:
             db.session.delete(venue)
             db.session.commit()
+            deletekey("flask_cache_venue")
             resp = jsonify({
                 "message":"sucess"
             })
@@ -480,7 +481,7 @@ class GetShow(Resource):
 
 
 class GetVenues(Resource):
-    @cache.cached(key_prefix="arbaz")
+    @cache.cached(key_prefix="venue")
     @jwt_required()
     def get(self):
         role = get_jwt().get("role")

@@ -79,8 +79,8 @@ class Booking(db.Model):
     id = db.Column(db.String(), primary_key=True, default= str(uuid.uuid4()))
     userid = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
     movie_id = db.Column(db.String(),db.ForeignKey("movies.id"))
-    booking_time = db.Column(db.Date())
-    numberSeats = db.Column(db.Integer())
+    booking_time = db.Column(db.Date(),nullable=False)
+    numberSeats = db.Column(db.Integer(),nullable=False)
 
 
 

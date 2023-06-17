@@ -244,7 +244,7 @@ axios
   .get("/admin/getVenues")
   .then((res) => {
     const venues = res.data.venues;
-
+console.log(venues)
     store.commit("addvenues", venues);
     all_venues.venues = store.state.venues;
     isloading.value=false

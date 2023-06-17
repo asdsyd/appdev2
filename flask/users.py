@@ -110,6 +110,9 @@ class BookingShow(Resource):
         id = User.query.filter_by(username=identity).first().user_id
         booking_instance = Booking()
         booking_instance.userid = int(id)
+        booking_instance.numberSeats=number
+        date = datetime.date.today()
+        booking_instance.booking_time = date
         booking_instance.movie_id = movie_id
         try:
             db.session.add(booking_instance)
@@ -398,7 +401,7 @@ class EditUser(Resource):
         resp.status_code=200
         return resp
     
-class ChandPass(Resource):
+class ChangePass(Resource):
     @jwt_required()
     def post(self):
         role= get_jwt().get("role")
