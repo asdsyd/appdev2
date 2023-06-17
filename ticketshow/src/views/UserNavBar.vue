@@ -34,8 +34,8 @@
             <router-link :to="'/about'" class="nav-link" >About</router-link>
           </li>
         </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <form class="d-flex"  role="search" @submit.prevent="handlesearcher">
+          <input class="form-control me-2" v-model="search" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
         <div class="container">
@@ -52,6 +52,12 @@
 import store from '@/store';
 import router from '@/router';
 import UserLoggedNavBar from "@/views/UserLoggedNavBar.vue";
+import {ref} from "vue";
+
+const search = ref(null)
+const handlesearcher = ()=>{
+router.push('/Search/'+ search.value)
+}
 const logout = () => {
   store.commit("removeuser");
   router.push("/user/login");

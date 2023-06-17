@@ -1,1 +1,1 @@
-celery -A app.celery beat --max-interval 10 -l INFO
+celery -A app.celery beat --max-interval 5 -l INFO

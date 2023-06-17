@@ -1,4 +1,5 @@
 import datetime
+from datetime import date
 import os
 from flask import request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token,jwt_required,get_jwt,get_jwt_identity
@@ -111,8 +112,8 @@ class BookingShow(Resource):
         booking_instance = Booking()
         booking_instance.userid = int(id)
         booking_instance.numberSeats=number
-        date = datetime.date.today()
-        booking_instance.booking_time = date
+        da = date(day=datetime.now().day,year=datetime.now().year,month=datetime.now().month)
+        booking_instance.booking_time = da
         booking_instance.movie_id = movie_id
         try:
             db.session.add(booking_instance)
@@ -145,11 +146,9 @@ class GetUserVenues(Resource):
             }
 
             if v.movies:
-
-
                 f =[]
                 for d in v.movies:
-                    if datetime.now()>d.startTime:
+                    if datetime.now()<d.startTime:
                             f.append({
                                 "movie_id":d.id,
                                 "movie_name":d.name,
@@ -343,7 +342,7 @@ class SearchMovie(Resource):
                 f =[]
                 for d in v.movies:
                     if search in d.name: 
-                        if datetime.now()>d.startTime:
+                        if datetime.now()<d.startTime:
                                 f.append({
                                     "movie_id":d.id,
                                     "movie_name":d.name,

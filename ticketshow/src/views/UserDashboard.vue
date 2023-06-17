@@ -37,7 +37,8 @@
                 />
                 <div class="card-body">
                   <h5 class="card-title">{{ c.movie_name }}</h5>
-                  <p class="card-text">{{ c.description }}</p>
+                  <p><b>Starts on</b>:- {{FormatTime(c.start,true)}}</p>
+                  <p class="card-text"><b>description</b>:- {{ c.description }}</p>
                   <router-link
                     v-if="c.seats > 0"
                     class="btn btn-primary"
@@ -121,20 +122,6 @@ onBeforeMount(() => {
       .get("/user/getVenues")
       .then((res) => {
         const { venues } = res.data;
-        console.log(venues);
-        venues.forEach((e) => {
-          e.movies.forEach((l) => {
-            const c = new Date(l.end);
-            c.setHours(c.getHours() - 5);
-            c.setMinutes(c.getMinutes() - 30);
-            const f = new Date(l.start);
-            f.setHours(f.getHours() - 5);
-            f.setMinutes(f.getMinutes() - 30);
-            l.start = f;
-            l.end = c;
-          });
-        });
-
         store.commit("addvenues", venues);
         all_Venues.value = store.state.venues;
         is_loading.value = false;
@@ -143,6 +130,53 @@ onBeforeMount(() => {
   }
   console.log(all_Venues.value);
 });
+
+const FormatTime = (time,isend) => {
+  const timearr = time.split(" ");
+  timearr.shift();
+  timearr.pop();
+  let timestr
+  if(isend){
+     timestr = `${timearr[0]}th ${timearr[1]
+    }`;
+  }
+  const Hour =HourFomatterObj[timearr[3].slice(0,2)]
+  const Time = timearr[3].slice(3,5)
+
+    timestr = timestr + ` ${Hour[0]}:${Time} ${Hour[1]}`
+
+
+
+  return timestr;
+  // 2023-05-30T22:29
+};
+const HourFomatterObj = {
+  "00":["12","AM"],
+  "01":["1","AM"],
+  "02":["2","AM"],
+  "03":["3","AM"],
+  "04":["4","AM"],
+  "05":["5","AM"],
+  "06":["6","AM"],
+  "07":["7","AM"],
+  "08":["8","AM"],
+  "09":["9","AM"],
+  "10":["10","AM"],
+  "11":["11","AM"],
+  "12":["12","NOON"],
+  "13":["1","PM"],
+  "14":["2","PM"],
+  "15":["3","PM"],
+  "16":["4","PM"],
+  "17":["5","PM"],
+  "18":["6","PM"],
+  "19":["7","PM"],
+  "20":["8","PM"],
+  "21":["9","PM"],
+  "22":["10","PM"],
+  "23":["11","PM"],
+}
+
 const logout = () => {
   store.commit("removeuser");
   router.push("/user/login");

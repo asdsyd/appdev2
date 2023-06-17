@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeMount, ref } from "vue";
+import {computed, onBeforeMount, ref, watch} from "vue";
 import UserNavBar from "@/views/UserNavBar.vue";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 import axios from "@/axios";
@@ -99,6 +99,9 @@ const number  = ref(1)
 const price =  ref(null)
 const Totalprice = computed(()=>{if(price){return number.value*Number(price.value)}else{ return null}
 })
+watch(number,()=>{
+  err.value=null
+})
 const available_seats = ref(null)
 const venue_and_show = ref(null)
 const time_of_show = ref(null)
@@ -118,6 +121,10 @@ console.log(err)
 })
 
 const HandleSubmit=()=>{
+  if(number.value<=0 || number.value===null){
+    err.value = "number of seats cannot be zero or empty"
+    return
+  }
   axios.post('/admin/' +venue +'/'+ Show+ '/book',{"number":number.value}).then(res=>{
 err.value = null
     success.value = res.data.message

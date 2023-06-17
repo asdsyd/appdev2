@@ -3,7 +3,6 @@ from flask_restful import Api,Resource,abort
 from flask_migrate import Migrate
 
 from users import UserLogin, UserRegister,UserCheck,GetUserVenues,GetUserShow,BookingShow,getBookings,getUser,Rate,SearchMovie
-from tasks import add
 
 from flask_mail import Mail,Message
 from models import db,User
@@ -68,12 +67,6 @@ class AdminRefresh(Resource):
         resp.status_code=200
         return resp
 
-class puch(Resource):
-    def get(self,a,b):
-        job = add.delay(int(a),int(b))
-        result = job.wait()
-        return str(result),200
-    
 class GetImage(Resource):
     def get(self,image):
         return send_from_directory(app.config["UPLOAD_FOLDER"],image)
@@ -142,9 +135,7 @@ api.add_resource(getBookings,'/user/bookings')
 api.add_resource(getUser,'/user/getuser')
 api.add_resource(Rate,'/user/<string:movie_id>/rating')
 api.add_resource(SearchMovie,"/sear/<string:search>")
-api.add_resource(puch,'/aa/<int:a>/<int:b>')
 
-# api.add_resource(SearchTheatre, '/search/<query>')
 
 
 
