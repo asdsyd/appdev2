@@ -1,6 +1,6 @@
 from celerytasks import celerytask
 from models import db,User,Booking
-from app import mail
+from mailer import mail
 from flask_mail import Message
 from datetime import date
 import datetime
@@ -10,8 +10,8 @@ datetime=datetime.datetime
 
 @celerytask.on_after_finalize.connect
 def setup_periodic_task(sender,**kargs):
-    sender.add_periodic_task(1.0,daily.s(),name="print task")
-    sender.add_periodic_task(1.0,puchi.s(),name="print task")
+    sender.add_periodic_task(5.0,daily.s(),name="print task")
+    sender.add_periodic_task(1.0,puchi.s(),name="printer")
 
 @celerytask.task()
 def daily():

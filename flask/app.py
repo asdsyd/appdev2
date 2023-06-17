@@ -1,10 +1,10 @@
 from flask import Flask,jsonify,send_from_directory,request
 from flask_restful import Api,Resource,abort
 from flask_migrate import Migrate
-
+import tasks
 from users import UserLogin, UserRegister,UserCheck,GetUserVenues,GetUserShow,BookingShow,getBookings,getUser,Rate,SearchMovie
-
-from flask_mail import Mail,Message
+from mailer import mail
+from flask_mail import Message
 from models import db,User
 from flask_jwt_extended import JWTManager,jwt_required,create_access_token,get_jwt_identity,get_jwt
 from flask_cors import CORS
@@ -17,14 +17,13 @@ class ContextTask(celerytask.Task):
         with app.app_context():
             return self.run(*args, **kwargs)
 
-app, api,mail,celery = None, None,None,None
+app, api,mailer,celery = None, None,None,None
 
 def create_app():
 
     app = Flask(__name__)
     app.config.from_object('config')
     api = Api(app)
-    mail = Mail()
     mail.init_app(app)
     jwt = JWTManager(app)
     app.app_context().push()
@@ -48,7 +47,7 @@ def create_app():
 
     return app, api,mail,celery
 
-app, api,mail,celery = create_app()
+app, api,mailer,celery = create_app()
 
 class AdminRefresh(Resource):
     @jwt_required(refresh=True)
