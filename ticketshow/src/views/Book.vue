@@ -21,13 +21,16 @@
       Available-Seats: {{ available_seats }}
     </div>
     <div class="mt-4 mb-3 col-3 container ">
-      <input class="container col-3 form-control rounded-pill" type="number" v-model="number" placeholder="Number of Seats" min="1" :max="available_seats" />
+      <label>Number of Seats</label>
+      <input  class="container col-3 form-control rounded-pill" type="number" v-model="number" placeholder="Number of Seats" min="1" :max="available_seats" />
     </div>
     <div class="mt-3 mb-3 col-3 container">
-      <input class="container col-3 form-control rounded-pill" type="text" v-model="price" placeholder="price" />
+      <label>Price</label>
+      <input  readonly class="container col-3 form-control rounded-pill" type="text" v-model="price" placeholder="price" />
     </div>
     <div class="mt-3 mb-3 col-3 container">
-      <input class="container col-3 form-control rounded-pill" type="text" v-model="Totalprice" placeholder="Total price" />
+      <label>Total Price</label>
+      <input  readonly class="container col-3 form-control rounded-pill" type="text" v-model="Totalprice" placeholder="Total price" />
     </div>
     <div class="mt-3 col-3 container">
       <input class="container mb-3 px-4 btn btn-outline-primary rounded-pill" type="submit" value="Confirm Booking" placeholder="Book" />

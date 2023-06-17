@@ -14,7 +14,7 @@
             <input
               type="text"
               id="form6Example1"
-              class="form-control"
+              class="form-control rounded-pill"
               v-model="venue.name"
             />
             <label class="form-label" for="form6Example1">Venue name</label>
@@ -24,7 +24,7 @@
           <input
             type="number"
             id="form6Example3"
-            class="form-control"
+            class="form-control rounded-pill"
             v-model="venue.capacity"
           />
           <label class="form-label" for="form6Example3">Capacity</label>
@@ -38,14 +38,14 @@
         <input
           type="text"
           id="form6Example4"
-          class="form-control"
+          class="form-control rounded-pill"
           v-model="venue.place"
         />
         <label class="form-label" for="form6Example4">Place</label>
       </div>
 
       <!-- Email input -->
-      <div class="col-6 form-outline mb-4">
+      <div class="col-6 form-outline mb-4 rounded-pill">
         <select class="form-select" v-model="venue.location">
           <option>Hyderabad</option>
           <option>Delhi</option>

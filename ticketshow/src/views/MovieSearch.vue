@@ -1,6 +1,5 @@
 <script setup>
 
-import NavBar from "@/views/NavBar.vue";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 import UserNavBar from "@/views/UserNavBar.vue";
 </script>

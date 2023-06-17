@@ -231,6 +231,7 @@ class CreateShow(Resource):
             try:
                 db.session.add(show)
                 db.session.commit()
+                deletekey("flask_cache_venue")
                 resp= jsonify({
                     "message":"show added sucess"
                 })
@@ -421,6 +422,7 @@ class EditShow(Resource):
 
         try:
             db.session.commit()
+            deletekey("flask_cache_venue")
             resp= jsonify({
                 "message":"show added sucess"
             })

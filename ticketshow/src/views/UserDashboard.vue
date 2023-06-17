@@ -21,8 +21,8 @@
       >
         <div class="accordion-body">
           <div class="row row-cols-1 row-cols-md-3 g-4 container">
-            <div v-if="v.movies" v-for="c in v.movies" lass="col">
-              <div class="card h-100">
+            <div v-if="v.movies" v-for="c in v.movies" class="col">
+              <div class="card h-100 card-width">
                 <img
                   v-if="c.image"
                   :src="'http://localhost:8000/image/' + c.image"
@@ -32,7 +32,7 @@
                 <img
                   v-else
                   src="../assets/movie-icon.png"
-                  class="card-img-top"
+                  class="card-img-top image-width"
                   alt="..."
                 />
                 <div class="card-body">
@@ -148,3 +148,8 @@ const logout = () => {
   router.push("/user/login");
 };
 </script>
+<style>
+.card-width{
+  width: 130%;
+}
+</style>
