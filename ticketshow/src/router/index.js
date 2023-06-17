@@ -1,12 +1,23 @@
-import HomeViewVue from "@/views/HomeView.vue";
+import HomeViewVue from "@/views/About.vue";
 import axios from "../axios";
 import { createRouter, createWebHistory } from "vue-router";
+import LandingPage from "@/views/LandingPage.vue";
+import {useStore} from "vuex";
 
 const routes = [
   {
+    path: '/:catchAll(.*)',
+    name: "Error404",
+    component: () => import("../views/Error404.vue")
+  },
+  {
     path:'/',
     name:'Homeview',
-    component:HomeViewVue
+    component:LandingPage
+  },
+  {path:"/admin/:Venue/:Show/book",
+  name:"Booking",
+    component:()=> import("../views/Book.vue")
   },
   {
 
@@ -16,12 +27,17 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-        import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+        import(/* webpackChunkName: "about" */ "../views/About.vue"),
+  },
+  {
+    path: "/superAdmin/register",
+    name: "AdminRegister",
+    component: () => import("../views/AdminRegister.vue"),
   },
   {
     path: "/admin/login",
     name: "AdminLogin",
-    component: () => import("../views/AdminLogin.vue"),
+    component: () => import("../views/AdminLogin.vue")
   },
   {
     path:"/admin/:username",
@@ -42,6 +58,12 @@ const routes = [
     meta:{requiresAuth:true,AdminRoute:true}
   },
   {
+    path: "/admin/:Venue/EditVenue",
+    name: "EditVenue",
+    component: () => import("../views/EditVenue.vue"),
+    meta: {requiresAuth: true, AdminRoute: true},
+  },
+  {
     path: "/admin/:username/AdminSummary",
     name: "AdminSummary",
     component: () => import("../views/Summary.vue"),
@@ -56,6 +78,11 @@ const routes = [
     path: "/user/register",
     name: "UserRegister",
     component: () => import("../views/UserRegister.vue"),
+  },
+  {path:'/admin/:Venue/:Show/EditShow',
+  name:'EditShow',
+  component:()=>import('../views/EditShow.vue')
+  
   },
   {
     path: "/:username/dashboard",
@@ -74,6 +101,16 @@ const routes = [
     name: "UserProfile",
     component: () => import("../views/UserProfile.vue"),
     meta: {requiresAuth: true}
+  },
+  {
+    path: "/features",
+    name: "Features",
+    component: () => import("../views/Features.vue"),
+  },
+  {
+    path: "/contactUs",
+    name: "ContactUs",
+    component: () => import("../views/ContactUs.vue"),
   }
 ];
 

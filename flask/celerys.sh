@@ -1,0 +1,1 @@
+celery -A app.celery worker -c 4 --loglevel INFo
