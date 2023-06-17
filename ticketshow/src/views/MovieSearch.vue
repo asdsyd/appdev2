@@ -2,10 +2,11 @@
 
 import NavBar from "@/views/NavBar.vue";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
+import UserNavBar from "@/views/UserNavBar.vue";
 </script>
 
 <template>
-  <nav-bar/>
+  <user-nav-bar/>
 
   <user-bottom-nav-bar/>
 
