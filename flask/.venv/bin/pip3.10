@@ -1,4 +1,4 @@
-#!/Users/asd/Documents/IIT-M-Diploma/appdev2/flask/.venv/bin/python3
+#!/Users/asd/Documents/IIT-M-Diploma/appdev2/flask/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
