@@ -67,7 +67,7 @@ const venue = reactive({
 })
 const handleclick = ()=>{
 console.log(venue)
-  axios.post('/admin/createVenue',venue).then(res=>router.push('/admin/'+store.state.user.username)).catch(err=>console.log(err))
+  axios.post('/admin/createVenue',venue).then(res=>setTimeout(()=>router.push('/admin/'+store.state.user.username,3000))).catch(err=>console.log(err))
 }
 
 </script>

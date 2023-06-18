@@ -341,7 +341,7 @@ class SearchMovie(Resource):
             if v.movies:
                 f =[]
                 for d in v.movies:
-                    if search in d.name: 
+                    if search.upper() in d.name.upper() or search.lower() in d.name.lower(): 
                         if datetime.now()<d.startTime:
                                 f.append({
                                     "movie_id":d.id,
