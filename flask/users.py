@@ -149,6 +149,7 @@ class GetUserVenues(Resource):
                 f =[]
                 for d in v.movies:
                     if datetime.now()<d.startTime:
+                            rating  = MovieRatings.query.filter_by(movie_name=d.name).first().rating
                             f.append({
                                 "movie_id":d.id,
                                 "movie_name":d.name,
@@ -156,7 +157,8 @@ class GetUserVenues(Resource):
                                 "description":d.description,
                                 "start":d.startTime,
                                 "end":d.endTime,
-                                "seats":d.totalSeats - d.seatsSold
+                                "seats":d.totalSeats - d.seatsSold,
+                                "rating":rating
                             })
                 c["movies"] = f
             serialized_venues.append(c)
@@ -362,43 +364,6 @@ class SearchMovie(Resource):
         response.status_code=200
         return response
     
-
-class EditUser(Resource):
-    @jwt_required()
-    def get(self):
-        role= get_jwt().get("role")
-        if role != "user":
-            return abort(401,message="unauthorized access")
-        identity = get_jwt_identity()
-        user = User.query.filter_by(username=identity).first()
-        if not user:
-            return abort(401,message="user doesnt exist")
-        image = None
-        if request.content_type == "application/json":
-            username = request.json['username']
-            email = request.json['email']
-        else:
-            username = request.form['username']
-            email = request.form['email']
-            image = request.files["image"]
-        
-        
-        if username is None:
-            return abort(400, message='Username not provided.')
-        if email is None:
-            return abort(400, message='email not provided.')
-        user.username = username
-        user.email = email
-        if image:
-            if os.path.exists(f"{USER_UPLOAD_FOLDER}/{user.profile_image}"):
-                os.remove(f"{USER_UPLOAD_FOLDER}/{user.profile_image}")
-            image.save(f"{USER_UPLOAD_FOLDER}/{image.filename}")
-            user.profile_image = image.filename
-        resp = jsonify({
-            "message":"done"
-        })     
-        resp.status_code=200
-        return resp
     
 class ChangePass(Resource):
     @jwt_required()

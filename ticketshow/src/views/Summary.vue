@@ -1,6 +1,5 @@
 <template>
-  <NavBar :is-summary="true" />
-
+  <NavBar :is-summary="true" ></NavBar>
   <p> Testing out chart js</p>
   <div>
     <canvas id="myChart"></canvas>
@@ -12,7 +11,7 @@
   />
 </template>
 
-<script >
+<script>
 import NavBar from "@/views/NavBar.vue";
 import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
@@ -21,7 +20,7 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 export default {
   name: 'BarChart',
-  components: { Bar },
+  components: { Bar,NavBar },
   data() {
     return {
       chartData: {

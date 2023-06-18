@@ -10,7 +10,7 @@ datetime=datetime.datetime
 
 @celerytask.on_after_finalize.connect
 def setup_periodic_task(sender,**kargs):
-    sender.add_periodic_task(5.0,daily.s(),name="print task")
+    sender.add_periodic_task(5.0,daily.s(),name="dail reminder")
     sender.add_periodic_task(1.0,puchi.s(),name="printer")
 
 @celerytask.task()
@@ -22,7 +22,10 @@ def daily():
         bookings =Booking.query.filter(Booking.userid==v.user_id,Booking.booking_time==yesterday).all()
         if bookings is None or bookings==[]:
             message = Message("daily reminder",sender="norepaly@gamil.com",recipients=[v.email])
-            message.body = f"hello {v.username} this is someone from ticketshow this is your daily reminder to book as you haven't booked anything"
+            message.body = f"""hello {v.username} this is someone from ticketshow this is your daily reminder to book as you haven't booked anything
+            
+            so what are you waiting for grab your favourtie shows at reasonable price 
+            """
             mail.send(message)
 
 

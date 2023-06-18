@@ -1,21 +1,13 @@
 <template>
   <UserLoggedNavBar/>
-
+  
+<div class="d-flex  justify-content-center">
   <div class="card" style="width: 18rem;">
     <img v-if="!image_present" src="../assets/defaultDP.png" class="card-img-top" alt="...">
     <img v-else :src="image_present" class="text-center card-img-top">
     <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    </div>
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item">An item</li>
-      <li class="list-group-item">A second item</li>
-      <li class="list-group-item">A third item</li>
-    </ul>
-    <div class="card-body">
-      <a href="#" class="card-link">Card link</a>
-      <a href="#" class="card-link">Another link</a>
+      <h4 class="card-title">{{username}}</h4>
+      <h4 class="card-title">{{useremail}}</h4>
     </div>
   </div>
 
@@ -23,6 +15,7 @@
     <p>
       Click <router-link to="changePassword" >here  </router-link>to change password
     </p>
+  </div>
   </div>
 
 
@@ -47,6 +40,8 @@ onBeforeMount(()=>{
       useremail.value = email
     } else{
       const [name,email] = res.data
+      username.value = name
+      useremail.value=email
     }
 
   }).catch(err=>console.log(err))

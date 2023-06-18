@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from "vuex";
-import { reactive,ref } from "vue";
+import { reactive,ref ,watch} from "vue";
 import axios from "../axios";
 import { useRouter } from "vue-router";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
@@ -13,6 +13,7 @@ const details = reactive({
 const store = useStore()
 const err = ref(null)
 const router = useRouter()
+watch(details,()=>err.value=null)
 // const handleClick = (e) => {
 //     const [name,value] = e.target
 //     details[name] = value

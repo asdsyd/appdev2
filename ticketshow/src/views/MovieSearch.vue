@@ -90,7 +90,7 @@ const HourFomatterObj = {
           aria-expanded="true"
           aria-controls="collapseOne"
         >
-          {{ v.name }}
+        <router-link :to="'/'+v.id+'/details'"> {{ v.name }} </router-link>
         </button>
       </h2>
       <div

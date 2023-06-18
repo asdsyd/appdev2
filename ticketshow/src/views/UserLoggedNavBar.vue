@@ -23,7 +23,6 @@
             <ul class="dropdown-menu">
               <li><router-link :to="'/'+ $store.state.user.username + '/profile'" class="dropdown-item" href="#">My Profile</router-link></li>
               <li><router-link :to="'/'+ $store.state.user.username + '/bookings'" class="dropdown-item">My Bookings</router-link></li>
-              <li><router-link :to="'/admin/dashboard'" class="dropdown-item" href="#">Admin tools</router-link></li>
               <li><hr class="dropdown-divider"></li>
               <li><router-link :to="'/user/dashboard'" class="dropdown-item" href="#">Movies</router-link></li>
               <li><router-link :to="'/' + $store.state.user.username + '/bookings'" class="dropdown-item" >Rate movie</router-link></li>

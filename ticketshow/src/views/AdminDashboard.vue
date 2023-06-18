@@ -5,12 +5,12 @@
         <span class="sr-only"></span>
       </div>
     </div>
-  <div class="d-flex flex-wrap flex-row">
+  <div class="d-flex flex-wrap flex-row p-3">
     <div
       v-if="venue_checker && !isloading"
       v-for="v in all_venues.venues"
-      class="m-lg-3 card mb-3 border-primary"
-      style="width: 18rem"
+      class=" px-0  mx-1 card border-primary"
+  
     >
       <div class="card-body">
         <h5 class="card-title">{{ v.name }}</h5>
@@ -18,7 +18,7 @@
         <div>
           <div
             v-for="c in v.movies"
-            class="m-lg-3 card mb-3 border-primary"
+            class=" card mb-3 border-primary"
             style="width: 18rem"
           >
             <div class="card-body">
@@ -57,7 +57,7 @@
     </div>
     <!--    nested cards have to be fixed heres the help link https://stackoverflow.com/questions/67667887/nested-cards-fitting-cards-within-a-card-bootstrap-cards-->
 
-    <div v-if="!isloading" class="m-lg-3 card mb-3 border-dotted" style="width: 18rem">
+    <div v-if="!isloading" class="mx-1 card mb-3 border-dotted" style="width: 18rem">
       <div class="card-body">
         <h5 class="card-title text-bg-light">New Venue</h5>
         <p class="card-text">Click on the buttion below to add Venue</p>

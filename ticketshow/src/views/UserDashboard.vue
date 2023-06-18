@@ -11,7 +11,7 @@
           aria-expanded="true"
           aria-controls="collapseOne"
         >
-          <router-link to=""> {{ v.name }} </router-link>
+        <router-link :to="'/'+v.id+'/details'"> {{ v.name }} </router-link>
         </button>
       </h2>
       <div
@@ -37,6 +37,7 @@
                 />
                 <div class="card-body">
                   <h5 class="card-title">{{ c.movie_name }}</h5>
+                  <p v-if="c.rating"><b>rating:</b>{{c.rating.toFixed(1)}}</p>
                   <p><b>Starts on</b>:- {{FormatTime(c.start,true)}}</p>
                   <p class="card-text"><b>description</b>:- {{ c.description }}</p>
                   <router-link
@@ -56,6 +57,9 @@
       </div>
     </div>
   </div>
+
+
+
 
   <!--  <div class="row row-cols-1 row-cols-md-3 g-4 container">-->
   <!--    <div class="col">-->
@@ -111,7 +115,7 @@ import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 import UserLoggedNavBar from "@/views/UserLoggedNavBar.vue";
 import store from "@/store";
 
-const all_Venues = ref(store.state.venues || null);
+const all_Venues = ref(store.state.venues || []);
 const is_loading = ref(true);
 onBeforeMount(() => {
   if (store.state.venues.length > 0) {
