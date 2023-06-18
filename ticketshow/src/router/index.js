@@ -116,6 +116,11 @@ const routes = [
     path: "/search",
     name: "Search",
     component: () => import("../views/MovieSearch.vue")
+  },
+  {
+    path: "/:username/changePassword",
+    name: "Password",
+    component: () => import("../views/UserPasswordChange.vue")
   }
 ];
 

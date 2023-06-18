@@ -19,6 +19,12 @@
     </div>
   </div>
 
+  <div>
+    <p>
+      Click <router-link to="changePassword" >here  </router-link>to change password
+    </p>
+  </div>
+
 
 
   <UserBottomNavBar/>
