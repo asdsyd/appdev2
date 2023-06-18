@@ -2,7 +2,7 @@ from celerytasks import celerytask
 from models import db,User,Booking
 from mailer import mail
 from flask_mail import Message
-from datetime import date
+from datetime import date,timedelta
 import datetime
 
 datetime=datetime.datetime
@@ -17,8 +17,9 @@ def setup_periodic_task(sender,**kargs):
 def daily():
     all_users = User.query.all()
     da = date(day=datetime.now().day,year=datetime.now().year,month=datetime.now().month)
+    yesterday = da - timedelta(days=1)
     for v in all_users:
-        bookings =Booking.query.filter(Booking.userid==v.user_id,Booking.booking_time==da).all()
+        bookings =Booking.query.filter(Booking.userid==v.user_id,Booking.booking_time==yesterday).all()
         if bookings is None or bookings==[]:
             message = Message("daily reminder",sender="norepaly@gamil.com",recipients=[v.email])
             message.body = f"hello {v.username} this is someone from ticketshow this is your daily reminder to book as you haven't booked anything"

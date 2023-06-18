@@ -410,13 +410,14 @@ class ChangePass(Resource):
         user = User.query.filter_by(username=identity).first()
         if not user:
             return abort(401,message="user doesnt exist")
-        password = request.json["oldpass"]
-        new_pass = request.json["newpass"]
+        password = request.json["oldpassword"]
+        new_pass = request.json["password"]
         if password is None or new_pass is None:
             return abort(401,message="please provide all fields")
         if not check_password_hash(user.password, password):
             return abort(401, message='Wrong Password')
         user.password = generate_password_hash(new_pass)
+        db.session.commit()
         resp = jsonify({
             "message":"success"
         })
