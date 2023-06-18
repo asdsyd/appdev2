@@ -26,7 +26,6 @@ class User(db.Model):
 
 class Admin(db.Model):
     __tablename__ = 'admins'
-    
     username = db.Column(db.String(), primary_key=True)
     password = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(),nullable=False)
@@ -40,6 +39,13 @@ class Theatre(db.Model):
     locaton = db.Column(db.String(), nullable=False)
     capacity = db.Column(db.Integer(), nullable=False)
     movies = db.relationship('Movie', backref='theatre', lazy="dynamic")
+
+    def __init__(self, name, place, locaton, capacity):
+        self.id = str(uuid.uuid4())
+        self.name = name
+        self.place = place
+        self.locaton = locaton
+        self.capacity = capacity
 
 class Movie(db.Model):
     __tablename__ = 'movies'
@@ -58,16 +64,30 @@ class Movie(db.Model):
     bookings = db.relationship("Booking",backref="movie",lazy="dynamic")
     image = db.Column(db.String())
 
+    def __init__(self, name, tags, ticketPrice, startTime, endTime, description):
+        self.id = str(uuid.uuid4())
+        self.name = name
+        self.tags = tags
+        self.ticketPrice = ticketPrice
+        self.startTime = startTime
+        self.endTime = endTime
+        self.description = description
 
 class UserRating(db.Model):
     __tablename__ = 'userRating'
-    id = db.Column(db.String(36), primary_key=True, default= str(uuid.uuid4()), unique = True)
+    id = db.Column(db.String(36), primary_key=True, unique = True)
     userid = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
     movie = db.Column(db.Integer(),db.ForeignKey("movieratings.movie_name"))
     rating = db.Column(db.Integer(), nullable=False)
     __table_args__ = (
         db.CheckConstraint('rating <= 5', name='rating_should_be_less_than_5'),
     )
+    def __init__(self,userid,movie,rating):
+        self.id = str(uuid.uuid4())
+        self.userid = userid
+        self.movie = movie
+        self.rating= rating
+
 
 class MovieRatings(db.Model):
     __tablename__ = 'movieratings'
@@ -76,11 +96,14 @@ class MovieRatings(db.Model):
 
 class Booking(db.Model):
     __tablename__ = "userBooking"
-    id = db.Column(db.String(), primary_key=True, default= str(uuid.uuid4()), unique = True)
+    id = db.Column(db.String(), primary_key=True, unique = True)
     userid = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
     movie_id = db.Column(db.String(),db.ForeignKey("movies.id"))
     booking_time = db.Column(db.Date(),nullable=False)
     numberSeats = db.Column(db.Integer(),nullable=False)
+
+    def __init__(self):
+        self.id= str(uuid.uuid4())
 
 
 

@@ -145,7 +145,7 @@ class GetUserVenues(Resource):
                 "name":v.name,
             }
 
-            if v.movies:
+            if len(list(v.movies))>0:
                 f =[]
                 for d in v.movies:
                     if datetime.now()<d.startTime:
@@ -161,7 +161,7 @@ class GetUserVenues(Resource):
                                 "rating":rating
                             })
                 c["movies"] = f
-            serialized_venues.append(c)
+                serialized_venues.append(c)
         response = jsonify({
             "venues":serialized_venues
         })

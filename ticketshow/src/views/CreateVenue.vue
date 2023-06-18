@@ -1,7 +1,14 @@
 
 <template>
 <NavBar></NavBar>
+
   <div>
+    <div v-if="err" class="alert alert-danger " role="alert">
+      {{ err }}
+    </div>
+    <div v-if="successmessage" class="alert alert-success " role="alert">
+      {{ successmessage }}
+    </div>
     <form class="m-3" @submit.prevent="handleclick">
       <!-- 2 column grid layout with text inputs for the first and last names -->
       <h1 class="px-5 text-light display-4 rounded-pill show-pill-inside cust">
@@ -52,11 +59,14 @@
 
 <script setup>
 
-import {reactive} from "vue";
+import {reactive,ref,watch} from "vue";
 import axios from "../axios";
 import NavBar from "@/views/NavBar.vue";
 import router from "@/router";
 import {useStore} from "vuex";
+
+const successmessage = ref(null)
+const err = ref(null)
 
 const store = useStore()
 const venue = reactive({
@@ -65,9 +75,13 @@ const venue = reactive({
   place:'',
   location:''
 })
+watch(venue,()=>err.value=null)
 const handleclick = ()=>{
 console.log(venue)
-  axios.post('/admin/createVenue',venue).then(res=>setTimeout(()=>router.push('/admin/'+store.state.user.username,3000))).catch(err=>console.log(err))
+  axios.post('/admin/createVenue',venue).then(res=>{
+    successmessage.value = "success in adding venue"
+    setTimeout(()=>router.push('/admin/'+store.state.user.username),3000)
+}).catch(error=>err.value="there was some error")
 }
 
 </script>

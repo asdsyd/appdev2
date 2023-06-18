@@ -166,7 +166,8 @@ const rate = () => {
  
   axios
     .post("/user/"+ movie_to_rate.value+"/rating", { rating:Number(rating.value) })
-    .then((res) => {toggleModal({to:'close'})
+    .then((res) => {toggleModal({to:'close'});
+    window.location.reload()
     console.log(res)
 })
     .catch((e) => console.log(e));

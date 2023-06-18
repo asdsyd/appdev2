@@ -60,7 +60,7 @@
       </div>
     </div>
   </div>
-
+<div v-if="all_Venues.length<=0 && !is_loading">no movies avaliable the moment</div>
 
 
 
@@ -131,6 +131,7 @@ onBeforeMount(() => {
         const { venues } = res.data;
         store.commit("addvenues", venues);
         all_Venues.value = store.state.venues;
+console.log(all_Venues.value)
         is_loading.value = false;
       })
       .catch((err) => console.log(err));

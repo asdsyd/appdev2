@@ -9,7 +9,7 @@
     <div
       v-if="venue_checker && !isloading"
       v-for="v in all_venues.venues"
-      class=" px-0  mx-1 card border-primary"
+      class=" px-0  mx-1 card  border-primary "
   
     >
       <div class="card-body">
@@ -19,7 +19,6 @@
           <div
             v-for="c in v.movies"
             class=" card mb-3 border-primary"
-            style="width: 18rem"
           >
             <div class="card-body">
               <h5 class="card-title">{{ c.movie_name }}</h5>
@@ -57,10 +56,10 @@
     </div>
     <!--    nested cards have to be fixed heres the help link https://stackoverflow.com/questions/67667887/nested-cards-fitting-cards-within-a-card-bootstrap-cards-->
 
-    <div v-if="!isloading" class="mx-1 card mb-3 border-dotted" style="width: 18rem">
+    <div v-if="!isloading" class="mx-1  card mb-3 border-dotted">
       <div class="card-body">
         <h5 class="card-title text-bg-light">New Venue</h5>
-        <p class="card-text">Click on the buttion below to add Venue</p>
+        <p class="text-wrap">Click on the buttion below to add Venue</p>
         <div>
           <router-link
             class="m-2 btn btn-success rounded-5"

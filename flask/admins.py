@@ -293,6 +293,8 @@ class CreateShow(Resource):
             db.session.add(show)
             
             db.session.commit()
+            deletekey("flask_cache_venue")
+
             resp= jsonify({
                 "message":"show added sucess"
             })
@@ -359,6 +361,7 @@ class EditShow(Resource):
                 db.session.add(movie_in_ratings)
             try:
                 db.session.commit()
+                deletekey("flask_cache_venue")
                 resp= jsonify({
                     "message":"show update success"
                 })
@@ -451,6 +454,8 @@ class DeleteShow(Resource):
             db.session.delete(c)
         db.session.delete(movie)
         db.session.commit()
+        deletekey("flask_cache_venue")
+
         resp = jsonify({
             "messgae":"succes"
         })
