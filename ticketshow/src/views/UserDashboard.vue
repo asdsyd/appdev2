@@ -11,7 +11,7 @@
           aria-expanded="true"
           aria-controls="collapseOne"
         >
-          {{ v.name }}
+          <router-link to=""> {{ v.name }} </router-link>
         </button>
       </h2>
       <div
