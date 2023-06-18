@@ -28,16 +28,12 @@
             </ul>
           </li>
           <li class="nav-item mx-2">
-            <a class="nav-link disabled">Offers</a>
+            <router-link :to="'/Search'" class="nav-link ">Search Movie</router-link>
           </li>
           <li class="nav-item mx-2">
             <router-link :to="'/about'" class="nav-link" >About</router-link>
           </li>
         </ul>
-        <form class="d-flex"  role="search" @submit.prevent="handlesearcher">
-          <input class="form-control me-2" v-model="search" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
         <div class="container">
           <router-link :to="'/user/login'" class="btn btn-outline-success rounded-pill" type="submit">Login/Register</router-link>
 
@@ -54,10 +50,10 @@ import router from '@/router';
 import UserLoggedNavBar from "@/views/UserLoggedNavBar.vue";
 import {ref} from "vue";
 
-const search = ref(null)
-const handlesearcher = ()=>{
-router.push('/Search/'+ search.value)
-}
+// const search = ref(null)
+// const handlesearcher = ()=>{
+// router.push('/Search/'+ search.value)
+// }
 const logout = () => {
   store.commit("removeuser");
   router.push("/user/login");

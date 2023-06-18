@@ -111,6 +111,11 @@ const routes = [
     path: "/contactUs",
     name: "ContactUs",
     component: () => import("../views/ContactUs.vue"),
+  },
+  {
+    path: "/search",
+    name: "Search",
+    component: () => import("../views/MovieSearch.vue")
   }
 ];
 
