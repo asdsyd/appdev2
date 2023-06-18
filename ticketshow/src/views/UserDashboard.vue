@@ -2,7 +2,7 @@
   <user-nav-bar />
   <div v-if="all_Venues && !is_loading" class="accordion" id="accordionExample">
     <div v-for="v in all_Venues" class="accordion-item">
-      <h2 class="accordion-header">
+      <h2 class="accordion-header container">
         <button
           class="accordion-button"
           type="button"
@@ -11,8 +11,11 @@
           aria-expanded="true"
           aria-controls="collapseOne"
         >
-        <router-link :to="'/'+v.id+'/details'"> {{ v.name }} </router-link>
+         {{ v.name }}
         </button>
+        <div>
+<!--          <p>Click here</p>-->
+        </div>
       </h2>
       <div
         id="collapseOne"
