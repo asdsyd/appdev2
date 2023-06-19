@@ -5,7 +5,7 @@
       <h2 class="text-start mb-1  mx-1 accordion-item custom">
        <router-link :to="'/'+v.id+'/details'" style="text-decoration:none;">{{v.name}}</router-link> 
       </h2>
-      <div class="container d-flex flex-row mx-2 my-2 overflow-scroll">
+      <div class="container d-flex flex-row mx-2 my-2 overflow-x-scroll">
         <div v-if="v.movies" v-for="c in v.movies">
           <div class="card h-100" style="width: 300px;">
             <img
@@ -174,7 +174,7 @@ const logout = () => {
 <style scoped>
 
 .custom{
-  width: 100%;
+  width: 99%;
 }
 .card-width{
   width: 130%;

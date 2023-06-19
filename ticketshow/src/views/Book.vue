@@ -121,15 +121,16 @@ console.log(err)
 })
 
 const HandleSubmit=()=>{
-  if(number.value<=0 || number.value===null){
-    err.value = "number of seats cannot be zero or empty"
+  if(number.value<=0 || number.value===null|| number.value >available_seats.value){
+    err.value = "number of seats cannot be zero or empty or grater than available seats"
     return
   }
-  axios.post('/admin/' +venue +'/'+ Show+ '/book',{"number":number.value}).then(res=>{
+  axios.post('/user/' +venue +'/'+ Show+ '/book',{"number":number.value}).then(res=>{
 err.value = null
     success.value = res.data.message
 setTimeout(()=>{
-  router.push('/user/dashboard')
+  store.commit("removevenues")
+  window.location.reload()
 },2000)
   }).catch(error=>{
     if(error.response.data){

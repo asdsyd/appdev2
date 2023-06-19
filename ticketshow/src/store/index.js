@@ -39,6 +39,9 @@ state.admin=payload
     addvenues:(state,payload)=>{
       state.venues=payload
     },
+    removevenues:(state)=>{
+      state.venues=[]
+    },
     refresher:(state,payload)=>{
 localStorage.setItem("user",JSON.stringify(payload))
       state.user =payload
