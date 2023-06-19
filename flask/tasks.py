@@ -28,8 +28,8 @@ def daily():
             """
             mail.send(message)
 
-@celerytask.task()
-def monthly():
+# @celerytask.task()
+# def monthly():
 
 
 

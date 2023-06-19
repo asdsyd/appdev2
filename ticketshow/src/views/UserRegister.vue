@@ -42,9 +42,7 @@ const HandleSubmit = () => {
       router.push('/user/dashboard')
     }).catch(error => {
       console.log(error)
-      if (error.response.data) {
-        err.value = error.response.data.message
-      }
+        err.value = "Error in registering the user."
     })
   }
   else {
@@ -55,24 +53,15 @@ const HandleSubmit = () => {
       router.push('/user/dashboard')
     }).catch(error => {
       console.log(error)
-      if (error.response.data) {
-        err.value = error.response.data.message
-      }
+        err.value = "Error in registering the user."
+
     })
   }
 
 
 };
 
-// const handleClick = (e) => {
-//     const [name,value] = e.target
-//     details[name] = value
-// };
-// const secondR = reactive({
-//     access:"",
-//     refreshToken:"",
-//     username:"",
-// })
+
 </script>
 <template>
   <div v-if="err" class="alert alert-danger " role="alert">
