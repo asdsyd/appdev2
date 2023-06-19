@@ -2,7 +2,7 @@
 import { reactive,ref} from "vue";
 import {useStore} from "vuex";
 
-import axios from "../axios";
+import axios from "../adminaxios";
 import {computed} from "vue";
 import {useRouter} from "vue-router";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";

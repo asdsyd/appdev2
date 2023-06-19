@@ -21,7 +21,7 @@
         </div>
       </div>
 
-      <div class="form-outline container col-6 ">
+      <div class="form-outline container c1">
         <textarea type="" id="form6Example1" class="form-control container " v-model="showDescription" />
         <label class="form-label" for="form6Example1">Show description</label>
       </div>
@@ -102,7 +102,7 @@
           accept="image/*"
           @change="handleFileChange"
         />
-        <button type="submit" class="col-2 btn btn-primary c2 c4">Save</button>
+        <button type="submit" class="col-2 btn btn-primary c4">Save</button>
         <h1 v-if="err" class="text-danger-emphasis">{{ err }}</h1>
       </div>
 
@@ -161,7 +161,7 @@ console.log(tags.value)
 
 
 // Set the desired headers
-  'Authorization': `Bearer ${state.state.user.accessToken}`,
+  'Authorization': `Bearer ${state.state.admin.accessToken}`,
   'Content-Type': contype
  }
 
@@ -171,7 +171,7 @@ console.log(tags.value)
     headers:headers
 
 
-  }).then(res=>router.push('/admin/'+store.state.user.username)).catch(error=>{
+  }).then(res=>router.push('/admin/'+store.state.admin.username)).catch(error=>{
     if(error.response){
       if(error.response.status=401){
         err.value = error.response.data.message
@@ -224,6 +224,7 @@ label{
 }
 .c4{
   margin-top:20px;
+  width: 50%;
 }
 @media screen and (max-width:722px) {
   .custom{
@@ -234,11 +235,12 @@ label{
     min-height: fit-content;
   }
   .c1{
-    width:50%
+    width:70%;
   }
   .c2{
-  width:30%
+  width:70%;
       }
+  
 }
 
 

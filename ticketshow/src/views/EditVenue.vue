@@ -65,7 +65,7 @@
 
 <script setup>
 import { reactive, ref, onBeforeMount } from "vue";
-import axios from "../axios";
+import axios from "../adminaxios";
 import NavBar from "@/views/NavBar.vue";
 import router from "@/router";
 import { useStore } from "vuex";
@@ -97,7 +97,7 @@ onBeforeMount(() => {
 const handleclick = () => {
   axios
     .post("/admin/" + venue_Id.value + "/editVenue", venue)
-    .then((res) => router.push("/admin/" + store.state.user.username))
+    .then((res) => router.push("/admin/" + store.state.admin.username))
     .catch((err) => console.log(err));
 };
 </script>

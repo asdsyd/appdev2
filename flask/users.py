@@ -154,6 +154,7 @@ class GetUserVenues(Resource):
                                 "movie_id":d.id,
                                 "movie_name":d.name,
                                 "image":d.image,
+                                "tags":d.tags,
                                 "description":d.description,
                                 "start":d.startTime,
                                 "end":d.endTime,
@@ -343,12 +344,13 @@ class SearchMovie(Resource):
             if v.movies:
                 f =[]
                 for d in v.movies:
-                    if search.upper() in d.name.upper() or search.lower() in d.name.lower(): 
+                    if search.upper() in d.name.upper() or search.lower() in d.name.lower() or search.lower() in d.tags.lower().split(','): 
                         if datetime.now()<d.startTime:
                                 f.append({
                                     "movie_id":d.id,
                                     "movie_name":d.name,
                                     "image":d.image,
+                                    "tags":d.tags,
                                     "description":d.description,
                                     "start":d.startTime,
                                     "end":d.endTime,
@@ -390,4 +392,24 @@ class ChangePass(Resource):
         return resp
         
 
-        
+class GetUservenueData(Resource):
+    @jwt_required()
+    def get(self,id):
+        role = get_jwt().get("role")
+        if role != "user":
+            return abort(401,message="Unauthorized")
+        venue = Theatre.query.filter_by(id=id).first()
+        if not venue:
+            return abort(404,message="venue doesnt exist")
+        name = venue.name
+        place = venue.place
+        location = venue.locaton
+        capacity= venue.capacity
+        resp = jsonify({
+            "name":name,
+            "place":place,
+            "location":location,
+            "capacity":capacity
+        })
+        resp.status_code=200
+        return resp       

@@ -60,7 +60,7 @@
 <script setup>
 
 import {reactive,ref,watch} from "vue";
-import axios from "../axios";
+import axios from "../adminaxios";
 import NavBar from "@/views/NavBar.vue";
 import router from "@/router";
 import {useStore} from "vuex";
@@ -80,7 +80,7 @@ const handleclick = ()=>{
 console.log(venue)
   axios.post('/admin/createVenue',venue).then(res=>{
     successmessage.value = "success in adding venue"
-    setTimeout(()=>router.push('/admin/'+store.state.user.username),3000)
+    setTimeout(()=>router.push('/admin/'+store.state.admin.username),3000)
 }).catch(error=>err.value="there was some error")
 }
 

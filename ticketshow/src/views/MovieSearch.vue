@@ -74,67 +74,52 @@ const HourFomatterObj = {
   <user-nav-bar/>
   <div class="container mt-4 mb-4 ">
     <form class="d-flex" role="search" @submit.prevent="search">
-      <input class="form-control me-2 rounded-pill" type="search"  v-model="search_input" placeholder="Search for a Movie..." aria-label="Search">
+      <input class="form-control me-2 rounded-pill" type="search"  v-model="search_input" placeholder="Search for a Movie by its name or tags" aria-label="Search">
       <button class="btn btn-outline-success rounded-pill" type="submit">Search</button>
     </form>
   </div>
 
-  <div v-if="all_Venues && !is_loading" class="accordion" id="accordionExample">
-    <div v-for="v in all_Venues" class="accordion-item">
-      <h2 class="accordion-header">
-        <button
-          class="accordion-button"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapseOne"
-          aria-expanded="true"
-          aria-controls="collapseOne"
-        >
-        <router-link :to="'/'+v.id+'/details'"> {{ v.name }} </router-link>
-        </button>
+  <div v-if="all_Venues && !is_loading" class="accordion">
+    <div v-for="v in all_Venues" class="mb-2" >
+      <h2 class=" text-start mb-1  mx-1 accordion-item custom">
+       <router-link :to="'/'+v.id+'/details'" style="text-decoration:none;">{{v.name}}</router-link> 
       </h2>
-      <div
-        id="collapseOne"
-        class="accordion-collapse collapse show"
-        data-bs-parent="#accordionExample"
-      >
-        <div class="accordion-body">
-          <div class="row row-cols-1 row-cols-md-3 g-4 container">
-            <div v-if="v.movies" v-for="c in v.movies" class="col">
-              <div class="card h-100 card-width">
-                <img
-                  v-if="c.image"
-                  :src="'http://localhost:8000/image/' + c.image"
-                  class="card-img-top"
-                  alt="movie_image"
-                />
-                <img
-                  v-else
-                  src="../assets/movie-icon.png"
-                  class="card-img-top image-width"
-                  alt="..."
-                />
-                <div class="card-body">
-                  <h5 class="card-title">{{ c.movie_name }}</h5>
-                  <p><b>Starts on</b>:- {{FormatTime(c.start,true)}}</p>
-                  <p class="card-text"><b>description</b>:- {{ c.description }}</p>
-                  <router-link
-                    v-if="c.seats > 0"
-                    class="btn btn-primary"
-                    :to="'/admin/' + v.id + '/' + c.movie_id + '/' + 'book'"
-                    >Book</router-link
-                  >
-                  <button v-else class="btn btn-danger" disabled>
-                    HouseFull
-                  </button>
-                </div>
-              </div>
+      <div class="container d-flex flex-row mx-2 my-2 overflow-scroll">
+        <div v-if="v.movies" v-for="c in v.movies">
+          <div class="card h-100" style="width: 300px;">
+            <img
+              v-if="c.image"
+              :src="'http://localhost:8000/image/' + c.image"
+              class="card-img-top"
+              alt="movie_image"
+            />
+            <img
+              v-else
+              src="../assets/movie-icon.png"
+              class="card-img-top image-width"
+              alt="..."
+            />
+            <div class="card-body">
+              <h5 class="card-title">{{ c.movie_name }}</h5>
+              <p v-if="c.rating"><b>rating:</b>{{c.rating.toFixed(1)}}</p>
+              <p><b>Starts on</b>:- {{FormatTime(c.start,true)}}</p>
+              <p class="card-text"><b>description</b>:- {{ c.description }}</p>
+              <p><b>tags:-</b> {{c.tags}}</p>
+              <router-link
+                v-if="c.seats > 0"
+                class="btn btn-primary"
+                :to="'/admin/' + v.id + '/' + c.movie_id + '/' + 'book'"
+                >Book</router-link
+              >
+              <button v-else class="btn btn-danger" disabled>
+                HouseFull
+              </button>
             </div>
           </div>
         </div>
       </div>
+      </div>
     </div>
-  </div>
 <div v-if="all_Venues.length<=0 && !is_loading">
 no results for this search
 </div>

@@ -1,15 +1,13 @@
 <template>
   <user-nav-bar/>
 <div v-if="!is_loading">
-  <h1>{{ venue.name }}</h1>
-  <hr>
-  <hr>
-  <p>{{ venue.name }} is a theatre located in {{ venue.place }} of {{ venue.location }}</p>
-  <hr>
-  <p>{{ venue.name  }} has a capacity of {{ venue.capacity }}</p>
-  <hr>
+  <h1><b>{{ venue.name }}</b></h1>
+<br>
+<br>
+  <p><b>{{ venue.name }}</b> is a theatre located in <b>{{ venue.place }}</b> in the city of {{ venue.location }}</p>
+  <p><b>{{ venue.name }}</b> has a capacity of {{ venue.capacity }}</p>
   <p>
-    for bookings check the daashboard to find this theatre to book your favourite shows
+    for bookings check the dashboard to find this theatre to book your favourite shows
   </p>
   <p>happy entertainment!!</p>
 </div>
@@ -17,11 +15,14 @@
   <user-bottom-nav-bar/>
 </template>
 <script setup>
+import {ref,reactive,onBeforeMount} from 'vue'
+import router from '@/router';
+import axios from '@/axios';
 import UserNavBar from "@/views/UserNavBar.vue";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
-const isloading = ref(true);
+const is_loading = ref(true);
 const venue_Id = ref(router.currentRoute.value.params.Venue);
-const store = useStore();
+
 const venue = reactive({
   name: "",
   place: "",
@@ -30,14 +31,14 @@ const venue = reactive({
 });
 onBeforeMount(() => {
   axios
-    .get("/admin/" + venue_Id.value + "/getVenuedata")
+    .get("/user/" + venue_Id.value + "/getvenue")
     .then((res) => {
       const { name, place, location, capacity } = res.data;
       venue.name = name;
       venue.place = place;
       venue.location = location;
       venue.capacity = capacity;
-      isloading.value=false
+      is_loading.value=false
     })
     .catch((e) => {
       console.log(e);

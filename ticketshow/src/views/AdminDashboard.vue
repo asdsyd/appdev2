@@ -5,12 +5,12 @@
         <span class="sr-only"></span>
       </div>
     </div>
-  <div class="d-flex flex-wrap flex-row p-3">
+  <div class=" custom mx-5 my-3 d-flex flex-row flex-wrap ">
     <div
       v-if="venue_checker && !isloading"
       v-for="v in all_venues.venues"
-      class=" px-0  mx-1 card  border-primary "
-  
+      class=" px-0  mx-1 card  border-primary custominner"
+  style="width: 300px;"
     >
       <div class="card-body">
         <h5 class="card-title">{{ v.name }}</h5>
@@ -18,7 +18,7 @@
         <div>
           <div
             v-for="c in v.movies"
-            class=" card mb-3 border-primary"
+            class=" card mb-2 border-primary"
           >
             <div class="card-body">
               <h5 class="card-title">{{ c.movie_name }}</h5>
@@ -56,7 +56,7 @@
     </div>
     <!--    nested cards have to be fixed heres the help link https://stackoverflow.com/questions/67667887/nested-cards-fitting-cards-within-a-card-bootstrap-cards-->
 
-    <div v-if="!isloading" class="mx-1  card mb-3 border-dotted">
+    <div v-if="!isloading" class="mx-1  card  border-dotted" style="width: 300px;">
       <div class="card-body">
         <h5 class="card-title text-bg-light">New Venue</h5>
         <p class="text-wrap">Click on the buttion below to add Venue</p>
@@ -185,7 +185,7 @@
 import { computed, reactive, ref, watch } from "vue";
 import NavBar from "@/views/NavBar.vue";
 import { useStore } from "vuex";
-import axios from "../axios";
+import axios from "../adminaxios";
 import NewAxios from "axios";
 import { useRouter } from "vue-router";
 
@@ -256,23 +256,23 @@ console.log(venues)
       router.push("/admin/login");
     }
   }else{
-    store.commit("removeuser")
+    store.commit("removeadmin")
     router.push('/admin/login')
   }
   });
 const refresh = () => {
   NewAxios.post("http://localhost:8000/admin/refresh", null, {
     headers: {
-      Authorization: `Bearer ${store.state.user.refresh_token}`,
+      Authorization: `Bearer ${store.state.admin.refresh_token}`,
     },
   })
     .then((res) => {
       const { message, ...rest } = res.data;
-      store.commit("refresher", rest);
+      store.commit("refresheradmin", rest);
       expire.value = false;
     })
     .catch((e) => {
-      store.commit("removeuser");
+      store.commit("removeadmin");
       router.push({ path: "/admin/login" });
     });
 };
@@ -290,7 +290,22 @@ const handledelete = (id) => {
 };
 
 const Adminlogout = () => {
-  store.commit("removeuser");
+  store.commit("removeadmin");
   router.push("/admin/login");
 };
 </script>
+<style scoped>
+.custom{
+  border: transparent;
+}
+@media screen and (max-width:737px) {
+  .custom{
+flex-direction: column;
+margin: 5px;
+ }
+  .custominner{
+margin-bottom: 10px;
+  }
+}
+
+</style>

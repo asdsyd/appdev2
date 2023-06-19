@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 export default createStore({
   state: {
+    admin:JSON.parse(localStorage.getItem("admin"))||{},
     user:JSON.parse(localStorage.getItem("user"))||{},
     venues:[],
   },
@@ -19,26 +20,37 @@ export default createStore({
 deleteVenue:(state,id)=>{
 state.venues=state.venues.filter((e,i)=>i!==id)
 },
+addadmin:(state,payload)=>{
+  if(localStorage.getItem("admin")){
+      localStorage.removeItem("admin")
+  }
+localStorage.setItem("admin",JSON.stringify(payload))
+state.admin=payload
+},
 
     removeuser:(state)=>{
       state.user={}
       localStorage.removeItem("user")
     },
+    removeadmin:(state)=>{
+      state.admin={}
+      localStorage.removeItem("admin")
+    },
     addvenues:(state,payload)=>{
       state.venues=payload
     },
     refresher:(state,payload)=>{
-      const {accessToken,...rest} = state.user
-      state.user = {accessToken,payload}
+localStorage.setItem("user",JSON.stringify(payload))
+      state.user =payload
+    },
+    refresheradmin:(state,payload)=>{
+      localStorage.setItem("admin",JSON.stringify(payload))
+      state.admin = payload
     },
    
 
   },
   actions: {
-    getvenues:({commit})=>{
-
-    }
-
     },
   modules: {
   }

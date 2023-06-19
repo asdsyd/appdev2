@@ -119,7 +119,7 @@ import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import store from "@/store";
 import NewAxiosInstance from 'axios'
-import axios from "@/axios";
+import axios from "@/adminaxios";
 
 const isloading = ref(true);
 
@@ -207,7 +207,7 @@ onBeforeMount(() => {
     .catch((e) => {
       console.log(e);
       console.log("gadbad hai");
-      router.push("/admin/" + store.state.user.username);
+      router.push("/admin/" + store.state.admin.username);
     });
     
 });
@@ -229,7 +229,7 @@ const handleSubmit = () => {
   const contype = fileInput.value ? "multipart/form-data" : "application/json";
   const headers = {
     // Set the desired headers
-    Authorization: `Bearer ${state.state.user.accessToken}`,
+    Authorization: `Bearer ${state.state.admin.accessToken}`,
     "Content-Type": contype,
   };
 
@@ -240,7 +240,7 @@ const handleSubmit = () => {
       headers: headers,
     }
   )
-    .then((res) => router.push("/admin/" + store.state.user.username))
+    .then((res) => router.push("/admin/" + store.state.admin.username))
     .catch((error) => {
      
       if (error.response) {
@@ -255,13 +255,14 @@ const handleSubmit = () => {
 </script>
 
 <style scoped>
-.cust {
-  margin-top: 3%;
+
+.cust{
+  margin-top:3%;
 }
-label {
+label{
   font-weight: bolder;
 }
-.outer {
+.outer{
   display: flex;
   justify-content: center;
 }
@@ -269,10 +270,10 @@ label {
   translate: -250px 0px;
 }
 .checkboxes {
-  text-align: center;
+  text-align:center;
 }
 
-.custom {
+.custom{
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -281,41 +282,44 @@ label {
   min-height: fit-content;
   width: 900px;
 }
-.c1 {
+.c1{
   width: 50%;
 }
-.c2 {
-  width: 30%;
+.c2{
+  width: 25%;
 }
-.c3 {
+.c3{
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.c4 {
-  margin-top: 20px;
+.c4{
+  margin-top:20px;
+  width: 50%;
 }
-@media screen and (max-width: 722px) {
-  .custom {
+@media screen and (max-width:722px) {
+  .custom{
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow:column nowrap;
     align-items: center;
     gap: 20px;
     min-height: fit-content;
   }
-  .c1 {
-    width: 50%;
+  .c1{
+    width:70%;
   }
-  .c2 {
-    width: 30%;
-  }
+  .c2{
+  width:70%;
+      }
+  
 }
 
-.checkboxes input {
+
+.checkboxes input{
   margin: 0px 20px 0px 0px;
 }
 
-.checkboxes label {
+.checkboxes label{
   margin: 0px 20px 0px 3px;
 }
 .custom-select {
@@ -331,6 +335,7 @@ label {
   padding: 3px;
   border: 1px solid #ccc;
   background-color: #fff;
+
 }
 
 .select-options {
@@ -362,18 +367,15 @@ label {
   display: block;
 }
 
-.show-pill {
+.show-pill{
   display: flex;
   justify-content: center;
-}
-.show-pill-inside {
-  background: rgb(2, 0, 36);
 
-  background: linear-gradient(
-    90deg,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(9, 9, 121, 1) 35%,
-    rgba(0, 212, 255, 1) 100%
-  );
+}
+.show-pill-inside{
+  background: rgb(2,0,36);
+
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+
 }
 </style>
