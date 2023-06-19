@@ -49,7 +49,7 @@ class UserRegister(Resource):
             user = User(username=username,
                         password=hashed_pw,
                         email=email,
-            profile_image=image
+            profile_image= image.filename
                         )
             image.save(image_path)
 
@@ -107,6 +107,8 @@ class BookingShow(Resource):
             return abort(401,message="number of seats is empty or zero")
         if number>movie.totalSeats:
             return abort(401,message="number of seats is greater than available seats")
+        if number>movie.totalSeats - movie.seatsSold:
+            return abort(409,message="That many seats are unavailable")
         identity = get_jwt_identity()
         id = User.query.filter_by(username=identity).first().user_id
         booking_instance = Booking()

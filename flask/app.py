@@ -69,6 +69,12 @@ class AdminRefresh(Resource):
 class GetImage(Resource):
     def get(self,image):
         return send_from_directory(app.config["UPLOAD_FOLDER"],image)
+
+class GetProfileImage(Resource):
+        def get(self,image):
+            return send_from_directory(app.config["USER_UPLOAD_FOLDER"],image)
+
+
 class UserRefresh(Resource):
     @jwt_required(refresh=True)
     def post(self):
@@ -126,6 +132,7 @@ api.add_resource(DeleteShow,'/admin/<string:id>/<string:movie_id>/deleteShow')
 api.add_resource(GetShow,'/admin/<string:movie_id>/getShow')
 api.add_resource(EditShow,'/admin/<string:id>/<string:movie_id>/EditShow')
 api.add_resource(GetImage,'/image/<string:image>')
+api.add_resource(GetProfileImage,'/profile_image/<string:image>')
 api.add_resource(AdminRegister, '/admin/register')
 api.add_resource(SendEmail,'/sende')
 api.add_resource(GetUserShow,'/user/<string:movie_id>/getShow')
