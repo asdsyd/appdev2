@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infotaintment Report</title>
+</head>
+<body>
+    <h1>Infotaintment Report for {{username}}</h1>
+    <ul>
+        <h3>Bookings</h3>
+        {% if bookings is defined and bookings|length > 0 %}
+        {% for booking in bookings %}
+<span>movie: {{booking[0]}}</span> &nbsp;
+<span>date: {{booking[1]}}</span> &nbsp;
+<span>seats: {{booking[2]}}</span> &nbsp;     
+<br>
+        {% endfor %}
+        {% else %}
+        <p>noo bookings done this month</p>
+        {% endif %}
+    </ul>
+    <ul>
+        <h3>Ratings</h3>
+        {% if ratings is defined and ratings|length > 0 %}
+        {% for rating in ratings %}
+<span>movie:{{rating[0]}}</span> &nbsp;
+<span>raitng:{{rating[1]}}</span> &nbsp;
+<br>
+        {% endfor %}
+        {% else %}
+        <p>no ratngs done this month</p>
+        {% endif %}
+    </ul>
+</body>
+</html>

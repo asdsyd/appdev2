@@ -1,11 +1,11 @@
-from flask import Flask,jsonify,send_from_directory,request
+from flask import Flask,jsonify,send_from_directory,request,render_template
 from flask_restful import Api,Resource,abort
 from flask_migrate import Migrate
 import tasks
 from users import UserLogin, UserRegister,UserCheck,GetUserVenues,GetUserShow,BookingShow,getBookings,getUser,Rate,SearchMovie,ChangePass,GetUservenueData
 from mailer import mail
 from flask_mail import Message
-from models import db,User
+from models import Booking, Theatre, db,User
 from flask_jwt_extended import JWTManager,jwt_required,create_access_token,get_jwt_identity,get_jwt
 from flask_cors import CORS
 from admins import AdminLogin, CreateVenue,AdminCheck,GetVenues,GetVenueData,EditVenue,CreateShow,DeleteVenue,EditShow,DeleteShow,GetShow, AdminRegister
@@ -90,27 +90,43 @@ class UserRefresh(Resource):
         resp.status_code=200
         return resp
 
-class SendEmail(Resource):
-    def post(self):
-        username = request.json["username"]
-        user = User.query.filter_by(username=username).first()
-        if not user:
-            abort(401,message="user doesnt exist")
-        email = user.email
 
-        message = Message("hi im sending a email",sender="norepaly@gamil.com",recipients=[user.email])
-        message.body = "hello this ia a good pass reset email"
-        try:
-            mail.send(message)
-            resp = jsonify({
-                "message":"dome"
-            })
-            return resp
-        except:
-            resp = jsonify({
-                "message":"dome"
-            })
-            return resp
+class SendSummary(Resource):
+    @jwt_required()
+    def get(self):
+        identity =get_jwt_identity()
+        role = get_jwt().get("role")
+        print(role)
+        if role != "admin":
+            return jsonify({"msg":"Unauthorzied"}),401
+        venues = Theatre.query.all()
+        serial_venue = []
+        for v  in venues:
+            venu = {
+                "id":v.id,
+                "name":v.name,
+                "movies":[]
+            }
+            for mov in v.movies:
+                on_movie = {
+                    "name":mov.name,
+                    "bookings":0
+                }
+                bookings_movie = Booking.query.filter_by(movie_id=mov.id)
+                for bookinggss in bookings_movie:
+                    if on_movie.get("bookings"):
+                        on_movie["bookings"]+=1
+                    else:
+                        on_movie["bookings"]=1
+                venu["movies"].append(on_movie)
+            serial_venue.append(venu)
+        resp = jsonify({
+            "data":serial_venue
+        })
+        resp.status_code=200
+        return resp
+
+
 
 
 # api.add_resource(Register, '/register')
@@ -134,7 +150,6 @@ api.add_resource(EditShow,'/admin/<string:id>/<string:movie_id>/EditShow')
 api.add_resource(GetImage,'/image/<string:image>')
 api.add_resource(GetProfileImage,'/profile_image/<string:image>')
 api.add_resource(AdminRegister, '/admin/register')
-api.add_resource(SendEmail,'/sende')
 api.add_resource(GetUserShow,'/user/<string:movie_id>/getShow')
 api.add_resource(BookingShow,'/user/<string:th_id>/<string:movie_id>/book')
 api.add_resource(getBookings,'/user/bookings')
@@ -143,6 +158,7 @@ api.add_resource(Rate,'/user/<string:movie_id>/rating')
 api.add_resource(SearchMovie,"/sear/<string:search>")
 api.add_resource(ChangePass,'/user/passchange')
 api.add_resource(GetUservenueData,'/user/<string:id>/getvenue')
+api.add_resource(SendSummary,'/admin/summary')
 
 
 

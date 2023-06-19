@@ -232,6 +232,7 @@ class getBookings(Resource):
         id = User.query.filter_by(username = identity).first().user_id
         bookings = Booking.query.filter_by(userid=int(id))
         bookings_arr = []
+        index=0
         bookings_map = {}
         re =0
         for v in bookings:
@@ -240,13 +241,14 @@ class getBookings(Resource):
             b = v.movie.theatre_name
             c = v.movie.startTime
             d = v.movie.endTime
+            f = v.numberSeats
             rating = None
             can_rate = True
             for rate in v.user.ratings:
                 if rate.movie == a:
                     can_rate=False
                     rating = rate.rating
-            if not bookings_map.get(f"{v.movie.name}{v.movie.theatre_name}{v.movie.startTime}"):
+            if bookings_map.get(f"{v.movie.name}{v.movie.theatre_name}{v.movie.startTime}") is None:
                     bookings_arr.append({
                         "id":z,
                         "movie":a,
@@ -255,8 +257,12 @@ class getBookings(Resource):
                         "end":d,
                         "can_rate":can_rate,
                         "rating":rating,
+                        "noseats":f
                     })
-                    bookings_map[f"{v.movie.name}{v.movie.theatre_name}{v.movie.startTime}"]=True
+            else:
+                bookings_arr[bookings_map.get(f"{v.movie.name}{v.movie.theatre_name}{v.movie.startTime}")]["noseats"] +=f
+            bookings_map[f"{v.movie.name}{v.movie.theatre_name}{v.movie.startTime}"]=index
+            index+=1
         if len(bookings_arr)<=0:
                 resp = jsonify({
                     "message":"no bookings"

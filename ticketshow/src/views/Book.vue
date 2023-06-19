@@ -48,6 +48,7 @@ import {computed, onBeforeMount, ref, watch} from "vue";
 import UserNavBar from "@/views/UserNavBar.vue";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 import axios from "@/axios";
+import store from "@/store"
 import router from "@/router";
 
 
@@ -128,9 +129,9 @@ const HandleSubmit=()=>{
   axios.post('/user/' +venue +'/'+ Show+ '/book',{"number":number.value}).then(res=>{
 err.value = null
     success.value = res.data.message
+    store.commit("removevenues")
 setTimeout(()=>{
-  store.commit("removevenues")
-  window.location.reload()
+ router.push('/user/dashboard')
 },2000)
   }).catch(error=>{
     if(error.response.data){

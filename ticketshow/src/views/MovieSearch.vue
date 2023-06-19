@@ -84,7 +84,7 @@ const HourFomatterObj = {
       <h2 class=" text-start mb-1  mx-1 accordion-item custom">
        <router-link :to="'/'+v.id+'/details'" style="text-decoration:none;">{{v.name}}</router-link> 
       </h2>
-      <div class="container d-flex flex-row mx-2 my-2 overflow-x-scroll">
+      <div class=" d-flex flex-row mx-2 my-2 overflow-x-scroll customin">
         <div v-if="v.movies" v-for="c in v.movies">
           <div class="card h-100" style="width: 300px;">
             <img
@@ -130,4 +130,10 @@ no results for this search
 
 <style scoped>
 
+.custom{
+  width: 99%;
+}
+.customin{
+  width: 100%;
+}
 </style>

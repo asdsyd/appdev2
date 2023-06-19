@@ -275,7 +275,8 @@ class CreateShow(Resource):
                     abort(409,message="two movies cannot be at the same time")
 
 
-        show = Movie(name=showName,tags=tags,ticketPrice=ticketPrice,startTime=start,endTime=end,image=f"{image.filename}",description=description)
+        show = Movie(name=showName,tags=tags,ticketPrice=ticketPrice,startTime=start,endTime=end,description=description)
+        show.image=f"{image.filename}"
         show.theatreId=id
         show.theatre_name=theatre_exists.name
         show.totalSeats =theatre_exists.capacity

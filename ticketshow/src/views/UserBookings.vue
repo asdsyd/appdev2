@@ -7,6 +7,7 @@
         {{ v.venue }} {{ v.movie }} {{ FormatTime(v.start) }} -
         {{ FormatTime(v.end) }}
       </div>
+      <p><b>seats booked:-</b>{{v.noseats}}</p>
       <div>
         <!--        <button class="px-4 btn rounded-pill btn-outline-success bt" v-if="v.can_rate">rate</button>-->
 

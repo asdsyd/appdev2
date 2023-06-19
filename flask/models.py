@@ -72,6 +72,7 @@ class Movie(db.Model):
         self.startTime = startTime
         self.endTime = endTime
         self.description = description
+    
 
 class UserRating(db.Model):
     __tablename__ = 'userRating'
@@ -110,23 +111,4 @@ class Booking(db.Model):
 
 
 
-# class UserInfo(db.Model):
-#     __tablename__ = 'userinfo'
-#     username = db.Column(db.String(), db.ForeignKey('users.username'))
-#     profile_id = db.Column(db.Integer(), primary_key=True)
-#     bio = db.Column(db.String())
-#     skin = db.Column(db.String())
-#     top = db.Column(db.String())
-#     hairColor = db.Column(db.String())
-#     eyes = db.Column(db.String())
-#     eyebrows = db.Column(db.String())
-#     mouth = db.Column(db.String())
-#     facialHair = db.Column(db.String())
-#     facialHairColor = db.Column(db.String())
-#     clothing = db.Column(db.String())
-#     clothingColor = db.Column(db.String())
-#     accessories = db.Column(db.String())
-#     accessoriesColor = db.Column(db.String())
-#
-#     user = db.Relationship('User', back_populates='userinfo', lazy=True)
 
