@@ -53,6 +53,9 @@
           Delete
         </button>
       </div>
+      <button :disabled="(Object.keys($store.state.export_id).length>0)" @click="sendexporttask(v.id)">
+        export csv
+      </button>
     </div>
     <!--    nested cards have to be fixed heres the help link https://stackoverflow.com/questions/67667887/nested-cards-fitting-cards-within-a-card-bootstrap-cards-->
 
@@ -204,6 +207,19 @@ let all_venues = reactive({
   venues: store.state.venues,
 });
 
+
+const sendexporttask = (id)=>{
+axios.get('/admin/export/' + id).then(res=>{
+  const obj  = {
+    task:id,
+    task_id:res.data.id 
+  }
+  store.commit("addtask",obj)
+  window.location.reload()
+}).catch(e=>{
+  alert("exporting error")
+})
+}
 
 const handleShowdelete=(id)=>{
   console.log(id)

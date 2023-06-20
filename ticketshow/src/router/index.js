@@ -1,8 +1,9 @@
 import HomeViewVue from "@/views/About.vue";
 import axios from "../axios";
+import adminaxios from '@/adminaxios'
 import { createRouter, createWebHistory } from "vue-router";
 import LandingPage from "@/views/LandingPage.vue";
-import {useStore} from "vuex";
+import store from "@/store";
 
 const routes = [
   {
@@ -11,13 +12,20 @@ const routes = [
     component: () => import("../views/Error404.vue")
   },
   {
+    path: "/adminexports",
+    name: "Exports",
+    component: () => import("../views/Export.vue"),
+    meta:{requiresAuth:true,AdminRoute:true}
+  },
+  {
     path:'/',
     name:'Homeview',
     component:LandingPage
   },
-  {path:"/admin/:Venue/:Show/book",
+  {path:"/user/:Venue/:Show/book",
   name:"Booking",
-    component:()=> import("../views/Book.vue")
+    component:()=> import("../views/Book.vue"),
+    meta:{requiresAuth:true}
   },
   {
 
@@ -33,6 +41,7 @@ const routes = [
     path: "/superAdmin/register",
     name: "AdminRegister",
     component: () => import("../views/AdminRegister.vue"),
+    meta:{requiresAuth:true,AdminRoute:true}
   },
   {
     path: "/admin/login",
@@ -44,6 +53,7 @@ const routes = [
     name: "AdminDashboard",
     component: () => import("../views/AdminDashboard.vue"),
     meta:{requiresAuth:true,AdminRoute:true}
+   
   },
   {
     path:"/admin/CreateVenue",
@@ -81,14 +91,14 @@ const routes = [
   },
   {path:'/admin/:Venue/:Show/EditShow',
   name:'EditShow',
-  component:()=>import('../views/EditShow.vue')
+  component:()=>import('../views/EditShow.vue'),
+  meta:{requiresAuth:true,AdminRoute:true}
   
   },
   {
     path: "/user/dashboard",
     name: "UserDashboard",
     component: () => import("../views/UserDashboard.vue"),
-    meta:{requiresAuth:true}
   },
   {
     path: "/:username/bookings",
@@ -120,13 +130,15 @@ const routes = [
   {
     path: "/:username/changePassword",
     name: "Password",
-    component: () => import("../views/UserPasswordChange.vue")
+    component: () => import("../views/UserPasswordChange.vue"),
+    meta:{requiresAuth:true}
   },
   {
     path: "/:Venue/details",
     name: "Venue",
     component: () => import("../views/Venue.vue")
-  }
+  },
+
 ];
 
 const router = createRouter({
@@ -137,51 +149,48 @@ async function isAuth(){
 
   try{
     const resp = await axios.get('/check')
-    if(resp.status===200){
-      return true
-    }
+  return true
   }
   catch(err){
     return false
   }
 }
 async function isAdminAuth(){
-  try{
-   
-    const resp = await axios.get('/admin/check')
-    if(resp.status===200){
+  try{   
+    const resp = await adminaxios.get('/admin/check')
       return true
-    }
   }
   catch(err){
     return false
   }
 }
 
-// router.beforeEach(async (to,from,next)=>{
+router.beforeEach(async (to,from,next)=>{
 
-//   const auth = to.matched.some(r=>r.meta.requiresAuth===true)
-//   const isadmin_route = to.matched.some(r=>r.meta.AdminRoute)
-//   let isAuthorized;
-//   if(auth&&isadmin_route){
-//     isAuthorized=await isAdminAuth()
-//   }
-//   else if(auth && isadmin_route === false){
-//     isAuthorized=await isAuth()
-//   }
-//   else{
-//     isAuthorized=true
-//   }
+  const auth = to.matched.some(r=>r.meta.requiresAuth===true)
+  const isadmin_route = to.matched.some(r=>r.meta.AdminRoute===true)
+  let isAuthorized;
+  if(auth&&isadmin_route){
+    isAuthorized=await isAdminAuth()
+  }
+  else if(auth && isadmin_route === false){
+    isAuthorized=await isAuth()
+  }
+  else{
+    isAuthorized=true
+  }
 
-//   if(isAuthorized===true){
-//     next()
-//   }else if(isAuthorized===false && isadmin_route===true){
-  
-//     next('/admin/login')
-//   }
-//   else{
-
-//     next('/user/login')
-//   }
-// })
+  if(isAuthorized===true){
+    next()
+  }else if(isAuthorized===false && isadmin_route===true){
+  store.commit("removeadmin")
+  store.commit("removeuser")
+    next('/admin/login')
+  }
+  else{
+  store.commit("removeadmin")
+  store.commit("removeuser")
+    next('/user/login')
+  }
+})
 export default router;

@@ -29,10 +29,16 @@
               <router-link
                 v-if="c.seats > 0"
                 class="btn btn-primary"
-                :to="'/admin/' + v.id + '/' + c.movie_id + '/' + 'book'"
+                :to="'/user/' + v.id + '/' + c.movie_id + '/' + 'book'"
                 >Book</router-link
               >
-              <button v-else class="btn btn-danger" disabled>
+              <router-link
+              v-else-if="Object.keys($store.state.user).length<=0"
+              class="btn btn-primary"
+              :to="'/user/login'"
+              >Book</router-link
+            >
+              <button v-if="c.seats<=0" class="btn btn-danger" disabled>
                 HouseFull
               </button>
             </div>

@@ -1,6 +1,8 @@
+import csv
 from flask import render_template
+from celery.schedules import crontab
 from celerytasks import celerytask
-from models import UserRating, db,User,Booking
+from models import Theatre, UserRating, db,User,Booking
 from mailer import mail
 from flask_mail import Message
 from datetime import date,timedelta
@@ -11,9 +13,9 @@ datetime=datetime.datetime
 
 @celerytask.on_after_finalize.connect
 def setup_periodic_task(sender,**kargs):
-    sender.add_periodic_task(5.0,daily.s(),name="daily reminder")
-    sender.add_periodic_task(15.0,monthly.s(),name="monthly reminder")
-    sender.add_periodic_task(5.0,puchi.s(),name="printer")
+    sender.add_periodic_task(crontab(minute=0, hour='19', day_of_week='*'),daily.s(),name="daily reminder")
+    sender.add_periodic_task(crontab(minute=0, hour=0, day_of_month=1),monthly.s(),name="monthly reminder")
+    sender.add_periodic_task(crontab(hour=1),puchi.s(),name="printer")
 
 @celerytask.task()
 def daily():
@@ -56,11 +58,44 @@ def monthly():
 
 @celerytask.task()
 def puchi():
-    print("a")
-    return "A"
+    print("printer")
+    return "i am a printer"
 
 
-# @celerytask.task()
-# def csv_exporter():
+@celerytask.task()
+def csv_exporter(id,email):
+        venue = Theatre.query.filter_by(id=id).first()
+        serial_venue = []
+        for mov in venue.movies:
+            on_movie = {
+                    "name":mov.name,
+                    "bookings":0
+            }
+            bookings_movie = Booking.query.filter_by(movie_id=mov.id)
+            for bookinggss in bookings_movie:
+                if on_movie.get("bookings"):
+                        on_movie["bookings"]+=1
+                else:
+                        on_movie["bookings"]=1
+            serial_venue.append(on_movie)
+            
+        try:
+            with open('export.csv','w+') as csvs:
+                csvwriter = csv.writer(csvs)
+                csvwriter.writerow(["Theatre name",venue.name])
+                csvwriter.writerow(["Theatre capacity",venue.capacity])
+                csvwriter.writerow(["Theatre location",venue.locaton])
+                csvwriter.writerow(["Theatre place",venue.place])
+                csvwriter.writerow(["movies:-"])
+                csvwriter.writerow([])
+                csvwriter.writerow(["movie name","movie bookings"])
+                for c in serial_venue:
+                        csvwriter.writerow([c["name"],c["bookings"]])
+            msg = Message("csv gen is completed",sender=["aaaa@gmail.com"],recipients=[email])
+            msg.body = f"the csv for theatre {venue.name} and id  {id} is done now u can export it"
+            mail.send(msg)
+            return "done"
+        except Exception as e:
+            return "error"
 
 

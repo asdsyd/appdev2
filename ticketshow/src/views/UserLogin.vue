@@ -27,7 +27,7 @@ const HandleSubmit = () => {
   axios.post("/user/login", details).then(res => {
     const {message,...rest} = res.data
     store.commit('adduser',rest)
-    router.push('/user/dashboard')
+  setTimeout(()=> router.push('/user/dashboard'),600)
   }).catch(error =>{
     if(error.response){
       if(error.response.data){

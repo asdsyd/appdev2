@@ -1,16 +1,18 @@
-from flask import Flask,jsonify,send_from_directory,request,render_template
+import os
+from flask import Flask,jsonify, send_file,send_from_directory,request,render_template
 from flask_restful import Api,Resource,abort
 from flask_migrate import Migrate
 import tasks
 from users import UserLogin, UserRegister,UserCheck,GetUserVenues,GetUserShow,BookingShow,getBookings,getUser,Rate,SearchMovie,ChangePass,GetUservenueData
 from mailer import mail
 from flask_mail import Message
-from models import Booking, Theatre, db,User
+from models import Admin, Booking, Theatre, db,User
 from flask_jwt_extended import JWTManager,jwt_required,create_access_token,get_jwt_identity,get_jwt
 from flask_cors import CORS
 from admins import AdminLogin, CreateVenue,AdminCheck,GetVenues,GetVenueData,EditVenue,CreateShow,DeleteVenue,EditShow,DeleteShow,GetShow, AdminRegister
 from celerytasks import celerytask
 from rediscache import cache
+import csv
 
 class ContextTask(celerytask.Task):
     def __call__(self, *args, **kwargs):
@@ -91,10 +93,52 @@ class UserRefresh(Resource):
         return resp
 
 
+
+class csvWriter(Resource):
+    @jwt_required()
+    def get(self,th_id):
+        identity =get_jwt_identity()
+        role = get_jwt().get("role")
+        print(role)
+        if role != "admin":
+            return jsonify({"msg":"Unauthorzied"}),401
+        email = Admin.query.filter_by(username=identity).first().email
+        id = tasks.csv_exporter.apply_async(args=[th_id,email])
+        return jsonify({
+            "id":id.id
+        })
+        
+
+
+class getCsvResult(Resource):
+    @jwt_required()
+    def get(self,task_id):
+        role = get_jwt().get("role")
+        if role != "admin":
+            return jsonify({"msg":"Unauthorzied"}),401
+        result = tasks.csv_exporter.AsyncResult(task_id)
+
+        if result.ready():
+            file_path = 'export.csv'
+            try:
+                return send_file(file_path)
+            finally:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+        else:
+            resp = jsonify({"status":"workig"})
+            resp.status_code = 102
+            return resp
+
+    
+        
+        
+
+
 class SendSummary(Resource):
     @jwt_required()
     def get(self):
-        identity =get_jwt_identity()
+    
         role = get_jwt().get("role")
         print(role)
         if role != "admin":
@@ -159,7 +203,8 @@ api.add_resource(SearchMovie,"/sear/<string:search>")
 api.add_resource(ChangePass,'/user/passchange')
 api.add_resource(GetUservenueData,'/user/<string:id>/getvenue')
 api.add_resource(SendSummary,'/admin/summary')
-
+api.add_resource(csvWriter,'/admin/export/<string:th_id>')
+api.add_resource(getCsvResult,'/admin/export/results/<string:task_id>')
 
 
 

@@ -108,7 +108,7 @@ const HourFomatterObj = {
               <router-link
                 v-if="c.seats > 0"
                 class="btn btn-primary"
-                :to="'/admin/' + v.id + '/' + c.movie_id + '/' + 'book'"
+                :to="'/user/' + v.id + '/' + c.movie_id + '/' + 'book'"
                 >Book</router-link
               >
               <button v-else class="btn btn-danger" disabled>

@@ -34,7 +34,7 @@ const HandleSubmit = () => {
     store.commit("removeuser")
     store.commit("addadmin",payload)
     setTimeout(() => {router.push(`/admin/${payload.username}`)
-    }, 1000);
+    }, 200);
   }).catch(error =>{
     console.log(error)
     err.value = "error in admin login"
@@ -47,6 +47,7 @@ const HandleSubmit = () => {
     <div>
       <h1 class="form-label container mt-4">Admin Login</h1>
     </div>
+
     <div v-if="err" class="alert alert-danger " role="alert">
       {{ err }}
     </div>
