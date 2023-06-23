@@ -9,16 +9,17 @@
     <div
       v-if="venue_checker && !isloading"
       v-for="v in all_venues.venues"
-      class=" px-0  mx-1 card  border-primary custominner"
-  style="width: 300px;"
+      class="m-3 p-2 card  border-warning-subtle custominner"
+  style="width: 300px; background-image: linear-gradient(sandybrown, mediumpurple)"
     >
       <div class="card-body">
-        <h5 class="card-title">{{ v.name }}</h5>
+        <h5 class="card-title text-light">{{ v.name }}</h5>
         <p v-if="!v.movies?.length > 0" class="card-text">No shows created</p>
         <div>
           <div
             v-for="c in v.movies"
-            class=" card mb-2 border-primary"
+            class=" card mb-2 border-primary-subtle "
+            style="background-image: linear-gradient(honeydew, gainsboro)"
           >
             <div class="card-body">
               <h5 class="card-title">{{ c.movie_name }}</h5>
@@ -36,18 +37,18 @@
             </div>
           </div>
           <router-link
-            class="m-3 rounded-circle btn btn-primary"
+            class="m-3 rounded-pill btn btn-primary"
             :to="'/admin/' + v.id + '/CreateShow'"
-            >+</router-link
+            >+ add movie</router-link
           >
         </div>
         <router-link
-          class="m-2 btn btn-outline-primary rounded-5 text-decoration-none"
+          class="m-2 btn btn-warning rounded-5 text-decoration-none"
           :to="'/admin/' + v.id + '/EditVenue'"
           >Edit</router-link
         >
         <button
-          class="m-2 btn btn-outline-danger rounded-5 text-decoration-none"
+          class="m-2 btn btn-danger rounded-5 text-decoration-none"
           @click="DeleteModal(v.id)"
         >
           Delete
@@ -59,13 +60,14 @@
     </div>
     <!--    nested cards have to be fixed heres the help link https://stackoverflow.com/questions/67667887/nested-cards-fitting-cards-within-a-card-bootstrap-cards-->
 
-    <div v-if="!isloading" class="mx-1  card  border-dotted" style="width: 300px;">
+    <div v-if="!isloading" class="m-3 p-2  card " style="width: 300px;
+border-style: dashed; border-color: black">
       <div class="card-body">
-        <h5 class="card-title text-bg-light">New Venue</h5>
-        <p class="text-wrap">Click on the buttion below to add Venue</p>
+        <h5 class="card-title text-bg-light" >New Venue</h5>
+        <p class="text-wrap mt-3">Click on the buttion below to create a Venue</p>
         <div>
           <router-link
-            class="m-2 btn btn-success rounded-5"
+            class="m-2 btn btn-outline-success rounded-5 text-decoration-none"
             to="/admin/CreateVenue"
             >+</router-link
           >
@@ -183,6 +185,8 @@
       </div>
     </div>
   </div>
+
+  <user-bottom-nav-bar/>
 </template>
 <script setup>
 import { computed, reactive, ref, watch } from "vue";
@@ -191,6 +195,7 @@ import { useStore } from "vuex";
 import axios from "../adminaxios";
 import NewAxios from "axios";
 import { useRouter } from "vue-router";
+import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 
 const isloading = ref(true)
 const deleter = ref(false);

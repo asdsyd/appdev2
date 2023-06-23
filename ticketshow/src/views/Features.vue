@@ -1,6 +1,6 @@
 <template>
   <nav v-if="!$store.state.user.accessToken" class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
+    <div class="container">
       <span class="">
         <img src="../assets/ticketshow-logo.png" class="navbar-brand img-fluid img-thumbnail card-img" alt="TicketShow Logo" id="logo"/>
       <span class="pe-5">TicketShow</span>
@@ -44,7 +44,7 @@
   <div class=" mb-3 container h1 rounded-pill border border-success ">Some features of Ticketshow</div>
 
 
-  <div class="row row-cols-1 row-cols-md-3 g-4">
+  <div class="row row-cols-1 row-cols-md-3 g-5 container-fluid">
     <div class="col">
       <div class="card h-100">
         <img src="../assets/img.png" class="card-img-top" alt="...">

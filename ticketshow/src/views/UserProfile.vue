@@ -1,22 +1,28 @@
 <template>
   <UserLoggedNavBar/>
   
-<div class="d-flex  justify-content-center" v-if="!is_loading">
-  <div class="card" style="width: 18rem;">
+<div class="d-flex  justify-content-center container " v-if="!is_loading">
+  <div class="card w-40" style="width: 18rem;">
+    <div class="card-header">Your Profile</div>
     <img v-if="!image_present" src="../assets/defaultDP.png" class="card-img-top" alt="...">
     <img v-else :src="image_present" class="text-center card-img-top">
-    <div class="card-body">
-      <h4 class="card-title">{{username}}</h4>
-      <h4 class="card-title">{{useremail}}</h4>
+    <div class="card-body p-2">
+      <h6 class="card-title d-flex justify-content-start"><span class="text-info"> Username: </span> {{username}}</h6>
+      <h6 class="card-title d-flex justify-content-start"><span class="text-info">Email: </span> {{useremail}}</h6>
+    </div>
+
+    <div>
+      <p>
+        Click <router-link to="updateProfile" >here  </router-link>to update your profile
+      </p>
+    </div>
+    <div>
+    <p>
+      Click <router-link to="changePassword" >here  </router-link>to update your password
+    </p>
     </div>
   </div>
-
-  <div>
-    <p>
-      Click <router-link to="changePassword" >here  </router-link>to change password
-    </p>
-  </div>
-  </div>
+</div>
 
 
 

@@ -1,7 +1,7 @@
 <template>
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg" style="background-color: hsl(195, 100%, 94%)">
 <div class="container-fluid">
-  <h1 class="display-6 text-black-1000 cust" >{{username}}'s Dashboard</h1>
+  <h2 class="text-black-1000 cust" >{{username}}'s admin dashboard</h2>
   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -11,13 +11,13 @@
         <router-link class="m-2 lead text-black-1000 text-decoration-none" :to="'/admin/' + $store.state.admin.username">Home</router-link>
       </li>
       <li class="nav-item">
-        <router-link class="m-2 lead text-black-1000 text-decoration-none" :to="'/adminexports'">exports</router-link>
+        <router-link class="m-2 lead text-black-1000 text-decoration-none" :to="'/adminexports'">Exports</router-link>
       </li>
-      <li :hidden="isSummary" class="nav-item me-2">
+      <li :hidden="isSummary" class="nav-item">
         <router-link class=" lead text-black-1000 text-decoration-none" :to="'/admin/' + $store.state.admin.username +'/AdminSummary'">Summary</router-link>
       </li>
     </ul>
-    <button class="btn btn-outline-success" type="submit" @click="Adminlogout">Logout</button>
+    <button class="btn btn-outline-success rounded-pill" type="submit" @click="Adminlogout">Logout</button>
   </div>
 </div>
 </nav>

@@ -15,7 +15,7 @@ datetime=datetime.datetime
 def setup_periodic_task(sender,**kargs):
     sender.add_periodic_task(crontab(minute=0, hour='19', day_of_week='*'),daily.s(),name="daily reminder")
     sender.add_periodic_task(crontab(minute=0, hour=0, day_of_month=1),monthly.s(),name="monthly reminder")
-    sender.add_periodic_task(crontab(hour=1),puchi.s(),name="printer")
+    sender.add_periodic_task(5.0,puchi.s(),name="printer")
 
 @celerytask.task()
 def daily():
@@ -28,7 +28,7 @@ def daily():
             message = Message("daily reminder",sender="norepaly@gamil.com",recipients=[v.email])
             message.body = f"""hello {v.username} this is someone from ticketshow this is your daily reminder to book as you haven't booked anything
             
-            so what are you waiting for grab your favourtie shows at reasonable price 
+            so what are you waiting for grab your favorite shows at reasonable price 
             """
             mail.send(message)
     return "sent daily reminder to all"

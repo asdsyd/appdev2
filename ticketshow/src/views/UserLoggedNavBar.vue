@@ -1,11 +1,16 @@
 
 
 <template>
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
     <div class="container-fluid">
       <span class="">
+        <router-link to="/">
         <img src="../assets/ticketshow-logo.png" class="navbar-brand img-fluid img-thumbnail card-img" alt="TicketShow Logo" id="logo"/>
-      <span class="pe-5">Welcome {{ $store.state.user.username }}</span>
+        </router-link>
+      <span class="pe-5 text-decoration-none">Welcome
+        <router-link :to="'/'+ $store.state.user.username + '/profile'"
+        class="link-success text-decoration-none">{{ $store.state.user.username }}</router-link>
+      </span>
       </span>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>

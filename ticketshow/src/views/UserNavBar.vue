@@ -1,11 +1,13 @@
 <template>
 
-  <nav v-if="!$store.state.user.accessToken" class="navbar navbar-expand-lg bg-body-tertiary">
+  <nav v-if="!$store.state.user.accessToken" class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
     <div class="container-fluid">
-      <span class="">
+      <router-link  class="text-decoration-none" to="/">
+      <span class="text-decoration-none">
         <img src="../assets/ticketshow-logo.png" class="navbar-brand img-fluid img-thumbnail card-img" alt="TicketShow Logo" id="logo"/>
-      <span class="pe-5">TicketShow</span>
+      <span class="pe-5 text-decoration-none">TicketShow</span>
       </span>
+      </router-link>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>

@@ -4,6 +4,7 @@ import { reactive,ref ,watch} from "vue";
 import axios from "../axios";
 import { useRouter } from "vue-router";
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
+import UserNavBar from "@/views/UserNavBar.vue";
 
 
 const details = reactive({
@@ -38,6 +39,7 @@ const HandleSubmit = () => {
 };
 </script>
 <template>
+  <user-nav-bar/>
   <form @submit.prevent="HandleSubmit()">
     <div>
       <h1 class="form-label container mt-4">Welcome back! Please login to continue...</h1>

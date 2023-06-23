@@ -138,6 +138,12 @@ const routes = [
     name: "Venue",
     component: () => import("../views/Venue.vue")
   },
+  {
+    path: "/:username/updateProfile",
+    name: "UpdateProfile",
+    component: () => import("../views/UserEditProfile.vue"),
+    meta: {requiresAuth: true}
+  }
 
 ];
 

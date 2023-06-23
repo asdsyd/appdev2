@@ -3,7 +3,7 @@ from flask import Flask,jsonify, send_file,send_from_directory,request,render_te
 from flask_restful import Api,Resource,abort
 from flask_migrate import Migrate
 import tasks
-from users import UserLogin, UserRegister,UserCheck,GetUserVenues,GetUserShow,BookingShow,getBookings,getUser,Rate,SearchMovie,ChangePass,GetUservenueData
+from users import UserLogin, UserRegister,UserCheck,GetUserVenues,GetUserShow,BookingShow,getBookings,getUser,Rate,SearchMovie,ChangePass,GetUservenueData,UpdateProfile
 from mailer import mail
 from flask_mail import Message
 from models import Admin, Booking, Theatre, db,User
@@ -201,6 +201,7 @@ api.add_resource(getUser,'/user/getuser')
 api.add_resource(Rate,'/user/<string:movie_id>/rating')
 api.add_resource(SearchMovie,"/sear/<string:search>")
 api.add_resource(ChangePass,'/user/passchange')
+api.add_resource(UpdateProfile,'/user/updateprofile')
 api.add_resource(GetUservenueData,'/user/<string:id>/getvenue')
 api.add_resource(SendSummary,'/admin/summary')
 api.add_resource(csvWriter,'/admin/export/<string:th_id>')
