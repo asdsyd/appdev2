@@ -173,12 +173,12 @@ class SendSummary(Resource):
 
 
 
-# api.add_resource(Register, '/register')
 api.add_resource(AdminLogin, '/admin/login')
+api.add_resource(UserRegister, '/user/register')
 api.add_resource(UserLogin, '/user/login')
+api.add_resource(UpdateProfile,'/user/updateprofile')
 api.add_resource(UserCheck,'/check')
 api.add_resource(AdminCheck,'/admin/check')
-api.add_resource(UserRegister, '/user/register')
 api.add_resource(CreateVenue,'/admin/createVenue')
 api.add_resource(GetVenues,'/admin/getVenues')
 api.add_resource(GetVenueData,'/admin/<string:id>/getVenuedata')
@@ -201,7 +201,6 @@ api.add_resource(getUser,'/user/getuser')
 api.add_resource(Rate,'/user/<string:movie_id>/rating')
 api.add_resource(SearchMovie,"/sear/<string:search>")
 api.add_resource(ChangePass,'/user/passchange')
-api.add_resource(UpdateProfile,'/user/updateprofile')
 api.add_resource(GetUservenueData,'/user/<string:id>/getvenue')
 api.add_resource(SendSummary,'/admin/summary')
 api.add_resource(csvWriter,'/admin/export/<string:th_id>')

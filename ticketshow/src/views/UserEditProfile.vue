@@ -11,12 +11,12 @@
   <form @submit.prevent="handleupdateprofile">
     <div class="container mt-4">
       <div>
-        <input class="rounded-pill col-3 m-2 py-1 border-warning-subtle" type="text" v-model="details.password"
+        <input class="rounded-pill col-3 m-2 py-1 border-warning-subtle" type="text" v-model="details.username"
                placeholder="New Username">
 
       </div>
       <div>
-        <input class="rounded-pill col-3 m-2 py-1 border-warning-subtle" type="email" v-model="details.retypepassword"
+        <input class="rounded-pill col-3 m-2 py-1 border-warning-subtle" type="email" v-model="details.email"
                placeholder="New Email">
       </div>
 

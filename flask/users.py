@@ -71,6 +71,53 @@ class UserRegister(Resource):
         return response
 
 
+class UpdateProfile(Resource):
+    @jwt_required()
+    def post(self):
+        username = get_jwt_identity()
+        user = db.session.query(User).get(username)
+
+        if not user:
+            return abort(404, message='User not found.')
+
+        if request.content_type == "application/json":
+            email = request.json.get('email')
+        else:
+            email = request.form.get('email')
+            image = request.files.get("image")
+
+        if email is None:
+            return abort(400, message='Email not provided.')
+
+        if username:
+            existing_user = db.session.query(User).filter(User.username == username).first()
+            if existing_user and existing_user.username != username:
+                return abort(409, message='Username already exists.')
+
+            user.username = username
+
+        user.email = email
+
+        if image:
+            image_path = f"{USER_UPLOAD_FOLDER}/{image.filename}"
+            user.profile_image = image.filename
+            image.save(image_path)
+
+        try:
+            db.session.commit()
+            new_access_token = create_access_token(identity=username, additional_claims={'role': "user"})
+            response = jsonify({
+                'message': 'Profile updated successfully.',
+                'username': user.username,
+                'email': user.email,
+                'profile_image': user.profile_image
+            })
+            response.status_code = 200
+            return response
+        except Exception as e:
+            return abort(500, message='Error in updating profile.')
+
+
 class GetUserShow(Resource):
     @jwt_required()
     def get(self, movie_id):
@@ -403,49 +450,60 @@ class ChangePass(Resource):
             "message": "success"
         })
         resp.status_code = 200
+
+    @jwt_required
+    def post(self):
+        image = None
+        if request.content_type == "application/json":
+            username = request.json['username']
+            password = request.json['password']
+            email = request.json['email']
+        else:
+            username = request.form['username']
+            password = request.form['password']
+            email = request.form['email']
+            image = request.files["image"]
+
+        if username is None:
+            return abort(400, message='Username not provided.')
+
+        if email is None:
+            return abort(400, message='email not provided.')
+
+        user = db.session.query(User).get(username)
+
+        if user:
+            return abort(401, message='Username already exists.')
+
+        if not image:
+            user = User(
+                username=username,
+                email=email,
+            )
+        else:
+            image_path = f"{USER_PROFILE_FOLDER}/{image.filename}"
+            user = User(username=username,
+                        email=email,
+                        profile_image=image.filename
+                        )
+            image.save(image_path)
+
+        db.session.add(user)
+        db.session.commit()
+
+        access_token = create_access_token(identity=username, additional_claims={'role': "user"})
+        refresh_token = create_refresh_token(identity=username, additional_claims={"role": "user"})
+
+        response = jsonify({'message': 'You have successfully registered.',
+                            'accessToken': access_token,
+                            'refresh_token': refresh_token,
+                            'username': username,
+                            })
+        response.status_code = 201
+
+        return response
         return resp
 
-
-class UpdateProfile(Resource):
-    @jwt_required()
-    def post(self):
-        role = get_jwt().get("role")
-        if role != "user":
-            return abort(401, message="unauthorized access")
-        identity = get_jwt_identity()
-        user = User.query.filter_by(username=identity).first()
-        if not user:
-            return abort(401, message="user doesnt exist")
-
-        if request.content_type == 'application/json':
-            args = request.json
-            username = args["username"]
-            email = args["email"]
-
-        if username is None or username == '':
-            return abort(401, message="Please provide username")
-        if email is None or email == '':
-            return abort(401, message="Please provide email")
-
-        args = request.form
-        username = args["username"]
-        email = args["email"]
-        profile_image = request.files["image"]
-
-        try:
-            db.session.add(user)
-            db.session.commit()
-            deletekey("flask_cache_venue")
-            resp = jsonify({
-                "message":"user added success"
-            })
-            resp.status_code=201
-            return resp
-        except Exception as e:
-            resp= jsonify({
-                "error":"error in processing"
-            })
-            resp.status_code=500
 
 class GetUservenueData(Resource):
     @jwt_required()
