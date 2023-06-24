@@ -1,5 +1,5 @@
 import datetime
-from datetime import date
+from datetime import date,time
 import os
 from flask import request, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt, get_jwt_identity
@@ -12,6 +12,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 datetime = datetime.datetime
 
 
+
+def is_timeframe_within_range(starttime, endtime, timeframe_start, timeframe_end):
+    start_time = starttime.time()
+    end_time = endtime.time()
+
+    return start_time <= timeframe_start <= end_time or start_time <= timeframe_end <= end_time
+ 
 class UserRegister(Resource):
 
     def post(self):
@@ -74,6 +81,8 @@ class UserRegister(Resource):
 class UpdateProfile(Resource):
     @jwt_required()
     def post(self):
+        image =None
+        new_username =None
         username = get_jwt_identity()
         user = db.session.query(User).get(username)
 
@@ -81,36 +90,31 @@ class UpdateProfile(Resource):
             return abort(404, message='User not found.')
 
         if request.content_type == "application/json":
+            new_username = request.json["new_username"]
             email = request.json.get('email')
         else:
+            new_username = request.form["new_username"]
             email = request.form.get('email')
             image = request.files.get("image")
 
-        if email is None:
-            return abort(400, message='Email not provided.')
-
-        if username:
-            existing_user = db.session.query(User).filter(User.username == username).first()
-            if existing_user and existing_user.username != username:
-                return abort(409, message='Username already exists.')
-
-            user.username = username
-
-        user.email = email
+        if new_username:
+            user.username = new_username    
+        if email:
+            user.email = email
 
         if image:
             image_path = f"{USER_UPLOAD_FOLDER}/{image.filename}"
-            user.profile_image = image.filename
             image.save(image_path)
-
+            if(user.profile_image):
+                if(os.path.exists(f"{USER_UPLOAD_FOLDER}/{user.profile_image}")):
+                    os.remove(f"{USER_UPLOAD_FOLDER}/{user.profile_image}")
+            user.profile_image = image.filename
         try:
             db.session.commit()
             new_access_token = create_access_token(identity=username, additional_claims={'role': "user"})
             response = jsonify({
-                'message': 'Profile updated successfully.',
-                'username': user.username,
-                'email': user.email,
-                'profile_image': user.profile_image
+                "username":new_username,
+                "token":new_access_token
             })
             response.status_code = 200
             return response
@@ -187,14 +191,21 @@ class GetUserVenues(Resource):
         role = get_jwt().get("role")
         if role != "user":
             return abort(401, message="unauthorized access")
-        all_venues = Theatre.query.all()
+        all_venues = None
+        location = None
+        location = request.json["location"]
+        if location is None or location == '':
+            all_venues = Theatre.query.filter_by(locaton=location)
+        else:
+            all_venues = Theatre.query.all()
         serialized_venues = []
         for v in all_venues:
+            
+            
             c = {
                 "id": v.id,
                 "name": v.name,
             }
-
             if len(list(v.movies)) > 0:
                 f = []
                 for d in v.movies:
@@ -451,58 +462,6 @@ class ChangePass(Resource):
         })
         resp.status_code = 200
 
-    @jwt_required
-    def post(self):
-        image = None
-        if request.content_type == "application/json":
-            username = request.json['username']
-            password = request.json['password']
-            email = request.json['email']
-        else:
-            username = request.form['username']
-            password = request.form['password']
-            email = request.form['email']
-            image = request.files["image"]
-
-        if username is None:
-            return abort(400, message='Username not provided.')
-
-        if email is None:
-            return abort(400, message='email not provided.')
-
-        user = db.session.query(User).get(username)
-
-        if user:
-            return abort(401, message='Username already exists.')
-
-        if not image:
-            user = User(
-                username=username,
-                email=email,
-            )
-        else:
-            image_path = f"{USER_PROFILE_FOLDER}/{image.filename}"
-            user = User(username=username,
-                        email=email,
-                        profile_image=image.filename
-                        )
-            image.save(image_path)
-
-        db.session.add(user)
-        db.session.commit()
-
-        access_token = create_access_token(identity=username, additional_claims={'role': "user"})
-        refresh_token = create_refresh_token(identity=username, additional_claims={"role": "user"})
-
-        response = jsonify({'message': 'You have successfully registered.',
-                            'accessToken': access_token,
-                            'refresh_token': refresh_token,
-                            'username': username,
-                            })
-        response.status_code = 201
-
-        return response
-        return resp
 
 
 class GetUservenueData(Resource):
