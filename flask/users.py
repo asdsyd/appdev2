@@ -66,11 +66,8 @@ class UserRegister(Resource):
         db.session.commit()
 
         access_token = create_access_token(identity=username, additional_claims={'role': "user"})
-        refresh_token = create_refresh_token(identity=username, additional_claims={"role": "user"})
-
         response = jsonify({'message': 'You have successfully registered.',
                             'accessToken': access_token,
-                            'refresh_token': refresh_token,
                             'username': username,
                             })
         response.status_code = 201
@@ -84,21 +81,21 @@ class UpdateProfile(Resource):
         image =None
         new_username =None
         username = get_jwt_identity()
-        user = db.session.query(User).get(username)
+        user = User.query.filter_by(username=username).first()
 
         if not user:
             return abort(404, message='User not found.')
 
         if request.content_type == "application/json":
-            new_username = request.json["new_username"]
+            new_username = request.json["username"]
             email = request.json.get('email')
         else:
-            new_username = request.form["new_username"]
+            new_username = request.form["username"]
             email = request.form.get('email')
             image = request.files.get("image")
 
         if new_username:
-            user.username = new_username    
+            user.username = new_username
         if email:
             user.email = email
 
@@ -111,10 +108,10 @@ class UpdateProfile(Resource):
             user.profile_image = image.filename
         try:
             db.session.commit()
-            new_access_token = create_access_token(identity=username, additional_claims={'role': "user"})
+            access_token = create_access_token(identity=new_username, additional_claims={'role': "user"})
             response = jsonify({
                 "username":new_username,
-                "token":new_access_token
+                "accessToken":access_token
             })
             response.status_code = 200
             return response
@@ -270,11 +267,9 @@ class UserLogin(Resource):
             return abort(401, message='Wrong Password')
 
         access_token = create_access_token(identity=username, additional_claims={"role": "user"})
-        refresh_token = create_refresh_token(identity=username, additional_claims={"role": "user"})
 
         response = jsonify({'message': 'You have been logged in successfully!',
                             'accessToken': access_token,
-                            'refresh_token': refresh_token,
                             'username': username,
                             })
         response.status_code = 200

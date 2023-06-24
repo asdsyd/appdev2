@@ -8,7 +8,7 @@
     {{ successmessage }}
   </div>
 
-  <form @submit.prevent="handleupdateprofile">
+  <form @submit.prevent="HandleSubmit">
     <div class="container mt-4">
       <div>
         <input class="rounded-pill col-3 m-2 py-1 border-warning-subtle" type="text" v-model="details.username"
@@ -25,8 +25,8 @@
       </div>
       <div>
         <input
-            class="m-2 form-control rounded-pill w-50 "
-            style="width: 50%"
+            class="m-2 form-control rounded-pill"
+            style=""
             type="file"
             accept="image/*"
             @change="handleFileChange"
@@ -41,72 +41,69 @@
 
     </div>
   </form>
-
-  <div class="d-flex  justify-content-center container " v-if="!is_loading">
-    <div class="card w-40" style="width: 18rem;">
-      <div class="card-header">Profile Preview</div>
-      <img v-if="!image_present" src="../assets/defaultDP.png" class="card-img-top" alt="...">
-      <img v-else :src="image_present" class="text-center card-img-top">
-      <div class="card-body p-2">
-        <h6 class="card-title d-flex justify-content-start"><span class="text-info"> Username: </span> {{username}}</h6>
-        <h6 class="card-title d-flex justify-content-start"><span class="text-info">Email: </span> {{useremail}}</h6>
-      </div>
-
-      <div>
-        <p>
-          Click <router-link to="changePassword" >here  </router-link>to update your password
-        </p>
-      </div>
-    </div>
-  </div>
-
-
-
   <UserBottomNavBar/>
 </template>
+
 <script setup>
+
 import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 import UserLoggedNavBar from "@/views/UserLoggedNavBar.vue";
 import {computed, onBeforeMount,reactive,watch, ref} from "vue";
 import axios from "@/axios";
 import router from "@/router";
 
+const image = ref(null)
 const successmessage = ref(null)
 const err = ref(null)
 const details = reactive({
-  oldusername: "",
-  username: "",
-  oldemail: "",
-  email: "",
+  username:"",
+  useremail:""
 })
 watch([details], ()=>err.value=null)
-const handleupdateprofile = () => {
-  axios.post('/user/updateprofile', {oldusername:details.oldusername,username:details.username,oldemail:details.oldemail,email:details.email}).then(res=>{successmessage.value = res.data.message
-setTimeout(()=>router.push(':username/profile'), 1000)  }).catch(error=>err.value="error in updating profile")
-}
 
-const is_loading = ref(true)
-const image_present = ref(null)
-const image_display = computed(()=>image_present.value!==null)
-const username = ref(null)
-const useremail = ref(null)
-onBeforeMount(()=>{
-  axios.get('/user/getuser').then(res=>{
-    if(res.data.length>2){
-      const [name,email,image] = res.data
-      username.value = name
-      useremail.value = email
-      image_present.value = `http://localhost:8000/profile_image/${image}`
-      is_loading.value = false
-    } else{
-      const [name,email] = res.data
-      username.value = name
-      useremail.value=email
-      is_loading.value = false
+const handleFileChange = (event) => {
+  image.value = event.target.files[0]
+
+}
+const HandleSubmit = () => {
+
+  if (image.value) {
+    const form = new FormData()
+    form.append("username", details.username)
+    form.append("email", details.email)
+    form.append("image", image.value, image.value.filename)
+    const headers = {
+      'Content-Type': 'multipart/form-data'
     }
 
-  }).catch(err=>console.log(err))
-})
+
+        axios.post("/user/updateprofile", form, {
+        headers: headers
+      }).then(res => {
+        const { message, ...payload } = res.data
+          successmessage.value = "User profile updated successfully"
+        store.commit("adduser", payload)
+        router.push('/user/dashboard')
+      }).catch(error => {
+        console.log(error)
+        err.value = "Error in registering the user."
+      })
+    }
+    else {
+
+      axios.post("/user/updateprofile", { "username": details.username, email: details.email }).then(res => {
+        const { message, ...payload } = res.data
+        successmessage.value = "User profile update success"
+        store.commit("adduser", payload)
+        router.push('/user/dashboard')
+      }).catch(error => {
+        console.log(error)
+        err.value = "Error in registering the user."
+
+      })
+  }
+}
+
 
 
 </script>
