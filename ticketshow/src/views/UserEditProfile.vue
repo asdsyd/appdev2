@@ -35,8 +35,6 @@
       </div>
       <div>
         <button type="submit" class="rounded-pill  m-2 py-1 border-warning-subtle btn-warning btn">Update Profile</button>
-        <h1 v-if="err" class="text-danger-emphasis">{{ err }}</h1>
-
       </div>
 
     </div>
@@ -51,7 +49,8 @@ import UserLoggedNavBar from "@/views/UserLoggedNavBar.vue";
 import {computed, onBeforeMount,reactive,watch, ref} from "vue";
 import axios from "@/axios";
 import router from "@/router";
-
+import {useStore} from 'vuex'
+const store = useStore()
 const image = ref(null)
 const successmessage = ref(null)
 const err = ref(null)
@@ -67,16 +66,22 @@ const handleFileChange = (event) => {
 }
 const HandleSubmit = () => {
 
+  if(details.username && ''||details.useremail===''  && image.value === null){
+    err.value = "please fill any of the details"
+    return
+  }
   if (image.value) {
     const form = new FormData()
-    form.append("username", details.username)
-    form.append("email", details.email)
+    if(details.username!==''){
+      form.append("username", details.username)
+    }
+    if(details.useremail!==''){
+      form.append("email", details.email)
+    }
     form.append("image", image.value, image.value.filename)
     const headers = {
       'Content-Type': 'multipart/form-data'
     }
-
-
         axios.post("/user/updateprofile", form, {
         headers: headers
       }).then(res => {
@@ -86,19 +91,24 @@ const HandleSubmit = () => {
         router.push('/user/dashboard')
       }).catch(error => {
         console.log(error)
-        err.value = "Error in registering the user."
+        err.value = "Error in updating the user."
       })
     }
     else {
-
-      axios.post("/user/updateprofile", { "username": details.username, email: details.email }).then(res => {
+      const obj = {}
+      if(details.useremail){
+        obj["email"]= details.useremail
+      }if(details.username){
+        obj["username"]= details.username
+      }
+      axios.post("/user/updateprofile", obj).then(res => {
         const { message, ...payload } = res.data
         successmessage.value = "User profile update success"
         store.commit("adduser", payload)
         router.push('/user/dashboard')
       }).catch(error => {
         console.log(error)
-        err.value = "Error in registering the user."
+        err.value = "Error in updating the user."
 
       })
   }

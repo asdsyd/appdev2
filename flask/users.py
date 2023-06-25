@@ -41,7 +41,7 @@ class UserRegister(Resource):
         if email is None:
             return abort(400, message='email not provided.')
 
-        user = db.session.query(User).get(username)
+        user = User.query.filter_by(username=username).first()
 
         if user:
             return abort(401, message='Username already exists.')
@@ -66,6 +66,7 @@ class UserRegister(Resource):
         db.session.commit()
 
         access_token = create_access_token(identity=username, additional_claims={'role': "user"})
+
         response = jsonify({'message': 'You have successfully registered.',
                             'accessToken': access_token,
                             'username': username,
@@ -80,6 +81,7 @@ class UpdateProfile(Resource):
     def post(self):
         image =None
         new_username =None
+        email = None
         username = get_jwt_identity()
         user = User.query.filter_by(username=username).first()
 
@@ -90,13 +92,14 @@ class UpdateProfile(Resource):
             new_username = request.json["username"]
             email = request.json.get('email')
         else:
-            new_username = request.form["username"]
+            new_username = request.form.get("username")
             email = request.form.get('email')
             image = request.files.get("image")
 
-        if new_username:
+        if new_username is not None and new_username != '':
             user.username = new_username
-        if email:
+
+        if email is not None and email != '':
             user.email = email
 
         if image:
@@ -108,10 +111,10 @@ class UpdateProfile(Resource):
             user.profile_image = image.filename
         try:
             db.session.commit()
-            access_token = create_access_token(identity=new_username, additional_claims={'role': "user"})
+            new_access_token = create_access_token(identity=user.username, additional_claims={'role': "user"})
             response = jsonify({
-                "username":new_username,
-                "accessToken":access_token
+                "username":user.username,
+                "accessToken":new_access_token
             })
             response.status_code = 200
             return response
@@ -184,21 +187,21 @@ class BookingShow(Resource):
 
 class GetUserVenues(Resource):
     @jwt_required()
-    def get(self):
+    def post(self):
         role = get_jwt().get("role")
         if role != "user":
             return abort(401, message="unauthorized access")
         all_venues = None
         location = None
+        start = None
+        end = None
         location = request.json["location"]
-        if location is None or location == '':
+        if location is not None or location != '':
             all_venues = Theatre.query.filter_by(locaton=location)
         else:
             all_venues = Theatre.query.all()
         serialized_venues = []
         for v in all_venues:
-            
-            
             c = {
                 "id": v.id,
                 "name": v.name,
@@ -406,11 +409,10 @@ class SearchMovie(Resource):
                 "id": v.id,
                 "name": v.name,
             }
-
             if v.movies:
                 f = []
                 for d in v.movies:
-                    if search.upper() in d.name.upper() or search.lower() in d.name.lower() or search.lower() in d.tags.lower().split(
+                    if search.upper() in d.name.upper()  or search.lower() in d.tags.lower().split(
                             ','):
                         if datetime.now() < d.startTime:
                             f.append({

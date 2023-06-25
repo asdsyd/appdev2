@@ -1,7 +1,45 @@
 <template>
   <user-nav-bar />
+  <div class="d-flex justify-content-around">
+    <div class="w-50 p-1">
+      <select class="form-select" v-model="locationpref">
+        <option>Hyderabad</option>
+        <option>Delhi</option>
+        <option>Mumbai</option>
+        <option>Chennai</option>
+        <option>Kolkata</option>
+        <option>Bangalore</option>
+      </select>
+      <label class="form-label" for="form6Example5">Location</label>
+    </div>
+    <div class="d-flex">
+      <div class="">
+        <label>Start time&nbsp;&nbsp;</label>
+        <input
+          type="time"
+          class="align-self-auto rounded-pill mb-3"
+          v-model="startTime"
+          @change="checkTime"
+        />
+      </div>
+      &nbsp;
+      <div class="">
+        <label>End time&nbsp;&nbsp;</label>
+        <input
+          type="time"
+          class="align-self-auto rounded-pill"
+          v-model="endTime"
+          @change="checkTime"
+        />
+      </div>
+    </div>
+  </div>
+  <p v-if="!IstimeCorrect" class="text-danger">
+    {{ "Start time cannot be greater than endtime" }}
+  </p>
+
   <div v-if="all_Venues && !is_loading" class="accordion">
-    <div v-for="v in all_Venues" class="mb-2" >
+    <div v-for="v in all_Venues" class="mb-2">
       <h2 class="text-start mb-1  mx-1 accordion-item custom">
        <router-link :to="'/'+v.id+'/details'" style="text-decoration:none;">{{v.name}}</router-link> 
       </h2>
@@ -51,48 +89,7 @@
 
 
 
-  <!--  <div class="row row-cols-1 row-cols-md-3 g-4 container">-->
-  <!--    <div class="col">-->
-  <!--      <div class="card h-100">-->
-  <!--        <img src="../assets/movie-icon.png" class="card-img-top" alt="...">-->
-  <!--        <div class="card-body">-->
-  <!--          <h5 class="card-title">Card title</h5>-->
-  <!--          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
-  <!--          <a href="#" class="btn btn-primary">Book</a>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--    <div class="col">-->
-  <!--      <div class="card h-100">-->
-  <!--        <img src="../assets/movie-icon.png" class="card-img-top" alt="...">-->
-  <!--        <div class="card-body">-->
-  <!--          <h5 class="card-title">Card title</h5>-->
-  <!--          <p class="card-text">This is a short card.</p>-->
-  <!--          <a href="#" class="btn btn-primary">Book</a>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--    <div class="col">-->
-  <!--      <div class="card h-100">-->
-  <!--        <img src="../assets/movie-icon.png" class="card-img-top" alt="...">-->
-  <!--        <div class="card-body">-->
-  <!--          <h5 class="card-title">Card title</h5>-->
-  <!--          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content.</p>-->
-  <!--          <a href="#" class="btn btn-primary">Book</a>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--    <div class="col">-->
-  <!--      <div class="card h-100">-->
-  <!--        <img src="../assets/movie-icon.png" class="card-img-top" alt="...">-->
-  <!--        <div class="card-body">-->
-  <!--          <h5 class="card-title">Card title</h5>-->
-  <!--          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
-  <!--          <a href="#" class="btn btn-primary">Book</a>-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--    </div>-->
-  <!--  </div>-->
+
 
   <UserBottomNavBar />
 </template>
@@ -105,15 +102,22 @@ import UserBottomNavBar from "@/views/UserBottomNavBar.vue";
 import UserLoggedNavBar from "@/views/UserLoggedNavBar.vue";
 import store from "@/store";
 
+
+const locationpref = ref(null)
 const all_Venues = ref(store.state.venues || []);
 const is_loading = ref(true);
+const startTime = ref(null)
+const endTime = ref(null)
+watch([location,startTime,endTime],()=>{
+  
+})
 onBeforeMount(() => {
   if (store.state.venues.length > 0) {
     all_Venues.value = store.state.venues;
     is_loading.value = false;
   } else {
     axios
-      .get("/user/getVenues")
+      .post("/user/getVenues")
       .then((res) => {
         const { venues } = res.data;
         store.commit("addvenues", venues);
@@ -126,6 +130,12 @@ console.log(all_Venues.value)
   console.log(all_Venues.value);
 });
 
+const IstimeCorrect = ref(true);
+
+const checkTime = () => {
+  
+  IstimeCorrect.value = startTime.value < endTime.value;
+};
 const FormatTime = (time,isend) => {
   const timearr = time.split(" ");
   timearr.shift();

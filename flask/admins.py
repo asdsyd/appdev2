@@ -111,6 +111,8 @@ class DeleteVenue(Resource):
         if not venue:
             return abort(404,message="the Venue doesnt exist")
         try:
+            for v in venue.movies:
+                db.session.delete(v)
             db.session.delete(venue)
             db.session.commit()
             deletekey("flask_cache_venue")
