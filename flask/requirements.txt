@@ -10,4 +10,3 @@ flask-caching
 jinja2
 weasyprint
 Flask-Cors
-Flask-Migrate

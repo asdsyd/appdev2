@@ -13,7 +13,11 @@ from admins import AdminLogin, CreateVenue,AdminCheck,GetVenues,GetVenueData,Edi
 from celerytasks import celerytask
 from rediscache import cache
 from werkzeug.security import generate_password_hash
+from sqlalchemy import event
 import csv
+
+
+
 
 class ContextTask(celerytask.Task):
     def __call__(self, *args, **kwargs):
@@ -36,11 +40,7 @@ def create_app():
     db.init_app(app)
     with app.app_context():
         db.create_all()
-        hash_pw = generate_password_hash("admin")
-        admin = Admin(username="admin",password=hash_pw,email="admin@gmail.com")
-        db.session.add(admin)
         db.session.commit()
-    migrate = Migrate(app,db,render_as_batch=True)
     app.app_context().push()
     celery = celerytask
 
@@ -55,6 +55,14 @@ def create_app():
     return app, api,mail,celery
 
 app, api,mailer,celery = create_app()
+
+@event.listens_for(db.metadata, 'after_create')
+def create_user(*args, **kwargs):
+    with app.app_context():
+        hash_pw = generate_password_hash("admin")
+        admin = Admin(username="admin",password=hash_pw,email="admin@email.com")
+        db.session.add(admin)
+
 
 class AdminRefresh(Resource):
     @jwt_required(refresh=True)
