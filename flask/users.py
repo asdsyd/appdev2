@@ -195,35 +195,92 @@ class GetUserVenues(Resource):
         location = None
         start = None
         end = None
-        location = request.json["location"]
-        if location is not None or location != '':
+        is_start_present= False
+        is_end_present = True
+        message = request.json["msg"]
+        location = request.json.get("location")
+        start = request.json.get("start")
+        end = request.json.get('end')
+
+
+
+        if start is not None and start!='':
+                start =datetime.strptime(start, "%H:%M").time()
+                is_start_present=True
+        if end is not None and end!='':
+                end =datetime.strptime(end, "%H:%M").time()
+                is_end_present=True
+        if (is_start_present and not is_end_present) or (not is_start_present and is_end_present):
+            is_start_present=False
+            is_end_present=False 
+        
+        if location is not None and location != '':    
             all_venues = Theatre.query.filter_by(locaton=location)
         else:
             all_venues = Theatre.query.all()
         serialized_venues = []
+        if(len(list(all_venues))<=0):
+            response = jsonify({
+            "venues": serialized_venues
+            })
+            
+            response.status_code = 200
+            return response
+
         for v in all_venues:
-            c = {
+            
+                c = {
                 "id": v.id,
                 "name": v.name,
             }
-            if len(list(v.movies)) > 0:
                 f = []
                 for d in v.movies:
                     if datetime.now() < d.startTime:
-                        rating = MovieRatings.query.filter_by(movie_name=d.name).first().rating
-                        f.append({
-                            "movie_id": d.id,
-                            "movie_name": d.name,
-                            "image": d.image,
-                            "tags": d.tags,
-                            "description": d.description,
-                            "start": d.startTime,
-                            "end": d.endTime,
-                            "seats": d.totalSeats - d.seatsSold,
-                            "rating": rating
-                        })
+                        if is_start_present and is_end_present:
+                            if is_timeframe_within_range(d.startTime,d.endTime,start,end):
+                                movie_rating = MovieRatings.query.filter_by(movie_name=d.name).first()
+                                rating = movie_rating.rating if movie_rating else None
+                                movie = {
+                                    "movie_id": d.id,
+                                    "movie_name": d.name,
+                                    "image": d.image,
+                                    "tags": d.tags,
+                                    "description": d.description,
+                                    "start": d.startTime,
+                                    "end": d.endTime,
+                                    "seats": d.totalSeats - d.seatsSold,
+                                }
+                                if rating is None:
+                                    f.append(movie)
+                                else:
+                                    movie["rating"] = rating
+                                    f.append(movie)
+                        else:
+                                movie_rating = MovieRatings.query.filter_by(movie_name=d.name).first()
+                                rating = movie_rating.rating if movie_rating else None
+
+                                movie = {
+                                    "movie_id": d.id,
+                                    "movie_name": d.name,
+                                    "image": d.image,
+                                    "tags": d.tags,
+                                    "description": d.description,
+                                    "start": d.startTime,
+                                    "end": d.endTime,
+                                    "seats": d.totalSeats - d.seatsSold,
+                                }
+                                if rating is None:
+                                    f.append(movie)
+                                else:
+                                    movie["rating"] = rating
+                                    f.append(movie)
+
+
+                       
+
                 c["movies"] = f
-                serialized_venues.append(c)
+                if len(f) > 0:
+                        serialized_venues.append(c)
         response = jsonify({
             "venues": serialized_venues
         })
