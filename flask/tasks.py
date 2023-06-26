@@ -13,9 +13,9 @@ datetime=datetime.datetime
 
 @celerytask.on_after_finalize.connect
 def setup_periodic_task(sender,**kargs):
-    sender.add_periodic_task(crontab(minute=0, hour='19', day_of_week='*'),daily.s(),name="daily reminder")
+    sender.add_periodic_task(crontab(minute=0, hour=17, day_of_month='*'),daily.s(),name="daily reminder")
     sender.add_periodic_task(crontab(minute=0, hour=0, day_of_month=1),monthly.s(),name="monthly reminder")
-    sender.add_periodic_task(5.0,puchi.s(),name="printer")
+    sender.add_periodic_task(60.0,puchi.s(),name="printer")
 
 @celerytask.task()
 def daily():

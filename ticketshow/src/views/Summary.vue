@@ -1,9 +1,9 @@
 <template>
   <NavBar :is-summary="true"></NavBar>
-  <div v-show="!is_loading">
-    <p> Admin venue Summary</p>
+  <div v-show="!is_loading" class="container">
+    <p class="mt-3 display-6"> Admin Venue Summary</p>
 
-    <Bar v-for="v in summarydata" id="my-chart-id" :options="chartOptions" :data="v.data" />
+    <Bar v-for="v in summarydata" id="my-chart-id" :options="chartOptions" :data="v.data" class="chart-container m-5 py-3" />
   </div>
 </template>
 
@@ -40,7 +40,7 @@ onBeforeMount(() => {
               'rgba(153, 102, 255, 0.2)',
               'rgba(201, 203, 207, 0.2)'
             ],
-            barPercentage: 0.5
+            barPercentage: 0.13
           }],
         },
 
@@ -59,22 +59,23 @@ const chartOptions = reactive({
   scales: {
       y: {
         beginAtZero: true,
-        ticks: {
-          stepSize: 2
-        },
+        // ticks: {
+        //   stepSize: 2
+        // },
         padding: {
           bottom: 10 // Add 10 pixels of padding at the bottom of the y-axis
         },
         title:{
           display:true,
-          text:"bookings"
+          text:"TOTAL BOOKINGS"
         }
       },
       x: {
         title: {
           display: true,
-          text: 'movies'
-        }
+          text: 'MOVIES'
+        },
+        beginAtZero: true
       }
     }
 
@@ -84,3 +85,9 @@ const chartOptions = reactive({
 
 
 </script>
+<style>
+.chart-container {
+  width: 300px; /* Adjust the width as needed */
+  height: 200px; /* Adjust the height as needed */
+}
+</style>

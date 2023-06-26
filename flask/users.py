@@ -89,7 +89,7 @@ class UpdateProfile(Resource):
             return abort(404, message='User not found.')
 
         if request.content_type == "application/json":
-            new_username = request.json["username"]
+            new_username = request.json.get("username")
             email = request.json.get('email')
         else:
             new_username = request.form.get("username")

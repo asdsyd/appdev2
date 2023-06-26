@@ -12,6 +12,7 @@ from flask_cors import CORS
 from admins import AdminLogin, CreateVenue,AdminCheck,GetVenues,GetVenueData,EditVenue,CreateShow,DeleteVenue,EditShow,DeleteShow,GetShow, AdminRegister
 from celerytasks import celerytask
 from rediscache import cache
+from werkzeug.security import generate_password_hash
 import csv
 
 class ContextTask(celerytask.Task):
@@ -35,6 +36,10 @@ def create_app():
     db.init_app(app)
     with app.app_context():
         db.create_all()
+        hash_pw = generate_password_hash("admin")
+        admin = Admin(username="admin",password=hash_pw,email="admin@gmail.com")
+        db.session.add(admin)
+        db.session.commit()
     migrate = Migrate(app,db,render_as_batch=True)
     app.app_context().push()
     celery = celerytask

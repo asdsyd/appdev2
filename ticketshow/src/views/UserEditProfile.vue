@@ -16,7 +16,7 @@
 
       </div>
       <div>
-        <input class="rounded-pill col-3 m-2 py-1 border-warning-subtle" type="email" v-model="details.email"
+        <input class="rounded-pill col-3 m-2 py-1 border-warning-subtle" type="email" v-model="details.useremail"
                placeholder="New Email">
       </div>
 
@@ -66,7 +66,7 @@ const handleFileChange = (event) => {
 }
 const HandleSubmit = () => {
 
-  if(details.username && ''||details.useremail===''  && image.value === null){
+  if(details.username==='' && details.useremail===''  && image.value === null){
     err.value = "please fill any of the details"
     return
   }
