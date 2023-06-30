@@ -1,7 +1,6 @@
 import os
 from flask import Flask,jsonify, send_file,send_from_directory,request,render_template
 from flask_restful import Api,Resource,abort
-from flask_migrate import Migrate
 import tasks
 from users import UserLogin, UserRegister,UserCheck,GetUserVenues,GetUserShow,BookingShow,getBookings,getUser,Rate,SearchMovie,ChangePass,GetUservenueData,UpdateProfile
 from mailer import mail
