@@ -1,8 +1,10 @@
 <template>
   <user-nav-bar />
-  <div class="d-flex justify-content-around flex-wrap m-5">
-    <div class="w-50 p-1">
-      <select class="form-select" v-model="locationpref">
+  <div class="m-3 container col rounded row">
+    <div class="w-50 p-1 col-3">
+      <select class="form-select rounded-pill"
+              style="background-color: gainsboro;"
+              v-model="locationpref">
         <option></option>
         <option>Hyderabad</option>
         <option>Delhi</option>
@@ -11,11 +13,13 @@
         <option>Kolkata</option>
         <option>Bangalore</option>
       </select>
-      <label class="form-label" for="form6Example5">Location</label>
+      <label class="form-label" for="form6Example5">Choose Location</label>
     </div>
-    <div class="d-flex">
-      <div class="">
-        <label>Start time&nbsp;&nbsp;</label>
+    <div class="col-5 border rounded m-2"
+    style="background-color: gainsboro">
+      <div class="m-3">
+      <div class="rounded-pill">
+        <label class="text-primary">Start time&nbsp;&nbsp;</label>
         <input
           type="time"
           class="align-self-auto rounded-pill mb-3"
@@ -25,7 +29,7 @@
       </div>
       &nbsp;
       <div class="">
-        <label>End time&nbsp;&nbsp;</label>
+        <label class="text-primary">End time&nbsp;&nbsp;</label>
         <input
           type="time"
           class="align-self-auto rounded-pill"
@@ -33,29 +37,32 @@
           @change="checkTime"
         />
       </div>
-    </div>
-    <div>
-      <button class="btn btn-primary" @click="watcherfunction">filter</button>
+      <div class="mt-3">
+        <button class="btn btn-primary rounded-pill px-5" @click="watcherfunction">filter</button>
+      </div>
+      </div>
     </div>
   </div>
   <p v-if="!IstimeCorrect" class="text-danger">
-    {{ "Start time cannot be greater than endtime" }}
+    {{ "Start time cannot be greater than End time" }}
   </p>
 
   <div v-if="all_Venues && !is_loading" class="accordion">
     <div v-for="v in all_Venues" class="mb-2">
-      <h2 class="text-start mb-1 mx-1 accordion-item custom">
+      <h2 class="text-start m-3 py-2 rounded-pill accordion-item custom"
+      style="background-color: gainsboro">
         <router-link
+            class="m-2 p-4"
           :to="'/' + v.id + '/details'"
-          style="text-decoration: none"
+          style="text-decoration: none;"
           >{{ v.name }}</router-link
         >
       </h2>
       <div
-        class="d-flex flex-row mx-2 my-2 gap-2 overflow-x-scroll custominner"
+        class="d-flex flex-row mx-2 my-2 gap-2 overflow-x-scroll custominner border-warning"
       >
         <div v-if="v.movies" v-for="c in v.movies">
-          <div class="card h-100" style="width: 300px">
+          <div class="card h-100 m-3" style="width: 300px">
             <img
               v-if="c.image"
               :src="'http://localhost:8000/image/' + c.image"
@@ -69,24 +76,26 @@
               alt="..."
             />
             <div class="card-body">
-              <h5 class="card-title">{{ c.movie_name }}</h5>
-              <p v-if="c.rating"><b>rating:</b>{{ c.rating.toFixed(1) }}</p>
-              <p><b>Starts on</b>:- {{ FormatTime(c.start, true) }}</p>
-              <p class="card-text"><b>description</b>:- {{ c.description }}</p>
-              <p><b>tags:-</b> {{ c.tags }}</p>
+              <h3 class="card-title text-danger-emphasis">{{ c.movie_name }}</h3>
+              <p v-if="c.rating"><b>Movie Rating:</b>{{ c.rating.toFixed(1) }}</p>
+              <p><b>Begins</b>: {{ FormatTime(c.start, true) }}</p>
+              <p class="card-text"><b>Description</b>: {{ c.description }}</p>
+              <p class="text-info"><b>Tags:</b> {{ c.tags }}</p>
               <router-link
                 v-if="c.seats > 0"
-                class="btn btn-primary"
+                class="btn rounded-pill text-light fw-bold"
+                style="background-color: coral"
                 :to="'/user/' + v.id + '/' + c.movie_id + '/' + 'book'"
-                >Book</router-link
+                >Book Tickets</router-link
               >
+
               <router-link
                 v-else-if="Object.keys($store.state.user).length <= 0"
-                class="btn btn-primary"
+                class="btn rounded-pill text-light fw-bold"
                 :to="'/user/login'"
-                >Book</router-link
+                >Book Tickets</router-link
               >
-              <button v-if="c.seats <= 0" class="btn btn-danger" disabled>
+              <button v-if="c.seats <= 0" class="btn btn-danger rounded-pill fw-bold" disabled>
                 HouseFull
               </button>
             </div>
@@ -96,7 +105,7 @@
     </div>
   </div>
   <div v-if="all_Venues.length <= 0 && !is_loading">
-    no movies avaliable the moment
+    No movies available at the moment
   </div>
 
   <UserBottomNavBar />
@@ -118,7 +127,7 @@ const endTime = ref(null);
 
 function watcherfunction(){
 const obj = {}
-obj["msg"] = "messgae"
+obj["msg"] = "message"
 if(locationpref){
 obj["location"] = locationpref.value
 }
@@ -126,7 +135,7 @@ if((startTime.value!==null&&endTime.value===null)||(startTime.value===null&&endT
 return 
 }
 if(startTime.value==="00:00"||endTime==="00:00"){
-  return alert("please fille the filters appropirately")
+  return alert("Please fill the filters appropriately")
 }
 else{
 obj["start"] = startTime.value

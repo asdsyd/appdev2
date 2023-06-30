@@ -1,8 +1,9 @@
 <template>
   <UserLoggedNavBar/>
-  
-<div class="d-flex  justify-content-center container " v-if="!is_loading">
-  <div class="card w-40" style="width: 18rem;">
+  <div style="background-color: indianred">
+<div class="d-flex  justify-content-center container rounded" v-if="!is_loading"
+style="background-color: indianred">
+  <div class="m-3 card w-40" style="width: 18rem;">
     <div class="card-header">Your Profile</div>
     <img v-if="!image_present" src="../assets/defaultDP.png" class="card-img-top" alt="...">
     <img v-else :src="image_present" class="text-center card-img-top">
@@ -23,7 +24,7 @@
     </div>
   </div>
 </div>
-
+  </div>
 
 
   <UserBottomNavBar/>

@@ -1,15 +1,13 @@
 <template>
   <user-nav-bar/>
-<div v-if="!is_loading">
-  <h1><b>{{ venue.name }}</b></h1>
-<br>
-<br>
-  <p><b>{{ venue.name }}</b> is a theatre located in <b>{{ venue.place }}</b> in the city of {{ venue.location }}</p>
-  <p><b>{{ venue.name }}</b> has a capacity of {{ venue.capacity }}</p>
+<div v-if="!is_loading" class="display-6 bg-warning-subtle border-warning border m-3 rounded p-3">
+  <h1 class="display-3 fw-medium "><b>{{ venue.name }}</b></h1>
+  <p class="display-6"><b>{{ venue.name }}</b> is a theatre located in <b>{{ venue.place }}</b> in the city of {{ venue.location }}.</p>
+  <p><b>{{ venue.name }}</b> has a capacity of {{ venue.capacity }} seats.</p>
   <p>
-    for bookings check the dashboard to find this theatre to book your favourite shows
+    For booking seats, please check the dashboard to find this theatre and book your favourite shows!
   </p>
-  <p>happy entertainment!!</p>
+  <p class="text-warning">Happy Entertainment With TicketShow!!</p>
 </div>
 
   <user-bottom-nav-bar/>

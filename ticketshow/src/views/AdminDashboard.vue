@@ -54,7 +54,7 @@
           Delete
         </button>
       </div>
-      <button :disabled="(Object.keys($store.state.export_id).length>0)" @click="sendexporttask(v.id)">
+      <button class="rounded-pill" :disabled="(Object.keys($store.state.export_id).length>0)" @click="sendexporttask(v.id)">
         export csv
       </button>
     </div>
@@ -64,7 +64,7 @@
 border-style: dashed; border-color: black">
       <div class="card-body">
         <h5 class="card-title text-bg-light" >New Venue</h5>
-        <p class="text-wrap mt-3">Click on the buttion below to create a Venue</p>
+        <p class="text-wrap mt-3">Click on the button below to create a Venue</p>
         <div>
           <router-link
             class="m-2 btn btn-outline-success rounded-5 text-decoration-none"
@@ -125,23 +125,23 @@ border-style: dashed; border-color: black">
           <h5 class="modal-title">Delete Confirmation</h5>
         </div>
         <div class="modal-body">
-          <p>Do you want to delete this Venue</p>
+          <p>Do you really want to delete this Venue?</p>
         </div>
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-primary"
+            class="btn btn-danger"
             @click="handledelete(venue_to_delete_id)"
           >
-            yes
+            Yes
           </button>
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-primary"
             data-dismiss="modal"
             @click="cancelDelete('venue')"
           >
-            no
+            No
           </button>
         </div>
       </div>
@@ -163,23 +163,23 @@ border-style: dashed; border-color: black">
           <h5 class="modal-title">Delete Confirmation</h5>
         </div>
         <div class="modal-body">
-          <p>Do you want to delete this Show</p>
+          <p>Do you really want to delete this Show?</p>
         </div>
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-primary"
+            class="btn btn-danger"
             @click="deleteShow(Show_to_delete)"
           >
-            yes
+            Yes
           </button>
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-primary"
             data-dismiss="modal"
             @click="cancelDelete('show')"
           >
-            no
+            No
           </button>
         </div>
       </div>

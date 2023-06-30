@@ -13,9 +13,9 @@ datetime=datetime.datetime
 
 @celerytask.on_after_finalize.connect
 def setup_periodic_task(sender,**kargs):
-    sender.add_periodic_task(crontab(minute=0, hour=17, day_of_month='*'),daily.s(),name="daily reminder")
-    sender.add_periodic_task(crontab(minute=0, hour=0, day_of_month=1),monthly.s(),name="monthly reminder")
-    sender.add_periodic_task(60.0,puchi.s(),name="printer")
+    sender.add_periodic_task(crontab(minute=44, hour=16, day_of_month='*'),daily.s(),name="daily reminder")
+    sender.add_periodic_task(crontab(minute=44, hour=16, day_of_month='*'),monthly.s(),name="monthly reminder")
+    sender.add_periodic_task(crontab(minute=44, hour=16, day_of_month='*'),puchi.s(),name="printer")
 
 @celerytask.task()
 def daily():
@@ -25,13 +25,13 @@ def daily():
     for v in all_users:
         bookings =Booking.query.filter(Booking.userid==v.user_id,Booking.booking_time==yesterday).all()
         if bookings is None or bookings==[]:
-            message = Message("daily reminder",sender="norepaly@gamil.com",recipients=[v.email])
-            message.body = f"""hello {v.username} this is someone from ticketshow this is your daily reminder to book as you haven't booked anything
-            
-            so what are you waiting for grab your favorite shows at reasonable price 
+            message = Message("DAILY REMINDER!",sender="noreply@gmail.com",recipients=[v.email])
+            message.body = f"""Hello {v.username},
+            This is your daily reminder from TicketShow to book for the movie you visited but haven't booked yet.
+            So what are you waiting for? Grab your favorite shows at reasonable prices only at Ticket Show! 
             """
             mail.send(message)
-    return "sent daily reminder to all"
+    return "SENT DAILY REMINDER TO ALL"
 
 @celerytask.task()
 def monthly():
@@ -50,16 +50,16 @@ def monthly():
                     if ff.movie == v.movie.name:
                         usermontlyRatings.append([ff.movie,ff.rating])            
             html = render_template('sender.html',bookings=bookings,ratings=usermontlyRatings,username=x.username)
-            msg = Message("infotainment report",recipients=[x.email])
+            msg = Message("INFOTAINMENT REPORT",recipients=[x.email])
             msg.attach("report.html", "text/html", html)
             mail.send(msg)
-        return "sent montly reminder to all users"
+        return "SENT MONTHLY REMINDER TO ALL USERS"
         
 
 @celerytask.task()
 def puchi():
-    print("printer")
-    return "i am a printer"
+    print(" test printer")
+    return "i am a printer UPDATE"
 
 
 @celerytask.task()
@@ -92,7 +92,7 @@ def csv_exporter(id,email):
                 for c in serial_venue:
                         csvwriter.writerow([c["name"],c["bookings"]])
             msg = Message("csv gen is completed",sender=["aaaa@gmail.com"],recipients=[email])
-            msg.body = f"the csv for theatre {venue.name} and id  {id} is done now u can export it"
+            msg.body = f"The csv for theatre {venue.name} and id  {id} is done now u can export it"
             mail.send(msg)
             return "done"
         except Exception as e:
