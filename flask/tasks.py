@@ -42,15 +42,22 @@ def monthly():
             today = datetime.now()
             one_month =  datetime.now()-timedelta(days=30)
             userratings = x.ratings
+            bookingsMap = {}
+
             usermontlyRatings = []
             all_bookings = Booking.query.filter(Booking.booking_time.between(one_month, today),Booking.userid==id).all()
             for v in all_bookings:
                 bookings.append([v.movie.name,v.booking_time,v.numberSeats])
+                if bookingsMap.__contains__(v.movie.name):
+                    bookingsMap[v.movie.name] = bookingsMap.get(v.movie.name) + 1
+                else:
+                    bookingsMap[v.movie.name] = 1
                 for ff in userratings:
                     if ff.movie == v.movie.name:
                         usermontlyRatings.append([ff.movie,ff.rating])            
-            html = render_template('sender.html',bookings=bookings,ratings=usermontlyRatings,username=x.username)
-            msg = Message("INFOTAINMENT REPORT",recipients=[x.email])
+            html = render_template('sender.html',bookings=bookings,ratings=usermontlyRatings,username=x.username,bookingsMap=bookingsMap)
+
+            msg = Message("ENTERTAINMENT REPORT",recipients=[x.email])
             msg.attach("report.html", "text/html", html)
             mail.send(msg)
         return "SENT MONTHLY REMINDER TO ALL USERS"
