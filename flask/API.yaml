@@ -1,0 +1,578 @@
+openapi: 3.0.0
+info:
+  title: Ticket Show APIs
+  version: 1.0.0
+paths:
+  /register:
+    post:
+      summary: User registration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                email:
+                  type: string
+              required:
+                - username
+                - password
+                - email
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  accessToken:
+                    type: string
+                  username:
+                    type: string
+  /update-profile:
+    post:
+      summary: Update user profile
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+              required:
+                - username
+                - email
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  accessToken:
+                    type: string
+  /get-user-show/{movie_id}:
+    get:
+      summary: Get information about a movie show
+      security:
+        - JWT: []
+      parameters:
+        - name: movie_id
+          in: path
+          description: ID of the movie
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Information about the movie show
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /book-show/{th_id}/{movie_id}:
+    post:
+      summary: Book a movie show
+      security:
+        - JWT: []
+      parameters:
+        - name: th_id
+          in: path
+          description: ID of the theater
+          required: true
+          schema:
+            type: integer
+        - name: movie_id
+          in: path
+          description: ID of the movie
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                number:
+                  type: integer
+              required:
+                - number
+      responses:
+        '200':
+          description: Booking confirmed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /get-user-venues:
+    post:
+      summary: Get available venues and movie shows
+      security:
+        - JWT: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                msg:
+                  type: string
+                location:
+                  type: string
+                start:
+                  type: string
+                end:
+                  type: string
+              required:
+                - msg
+      responses:
+        '200':
+          description: Available venues and movie shows
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  venues:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        movies:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              movie_id:
+                                type: integer
+                              movie_name:
+                                type: string
+  /user-check:
+    get:
+      summary: Check if user is authenticated
+      security:
+        - JWT: []
+      responses:
+        '200':
+          description: User is authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /login:
+    post:
+      summary: User login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  accessToken:
+                    type: string
+                  username:
+                    type: string
+  /bookings:
+    get:
+      summary: Get user bookings
+      security:
+        - JWT: []
+      responses:
+        '200':
+          description: User bookings retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    booking_id:
+                      type: integer
+                    movie_id:
+                      type: integer
+                    movie_name:
+                      type: string
+  /rate/{movie_id}:
+    post:
+      summary: Rate a movie
+      security:
+        - JWT: []
+      parameters:
+        - name: movie_id
+          in: path
+          description: ID of the movie
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: number
+              required:
+                - rating
+      responses:
+        '200':
+          description: Movie rated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /user:
+    get:
+      summary: Get user details
+      security:
+        - JWT: []
+      responses:
+        '200':
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  email:
+                    type: string
+  /admin/check:
+    get:
+      summary: Admin Check
+      description: Check if the user is an admin
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+
+  /admin/register:
+    post:
+      summary: Admin Registration
+      description: Register a new admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                email:
+                  type: string
+                securitykey:
+                  type: string
+              required:
+                - username
+                - password
+                - email
+                - securitykey
+      responses:
+        '200':
+          description: Admin registered successfully
+        '401':
+          description: Unauthorized or invalid security key
+
+  /admin/login:
+    post:
+      summary: Admin Login
+      description: Log in as an admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Admin logged in successfully
+        '401':
+          description: Incorrect username or password
+
+  /admin/venue:
+    get:
+      summary: Get All Venues
+      description: Get a list of all venues
+      responses:
+        '200':
+          description: Success
+
+  /admin/createvenue:
+    post:
+      summary: Create Venue
+      description: Create a new venue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                capacity:
+                  type: integer
+                place:
+                  type: string
+                location:
+                  type: string
+              required:
+                - name
+                - capacity
+                - place
+                - location
+      responses:
+        '200':
+          description: Venue created successfully
+        '401':
+          description: Unauthorized
+        '422':
+          description: Invalid or missing field
+
+  /admin/venue/{id}:
+    get:
+      summary: Get Venue Data
+      description: Get data of a venue
+      parameters:
+        - name: id
+          in: path
+          description: Venue ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '404':
+          description: Venue not found
+
+  /admin/venue/{id}/update:
+    put:
+      summary: Update Venue
+      description: Update details of a venue
+      parameters:
+        - name: id
+          in: path
+          description: Venue ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                capacity:
+                  type: integer
+                place:
+                  type: string
+                location:
+                  type: string
+              required:
+                - name
+                - capacity
+                - place
+                - location
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '404':
+          description: Venue not found
+        '422':
+          description: Invalid or missing field
+
+  /admin/venue/{id}/delete:
+    delete:
+      summary: Delete Venue
+      description: Delete a venue
+      parameters:
+        - name: id
+          in: path
+          description: Venue ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Unauthorized
+        '404':
+          description: Venue not found
+
+  /user/register:
+    post:
+      summary: User Registration
+      description: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                email:
+                  type: string
+              required:
+                - username
+                - password
+                - email
+      responses:
+        '200':
+          description: User registered successfully
+        '422':
+          description: Invalid or missing field
+
+  /user/login:
+    post:
+      summary: User Login
+      description: Log in as a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: User logged in successfully
+        '401':
+          description: Incorrect username or password
+
+  /user/movies:
+    get:
+      summary: Get All Movies
+      description: Get a list of all movies
+      responses:
+        '200':
+          description: Success
+
+  /user/movies/{id}:
+    get:
+      summary: Get Movie Details
+      description: Get details of a movie
+      parameters:
+        - name: id
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: Movie not found
+
+  /user/venues:
+    get:
+      summary: Get All Venues
+      description: Get a list of all venues
+      responses:
+        '200':
+          description: Success
+
+  /user/venues/{id}:
+    get:
+      summary: Get Venue Details
+      description: Get details of a venue
+      parameters:
+        - name: id
+          in: path
+          description: Venue ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: Venue not found
+
+security:
+  - JWT: []
+
+
+
